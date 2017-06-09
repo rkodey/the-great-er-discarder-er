@@ -281,7 +281,7 @@ function resetTabTimer(tab) {
   storage.getOption(storage.SUSPEND_TIME, function (suspendTime) {
 
     if (suspendTime === '0') {
-      if (debug) { console.log('Clearning timer for tab: ' + tab.id); }
+      if (debug) { console.log('Clearing timer for tab: ' + tab.id); }
       clearTabTimer(tab.id);
     }
     else if (!isDiscarded(tab) && !tab.active && !isSpecialTab(tab)) {
@@ -290,7 +290,7 @@ function resetTabTimer(tab) {
       chrome.alarms.create(String(tab.id), {when:  dateToSuspend});
     }
     else {
-      if (debug) { console.log("Skipping tab tiemr reset: ",tab); }
+      if (debug) { console.log("Skipping tab timer reset: ",tab); }
     }
   });
 }
