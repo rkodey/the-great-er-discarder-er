@@ -281,7 +281,7 @@ function resetTabTimer(tab) {
   storage.getOption(storage.SUSPEND_TIME, function (suspendTime) {
 
     if (suspendTime === '0') {
-      if (debug) { console.log('Clearning timer for tab: ' + tab.id); }
+      if (debug) { console.log('Clearing timer for tab: ' + tab.id); }
       clearTabTimer(tab.id);
     }
     else if (!isDiscarded(tab) && !tab.active && !isSpecialTab(tab)) {
@@ -290,7 +290,7 @@ function resetTabTimer(tab) {
       chrome.alarms.create(String(tab.id), {when:  dateToSuspend});
     }
     else {
-      if (debug) { console.log("Skipping tab tiemr reset: ",tab); }
+      if (debug) { console.log("Skipping tab timer reset: ",tab); }
     }
   });
 }
@@ -358,20 +358,22 @@ function undoTemporarilyWhitelistHighlightedTab() {
 }
 
 function discardHighlightedTab() {
-  chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+  chrome.tabs.query({active: true, currentWindow: true, discarded: false}, function (tabs) {
     if (tabs.length > 0) {
       var tabToDiscard = tabs[0];
-      var previousTabId = localStorage.getItem(PREVIOUS_TAB_ID);
-      if (previousTabId) {
-        chrome.tabs.update(parseInt(previousTabId), { active: true, highlighted: true }, function (tab) {
-          discardTab(tabToDiscard, true);
-        });
-      }
-      else {
-        chrome.tabs.create({}, function (tab) {
-          discardTab(tabToDiscard, true);
-        });
-      }
+      var previousTabId = parseInt(localStorage.getItem(PREVIOUS_TAB_ID));
+      chrome.tabs.get(previousTabId, function (prevTab) {
+          if (prevTab) {
+              chrome.tabs.update(previousTabId, { active: true, highlighted: true }, function (tab) {
+                  discardTab(tabToDiscard, true);
+              });
+          }
+          else {
+              chrome.tabs.create({}, function (tab) {
+                  discardTab(tabToDiscard, true);
+              });
+          }
+      })
     }
   });
 }
