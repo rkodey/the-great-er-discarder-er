@@ -25,7 +25,8 @@ function initialise(options) {
     'dontDiscardPinned': storage.IGNORE_PINNED,
     'dontDiscardAudio': storage.IGNORE_AUDIO,
     'timeToDiscard': storage.SUSPEND_TIME,
-    'whitelist': storage.WHITELIST
+    'whitelist': storage.WHITELIST,
+    'addContextMenu': storage.ADD_CONTEXT
   };
   elementIdMap = invert(elementPrefMap);
 
@@ -134,8 +135,8 @@ function handleChange(element) {
 }
 
 function saveChanges(elements, callback) {
-console.log(elements);
-  let options = {};
+  // console.log(elements);
+  var options = {};
   for (var i = 0; i < elements.length; i++) {
 
     var element = elements[i];
@@ -152,6 +153,11 @@ console.log(elements);
     //if interval has changed then reset the tab timers
     if (pref === storage.SUSPEND_TIME && oldValue !== newValue) {
       chrome.runtime.sendMessage({ action: 'resetTabTimers' });
+    }
+
+    //show or hide context menu items
+    if (pref === storage.ADD_CONTEXT && oldValue !== newValue) {
+      chrome.runtime.sendMessage({ action: 'updateContextMenuItems', visible: newValue });
     }
     options[pref] = newValue;
   }

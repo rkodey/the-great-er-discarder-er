@@ -27,6 +27,15 @@ var chargingMode = false;
 //   });
 // });
 
+chrome.runtime.onInstalled.addListener(function() {
+
+  storage.getOptions(function (options) {
+    if (options[storage.ADD_CONTEXT]) {
+      buildContextMenu(true);
+    }
+  });
+});
+
 //reset tabStates on extension load
 chrome.runtime.onStartup.addListener(function () {
   if (debug) { console.log('Extension started.'); }
@@ -113,7 +122,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 //add message and command listeners
 chrome.runtime.onMessage.addListener(messageRequestListener);
 chrome.commands.onCommand.addListener(commandListener);
-
+chrome.contextMenus.onClicked.addListener(contextMenuListener);
 
 
 //listen for focus changes
@@ -589,9 +598,13 @@ function messageRequestListener(request, sender, sendResponse) {
     });
     break;
 
+  case 'updateContextMenuItems':
+    buildContextMenu(request.visible);
+    break;
+
   case 'discardOne':
-      discardHighlightedTab();
-      break;
+    discardHighlightedTab();
+    break;
 
   case 'tempWhitelist':
     temporarilyWhitelistHighlightedTab();
@@ -656,3 +669,107 @@ function commandListener (command) {
 }
 
 
+//HANDLERS FOR RIGHT-CLICK CONTEXT MENU
+function contextMenuListener(info, tab) {
+
+  switch (info.menuItemId) {
+
+    case 'discard-tab':
+      discardHighlightedTab();
+      break;
+
+    case 'dont-suspend-for-now':
+      temporarilyWhitelistHighlightedTab();
+      break;
+
+    case 'never-discard':
+      whitelistHighlightedTab();
+      break;
+
+    case 'discard-others':
+      discardAllTabs();
+      break;
+
+    case 'reload-all':
+      reloadAllTabs();
+      break;
+
+    case 'settings':
+      chrome.tabs.create({
+        url: chrome.extension.getURL('html/options.html')
+      });
+      break;
+
+    default:
+      break;
+  }
+}
+
+
+function buildContextMenu(showContextMenu) {
+
+  var allContexts = ["page", "frame", "editable", "image", "video", "audio"];
+
+  chrome.contextMenus.removeAll();
+
+  if (showContextMenu) {
+
+    //Open tab discarded
+    // chrome.contextMenus.create({
+    //   id: "open-in-new-discarded-tab",
+    //   title: "Open link in new discarded tab",
+    //   contexts:["link"],
+    //   onclick: function (info, tab) {
+    //     openLinkInDiscardedTab(tab, info.linkUrl);
+    //   }
+    // });
+
+    //Suspend present tab
+    chrome.contextMenus.create({
+      id: "discard-tab",
+      title: "Discard tab",
+      contexts: allContexts
+    });
+
+    //Add present tab to temporary whitelist
+    chrome.contextMenus.create({
+      id: "dont-suspend-for-now",
+      title: "Don't discard for now",
+      contexts: allContexts
+    });
+
+    //Add present tab to permenant whitelist
+    chrome.contextMenus.create({
+      id: "never-discard",
+      title: "Never discard this site",
+      contexts: allContexts
+    });
+
+    chrome.contextMenus.create({
+      id: "separator",
+      contexts: allContexts,
+      type: "separator"
+    });
+
+    //Suspend all the tabs
+    chrome.contextMenus.create({
+      id: "discard-others",
+      title: "Discard other tabs",
+      contexts: allContexts
+    });
+
+    //Unsuspend all the tabs
+    chrome.contextMenus.create({
+      id: "reload-all",
+      title: "Reload all tabs",
+      contexts: allContexts
+    });
+
+    //Open settings page
+    chrome.contextMenus.create({
+      id: "settings",
+      title: "Settings",
+      contexts: allContexts
+    });
+  }
+}
