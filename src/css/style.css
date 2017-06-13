@@ -262,6 +262,13 @@ ul.unorderedList li {
 	text-shadow: 0 1px 0 white;
 	margin: 0 0 8px;
 }
+.note {
+    font-style: italic;
+    font-size: 12px;
+    background: rgb(255, 247, 202);
+    padding: 5px;
+    margin-top: 5px;
+}
 .blocked {
     color: black;
     opacity: .7;

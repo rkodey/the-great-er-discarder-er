@@ -58,6 +58,7 @@ function initialise(options) {
   }
 
   setAutoDiscardOptionsVisibility(options[storage.SUSPEND_TIME] > 0);
+  setSyncNoteVisibility(!options[storage.SYNC_OPTIONS]);
 }
 
 function invert(obj) {
@@ -122,6 +123,14 @@ function setAutoDiscardOptionsVisibility(visible) {
   });
 }
 
+function setSyncNoteVisibility(visible) {
+  if (visible) {
+    document.getElementById('syncNote').style.display = 'block';
+  } else {
+    document.getElementById('syncNote').style.display = 'none';
+  }
+}
+
 function handleChange(element) {
   return function () {
     var pref = elementPrefMap[element.id],
@@ -131,6 +140,9 @@ function handleChange(element) {
     if (pref === storage.SUSPEND_TIME) {
       interval = getOptionValue(element);
       setAutoDiscardOptionsVisibility(interval > 0);
+
+    } else if (pref === storage.SYNC_OPTIONS) {
+      setSyncNoteVisibility(!getOptionValue(element));
     }
   };
 }
