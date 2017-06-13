@@ -14,11 +14,13 @@
     ADD_CONTEXT: 'addContextMenu',
     NO_NAG: 'noNag',
     WHITELIST: 'whitelist',
+    SYNC_OPTIONS: 'syncOptions',
 
     getOption: getOption,
     getOptions: getOptions,
     setOption: setOption,
     setOptions: setOptions,
+    syncOptions: syncOptions,
     saveToWhitelist: saveToWhitelist,
     removeFromWhitelist: removeFromWhitelist,
     cleanupWhitelist: cleanupWhitelist
@@ -30,20 +32,37 @@
   const noop = function() {};
 
   function getOption(prop, callback) {
-    getOptions(function (settings) {
-      callback(settings[prop]);
+    getOptions(function (options) {
+      callback(options[prop]);
     });
   }
 
   function getOptions(callback) {
-    chrome.storage.local.get(null, function (settings) {
+    chrome.storage.local.get(null, function (options) {
+      // console.log('options',options);
 
       var defaults = getSettingsDefaults();
       for (var prop in defaults) {
-        if (typeof(settings[prop]) !== 'undefined' && settings[prop] !== null) {
-          defaults[prop] = settings[prop];
+        if (typeof(options[prop]) !== 'undefined' && options[prop] !== null) {
+          defaults[prop] = options[prop];
         }
       }
+
+      // Overlay sync updates in the local data store.  Like sync
+      // itself, we just guarantee eventual consistency.
+      if (defaults[self.SYNC_OPTIONS]) {
+        chrome.storage.sync.get(null, function(syncOptions) {
+          // console.log('syncOptions',syncOptions);
+          for (var prop in defaults) {
+            if (syncOptions[prop] !== undefined && syncOptions[prop] !== defaults[prop]) {
+              // console.log('updating local setting with synced one. ' + prop + ' = ' + syncOptions[prop]);
+              setOption(prop, syncOptions[prop]);
+              defaults[prop] = syncOptions[prop];
+            }
+          }
+        });
+      }
+
       callback(defaults);
     });
   }
@@ -57,18 +76,27 @@
 
   function setOptions(valueByProp, callback) {
     callback = callback || noop;
-    chrome.storage.local.get(null, function (settings) {
+    chrome.storage.local.get(null, function (options) {
 
       for (var prop in valueByProp) {
         if (valueByProp.hasOwnProperty(prop)) {
-          settings[prop] = valueByProp[prop];
+          options[prop] = valueByProp[prop];
         }
       }
-      console.log('saving settings',settings);
-      chrome.storage.local.set(settings, callback);
+      // console.log('saving options',options);
+      chrome.storage.local.set(options, callback);
     });
   }
 
+  function syncOptions(options) {
+    if (options[self.SYNC_OPTIONS]) {
+      // Since sync is a local setting, delete it to simplify things.
+      var syncObjects = Object.assign({}, options);
+      delete syncObjects[self.SYNC_OPTIONS];
+      // console.log('Pushing local options to sync');
+      chrome.storage.sync.set(syncObjects, noop);
+    }
+  }
 
   // WHITELIST HELPERS
 
@@ -130,6 +158,7 @@
     defaults[self.SUSPEND_TIME] = '60';
     defaults[self.NO_NAG] = false;
     defaults[self.WHITELIST] = '';
+    defaults[self.SYNC_OPTIONS] = true;
 
     return defaults;
   }

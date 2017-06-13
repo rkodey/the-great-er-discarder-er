@@ -26,7 +26,8 @@ function initialise(options) {
     'dontDiscardAudio': storage.IGNORE_AUDIO,
     'timeToDiscard': storage.SUSPEND_TIME,
     'whitelist': storage.WHITELIST,
-    'addContextMenu': storage.ADD_CONTEXT
+    'addContextMenu': storage.ADD_CONTEXT,
+    "syncOptions": storage.SYNC_OPTIONS,
   };
   elementIdMap = invert(elementPrefMap);
 
@@ -163,7 +164,12 @@ function saveChanges(elements, callback) {
   }
 
   //save option
-  storage.setOptions(options, callback);
+  storage.setOptions(options, function() {
+
+    // Push out all our saved settings to sync storage.
+    storage.syncOptions(options);
+    callback();
+  });
 }
 
 function closeSettings() {
