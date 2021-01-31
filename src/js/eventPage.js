@@ -60,6 +60,12 @@ chrome.runtime.onStartup.addListener(function () {
       });
     });
   });
+
+  storage.getOptions(function (options) {
+    // If user has requested Discard at Startup, then discardAllTabs without the forced update.  This allows isExcluded() tabs to survive.
+    if (options[storage.DISCARD_STARTUP]) { discardAllTabs({noForce:true}); }
+  });
+
 });
 
 //listen for alarms
@@ -395,13 +401,18 @@ function reloadHighlightedTab() {
   });
 }
 
-function discardAllTabs() {
+function discardAllTabs(args) {
+  args      = args || {};
+  var force = !args.noForce;
+  if (debug) { console.log("discardAllTabs", force); }
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     var curWindowId = tabs[0].windowId;
     chrome.windows.get(curWindowId, {populate: true}, function(curWindow) {
       curWindow.tabs.forEach(function (tab) {
         if (!tab.active) {
-          requestTabSuspension(tab, true);
+          // There's a good argument that requestTabSuspension should NEVER be forced, and should always obey user options
+          // But for now, only Discard at Startup will use non-froced discards
+          requestTabSuspension(tab, force);
         }
       });
     });

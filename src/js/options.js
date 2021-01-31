@@ -27,7 +27,8 @@ function initialise(options) {
     'timeToDiscard': storage.SUSPEND_TIME,
     'whitelist': storage.WHITELIST,
     'addContextMenu': storage.ADD_CONTEXT,
-    "syncOptions": storage.SYNC_OPTIONS,
+    'syncOptions': storage.SYNC_OPTIONS,
+    'discardAtStartup': storage.DISCARD_STARTUP
   };
   elementIdMap = invert(elementPrefMap);
 

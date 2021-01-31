@@ -15,6 +15,7 @@
     NO_NAG: 'noNag',
     WHITELIST: 'whitelist',
     SYNC_OPTIONS: 'syncOptions',
+    DISCARD_STARTUP: 'discardAtStartup',
 
     getOption: getOption,
     getOptions: getOptions,
@@ -159,6 +160,7 @@
     defaults[self.NO_NAG] = false;
     defaults[self.WHITELIST] = '';
     defaults[self.SYNC_OPTIONS] = true;
+    defaults[self.DISCARD_STARTUP] = false;
 
     return defaults;
   }
