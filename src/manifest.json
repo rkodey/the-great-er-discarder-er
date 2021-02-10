@@ -1,14 +1,13 @@
 {
-  "name": "The Great Discarder",
-  "description": "Automatically discards unused tabs to free up system resources",
-  "version": "0.1.3",
+  "manifest_version": 2,
+  "name": "The Great-er Discarder-er",
+  "description": "A chrome extension to free up system resources used by active tabs",
+  "version": "0.2.0",
   "permissions": [
     "tabs",
     "storage",
-    "unlimitedStorage",
     "contextMenus",
-    "alarms",
-    "system.memory"
+    "alarms"
   ],
   "background": {
     "scripts": ["js/db.js", "js/storage.js", "js/tabStates.js", "js/eventPage.js"],
@@ -17,7 +16,7 @@
   "content_scripts": [
   ],
   "browser_action": {
-    "default_title": "The Great Discarder",
+    "default_title": "The Great-er Discarder-er",
     "default_icon": "img/icon19.png",
     "default_popup": "html/popup.html"
   },
@@ -27,9 +26,7 @@
     "48": "img/icon48.png",
     "128": "img/icon128.png"
   },
-  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "incognito": "split",
-  "manifest_version": 2,
   "minimum_chrome_version": "54",
 
   "commands": {

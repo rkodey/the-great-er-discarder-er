@@ -4,3 +4,5 @@
 /build/crx/*.crx
 /build/zip/*.zip
 .idea/*
+/src/*.sublime-workspace
+/src/*.sublime-project

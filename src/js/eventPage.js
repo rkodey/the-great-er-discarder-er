@@ -1,12 +1,4 @@
 /* global chrome, storage, ga, tabStates */
-/*
- * The Great Discarder
- * Copyright (C) 2017 Dean Oemcke
- * Available under GNU GENERAL PUBLIC LICENSE v2
- * http://github.com/deanoemcke/thegreatdiscarder
- * ༼ つ ◕_◕ ༽つ
-*/
-
 'use strict';
 
 const CURRENT_TAB_ID = 'currentTabId';
@@ -39,16 +31,6 @@ chrome.runtime.onInstalled.addListener(function() {
 //reset tabStates on extension load
 chrome.runtime.onStartup.addListener(function () {
   if (debug) { console.log('Extension started.'); }
-
-  // Standard Google Universal Analytics code
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-89460956-1', 'auto');
-  ga('set', 'checkProtocolTask', function(){});
-  ga('require', 'displayfeatures');
-  ga('send', 'pageview', '/eventPage.html');
 
   chrome.alarms.clearAll(function () {
     localStorage.setItem(TEMPORARY_WHITELIST, []);

@@ -9,17 +9,19 @@ module.exports = function(grunt) {
         myPublicExtension: {
           src: [
               "src/**/*",
+              "!**/screenshot*.png",
               "!**/Thumbs.db"
           ],
-          dest: "build/zip/<%= pkg.name %>-<%= manifest.version %>-dev.zip",
+          dest: "build/zip/<%= pkg.name %>-<%= manifest.version %>.zip",
         },
 
         mySignedExtension: {
           src: [
               "src/**/*",
+              "!**/screenshot*.png",
               "!**/Thumbs.db"
           ],
-          dest: "build/crx/<%= pkg.name %>-<%= manifest.version %>-dev.crx",
+          dest: "build/crx/<%= pkg.name %>-<%= manifest.version %>.crx",
           options: {
             privateKey: "key.pem"
           }

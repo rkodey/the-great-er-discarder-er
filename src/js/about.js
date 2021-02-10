@@ -12,7 +12,7 @@ var NO_NAG = 'noNag';
       window.clearInterval(readyStateCheckInterval);
 
       var versionEl = document.getElementById('aboutVersion');
-      versionEl.innerHTML = 'The Great Discarder v' + chrome.runtime.getManifest().version;
+      versionEl.innerHTML = 'The Great-er Discarder-er v' + chrome.runtime.getManifest().version;
 
       var noNag = localStorage.getItem(NO_NAG) === 'true';
       if (noNag) {
