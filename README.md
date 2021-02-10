@@ -26,7 +26,7 @@ It is also compatible with chrome tab history syncing.
 
 ### Install as an extension from source
 
-1. Download the **[latest available version](https://github.com/deanoemcke/thegreatdiscarder/releases/tag/v0.1.2)** and unarchive to your preferred location (whichever suits you).
+1. Download the **[latest release](https://github.com/rkodey/the-great-er-discarder-er/releases)** and unarchive to your preferred location (whichever suits you).
 2. Using **Google Chrome** browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
 3. Click on the <kbd>Load unpacked extension...</kbd> button.
 4. Browse to the src directory of the downloaded, unarchived release and confirm.
