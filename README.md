@@ -13,7 +13,7 @@ If you have suggestions or problems using the extension, please [submit a bug or
 
 ### Chrome Web Store
 
-"The Great-er Discarder-er" will be available on the **Chrome Web Store** soon...
+"The Great-er Discarder-er" is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
 
 
 
