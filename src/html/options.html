@@ -58,7 +58,10 @@
 			<input type="checkbox" id="batteryCheck" class='option' />
 			<label for="batteryCheck" class="cbLabel">Only auto-discard if running on battery</label>
 		</div>
-		<div class="formRow autoDiscardOption">
+		
+		<!-- autoDiscardOption is hidden whenever auto discard is turned off i.e. set to Never -->
+		<!-- This isn't related to auto discard, so it's not labeled as such -->
+		<div class="formRow">
 			<input type="checkbox" id="discardAtStartup" class='option' />
 			<label for="discardAtStartup" class="cbLabel">Discard all tabs at startup</label>
 		</div>
