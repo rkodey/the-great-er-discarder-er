@@ -1,4 +1,4 @@
-/*global chrome */
+/* global chrome */
 
 (function () {
 
@@ -20,7 +20,7 @@
           if (command.name !== '_execute_browser_action') {
             var shortcut = command.shortcut !== '' ? command.shortcut : '(not set)',
               style = count % 2 === 0 ? '"margin: 0 0 2px;"' : '';
-            shortcutsEl.innerHTML += '<p style=' + style + '>' + command.description + ': ' + shortcut + '</p>';
+            shortcutsEl.innerHTML += '<p style=' + style + '>' + command.description + ': <span class="bold">' + shortcut + '</span></p>';
             count++;
           }
         });

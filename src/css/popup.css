@@ -66,6 +66,9 @@ a {
 .optsCurrent, .optsAll, .optsSelected {
 	border-bottom: 1px solid #ccc;
 }
+.optsDiscards {
+	border-top: 1px solid #ccc;
+}
 
 .menuOption {
 	font-size: 17px;
@@ -85,3 +88,11 @@ a {
 	opacity: 0.8;
 }
 
+i.icon-help {
+  margin-left: 0.5rem;
+}
+div.subtext {
+    font-size: 12px;
+    line-height: 1em;
+    margin: -0.5em 1.6rem 0.5em;
+}

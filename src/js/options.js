@@ -28,7 +28,8 @@ function initialise(options) {
     'whitelist': storage.WHITELIST,
     'addContextMenu': storage.ADD_CONTEXT,
     'syncOptions': storage.SYNC_OPTIONS,
-    'discardAtStartup': storage.DISCARD_STARTUP
+    'discardAtStartup': storage.DISCARD_STARTUP,
+    'addDiscardsMenu': storage.ADD_DISCARDS
   };
   elementIdMap = invert(elementPrefMap);
 
@@ -149,7 +150,7 @@ function handleChange(element) {
 }
 
 function saveChanges(elements, callback) {
-  // console.log(elements);
+  // console.log(['saveChanges',elements]);
   var options = {};
   for (var i = 0; i < elements.length; i++) {
 
@@ -169,12 +170,12 @@ function saveChanges(elements, callback) {
       chrome.runtime.sendMessage({ action: 'resetTabTimers' });
     }
 
-    //show or hide context menu items
-    if (pref === storage.ADD_CONTEXT && oldValue !== newValue) {
-      chrome.runtime.sendMessage({ action: 'updateContextMenuItems', visible: newValue });
-    }
     options[pref] = newValue;
   }
+
+  // Update the context menu
+  // console.log(['saveChanges context',options[storage.ADD_CONTEXT], options[storage.ADD_DISCARDS]]);
+  chrome.runtime.sendMessage({ action: 'updateContextMenuItems', visible: options[storage.ADD_CONTEXT], discards: options[storage.ADD_DISCARDS] });
 
   //save option
   storage.setOptions(options, function() {

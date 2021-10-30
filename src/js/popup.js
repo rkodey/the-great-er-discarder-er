@@ -1,4 +1,4 @@
-/*global chrome */
+/* global chrome */
 
 (function () {
 
@@ -81,15 +81,15 @@
   }
 
   function setDiscardOneVisibility(visible) {
-      if (visible) {
-          document.getElementById('discardOne').style.display = 'block';
-      } else {
-          document.getElementById('discardOne').style.display = 'none';
-      }
+    if (visible) {
+      document.getElementById('discardOne').style.display = 'block';
+    } else {
+      document.getElementById('discardOne').style.display = 'none';
+    }
   }
 
   function setDiscardSelectedVisibility() {
-    chrome.tabs.query({highlighted: true, lastFocusedWindow: true}, function (tabs) {
+    chrome.tabs.query({ highlighted: true, lastFocusedWindow: true }, function (tabs) {
       if (tabs && tabs.length > 1) {
         document.getElementById('discardSelectedGroup').style.display = 'block';
       } else {
@@ -98,13 +98,42 @@
     });
   }
 
+  function setShowDiscardsLinkVisibility(visible) {
+    if (visible) {
+      document.getElementById('showDiscardsLinkGroup').style.display = 'block';
+    } else {
+      document.getElementById('showDiscardsLinkGroup').style.display = 'none';
+    }
+  }
+
+  function setEligibleOptions(options) {
+    var menu  = document.getElementById('discardAllEligible');
+    var div   = document.getElementById('eligibleText');
+    if (menu && div) {
+      var aExcludes = [];
+      if (options.dontDiscardPinned) aExcludes.push('pinned');
+      if (options.dontDiscardAudio) aExcludes.push('audio');
+      if (aExcludes.length) {
+        menu.style.display = 'block';
+        div.innerText = 'excluding ' + aExcludes.join(' and ') + ' tabs';
+      }
+      else {
+        menu.style.display = 'none';
+      }
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('discardOne').addEventListener('click', function (e) {
-        chrome.runtime.sendMessage({ action: 'discardOne' });
-        window.close();
+      chrome.runtime.sendMessage({ action: 'discardOne' });
+      window.close();
     });
     document.getElementById('discardAll').addEventListener('click', function (e) {
       chrome.runtime.sendMessage({ action: 'discardAll' });
+      window.close();
+    });
+    document.getElementById('discardAllEligible').addEventListener('click', function (e) {
+      chrome.runtime.sendMessage({ action: 'discardAllEligible' });
       window.close();
     });
     document.getElementById('reloadAll').addEventListener('click', function (e) {
@@ -128,15 +157,20 @@
       window.close();
     });
     document.getElementById('settingsLink').addEventListener('click', function (e) {
-      chrome.tabs.create({
-        url: chrome.extension.getURL('../html/options.html')
-      });
+      chrome.runtime.sendMessage({ action: 'openOptionsTab' });
+      window.close();
+    });
+    document.getElementById('discardsLink').addEventListener('click', function (e) {
+      chrome.runtime.sendMessage({ action: 'openDiscardsTab' });
       window.close();
     });
 
-    chrome.runtime.sendMessage({ action: 'requestCurrentTabInfo' }, function (info) {
+    chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, function (options) {
+      setShowDiscardsLinkVisibility(options.addDiscardsMenu);
+      setEligibleOptions(options);
+    });
 
-      console.log('info',info);
+    chrome.runtime.sendMessage({ action: 'requestCurrentTabInfo' }, function (info) {
 
       var status = info.status,
         //timeLeft = info.timerUp, // unused
@@ -149,6 +183,7 @@
       setWhitelistVisibility(whitelistVisible);
       setPauseVisibility(pauseVisible);
       setStatus(status);
+
     });
   });
 }());

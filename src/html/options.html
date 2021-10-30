@@ -1,73 +1,83 @@
+<!DOCTYPE html>
 <html>
+
 <head>
-	<title>The Great-er Discarder-er | Settings</title>
-	<link rel="stylesheet" href="../css/font-awesome.min.css">
-	<link type="text/css" href="../css/style.css" rel="stylesheet">
-	<script type="text/javascript" src="../js/options.js"></script>
+  <title>The Great-er Discarder-er | General Settings</title>
+  <link rel="stylesheet" href="../css/font-awesome.min.css" />
+  <link type="text/css" href="../css/style.css" rel="stylesheet" />
+  <script type="text/javascript" src="../js/options.js"></script>
 </head>
+
 <body id="body">
+  <div class="mainContent">
+    <h1 class="pageHeader"><img src="../img/icon64_hidden.png" class="headerIcon" />The Great-er Discarder-er</h1>
 
-<div class="mainContent">
+    <div class="contentNav">
+      <ul>
+        <li><a href="options.html" class="active">General Settings</a></li>
+        <li><a href="shortcuts.html">Keyboard Shortcuts</a></li>
+        <li><a href="about.html">About / Support</a></li>
+      </ul>
+    </div>
 
-	<h1 class="pageHeader"><img src="../img/icon64_hidden.png" class="headerIcon" />The Great-er Discarder-er</h1>
+    <div class="content">
+      <h2>General Settings</h2>
+      <hr />
 
-	<div class="contentNav">
-		<ul>
-			<li><a class='active' href='options.html'>General settings</a></li>
-			<li><a href='shortcuts.html'>Keyboard shortcuts</a></li>
-			<li><a href='about.html'>Support</a></li>
-		</ul>
-	</div>
+      <div class="formRow">
+        <label id="timeToDiscardLbl" for="timeToDiscard" class="bold">Automatically discard tabs after:</label>
+        <br />
+        <select id="timeToDiscard" class="option" style="margin-top: 8px">
+          <option value="0">Never</option>
+          <option value="0.33">20 seconds</option>
+          <option value="1">1 min</option>
+          <option value="5">5 mins</option>
+          <option value="10">10 mins</option>
+          <option value="15">15 mins</option>
+          <option value="30">30 mins</option>
+          <option value="60">1 hour</option>
+          <option value="120">2 hours</option>
+          <option value="240">4 hours</option>
+          <option value="360">6 hours</option>
+          <option value="720">12 hours</option>
+          <option value="1440">1 day</option>
+          <option value="2880">2 days</option>
+          <option value="4320">3 days</option>
+        </select>
+      </div>
 
-	<div class="content">
-		<h2>Discard tab settings</h2>
-		<div class="formRow">
-			<label id="timeToDiscardLbl" for="timeToDiscard">Automatically discard tabs after:</label>
-			<br />
-			<select id="timeToDiscard" class='option' style="margin-top: 8px;">
-				<option value="0">Never</option>
-				<option value="0.33">20 seconds</option>
-				<option value="1">1 min</option>
-				<option value="5">5 mins</option>
-				<option value="10">10 mins</option>
-				<option value="15">15 mins</option>
-				<option value="30">30 mins</option>
-				<option value="60">1 hour</option>
-				<option value="120">2 hours</option>
-				<option value="240">4 hours</option>
-				<option value="360">6 hours</option>
-				<option value="720">12 hours</option>
-				<option value="1440">1 day</option>
-				<option value="2880">2 days</option>
-				<option value="4320">3 days</option>
-			</select>
-		</div>
-		<div class="formRow autoDiscardOption">
-			<input type="checkbox" id="dontDiscardPinned" class='option' />
-			<label for="dontDiscardPinned" class="cbLabel">Do not discard pinned tabs</label>
-		</div>
-		<div class="formRow autoDiscardOption">
-			<input type="checkbox" id="dontDiscardAudio" class='option' />
-			<label for="dontDiscardAudio" class="cbLabel">Do not discard tabs that are playing audio</label>
-		</div>
-		<div class="formRow autoDiscardOption">
-			<input type="checkbox" id="onlineCheck" class='option' />
-			<label for="onlineCheck" class="cbLabel">Only auto-discard if connected to the internet</label>
-		</div>
-		<div class="formRow autoDiscardOption">
-			<input type="checkbox" id="batteryCheck" class='option' />
-			<label for="batteryCheck" class="cbLabel">Only auto-discard if running on battery</label>
-		</div>
-		
-		<!-- autoDiscardOption is hidden whenever auto discard is turned off i.e. set to Never -->
-		<!-- This isn't related to auto discard, so it's not labeled as such -->
-		<div class="formRow">
-			<input type="checkbox" id="discardAtStartup" class='option' />
-			<label for="discardAtStartup" class="cbLabel">Discard all tabs at startup</label>
-		</div>
+      <div class="formRow autoDiscardOption">
+        <input type="checkbox" id="dontDiscardPinned" class="option" />
+        <label for="dontDiscardPinned" class="cbLabel">Do not discard pinned tabs</label>
+      </div>
 
-		<h2>Whitelist&nbsp;
-			<i class="fa fa-question-circle" title="
+      <div class="formRow autoDiscardOption">
+        <input type="checkbox" id="dontDiscardAudio" class="option" />
+        <label for="dontDiscardAudio" class="cbLabel">Do not discard tabs that are playing audio</label>
+      </div>
+
+      <div class="formRow autoDiscardOption">
+        <input type="checkbox" id="onlineCheck" class="option" />
+        <label for="onlineCheck" class="cbLabel">Only auto-discard if connected to the internet</label>
+      </div>
+
+      <div class="formRow autoDiscardOption">
+        <input type="checkbox" id="batteryCheck" class="option" />
+        <label for="batteryCheck" class="cbLabel">Only auto-discard if running on battery</label>
+      </div>
+
+      <h2>Startup</h2>
+      <div class="formRow">
+        <input type="checkbox" id="discardAtStartup" class="option" />
+        <label for="discardAtStartup" class="cbLabel">
+          Discard all tabs at startup
+          <i class="icon-help fa fa-question-circle" title="This prevents Chrome from loading all tabs at startup"></i>
+        </label>
+      </div>
+
+      <h2>
+        Whitelist
+        <i class="icon-help fa fa-question-circle" title="
 Add the URL of each page you want to whitelist on a new line. For example:
 
 https://play.google.com/music/listen
@@ -80,32 +90,31 @@ google.com
 You can also specify regular expressions by enclosing the text in forward slashes:
 
 /^https:.*google\.com/
-">
-			</i>
-		</h2>
-		<textarea id="whitelist" class='option' rows="10" cols="50"></textarea>
+"></i>
+      </h2>
+      <textarea id="whitelist" class="option" rows="10" cols="50"></textarea>
 
-		<h2>Other</h2>
-		<div class="formRow">
-			<input type="checkbox" id="addContextMenu" class='option' />
-			<label for="addContextMenu" class="cbLabel">Add The Great-er Discarder-er to right-click context menu</label>
-		</div>
-		<div class="formRow">
-			<input type="checkbox" id="syncOptions" class='option' />
-			<label for="syncOptions" class="cbLabel">Sync settings between different systems</label>
-			<div id="syncNote" class="note">
-				Turning this on will overwrite settings on all synced systems
-			</div>
-		</div>
+      <h2>Other</h2>
+      <div class="formRow">
+        <input type="checkbox" id="addContextMenu" class="option" />
+        <label for="addContextMenu" class="cbLabel">Add The Great-er Discarder-er to right-click context menu</label>
+      </div>
+      <div class="formRow">
+        <input type="checkbox" id="addDiscardsMenu" class="option" />
+        <label for="addDiscardsMenu" class="cbLabel">Enable link to chrome://discards/ on context and popup menus</label>
+      </div>
+      <div class="formRow">
+        <input type="checkbox" id="syncOptions" class="option" />
+        <label for="syncOptions" class="cbLabel">Sync settings between different systems</label>
+        <div id="syncNote" class="note">Turning this on will overwrite settings on all synced systems</div>
+      </div>
 
-		<hr />
+      <hr />
+      <a href="#" id="cancelBtn" class="fl btn btnNeg">Cancel</a>
+      <a href="#" id="saveBtn" class="fr btn">Save settings</a>
 
-		<a href="#" id="cancelBtn" class="fl btn btnNeg">Cancel</a>
-		<a href="#" id="saveBtn" class="fr btn">Save settings</a>
-
-	</div>
-
-</div>
-
+    </div>
+  </div>
 </body>
+
 </html>

@@ -1,4 +1,4 @@
-/*global chrome */
+/* global chrome */
 
 (function () {
 

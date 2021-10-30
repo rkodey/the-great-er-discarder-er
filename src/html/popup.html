@@ -1,51 +1,64 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-	<title>The Great-er Discarder-er | Popup</title>
-	<link rel="stylesheet" href="../css/font-awesome.min.css">
-	<link type="text/css" href="../css/popup.css" rel="stylesheet">
-	<script type="text/javascript" src="../js/popup.js"></script>
-</head>
-<body>
-	<div id="header">
-		<i id="statusIcon" class="fa fa-clock-o"></i>
-		<span id="statusDetail">Tab will be discarded</span>
-	</div>
 
-	<div class="group optsCurrent">
+<head>
+  <title>The Great-er Discarder-er | Popup</title>
+  <link rel="stylesheet" href="../css/font-awesome.min.css">
+  <link type="text/css" href="../css/popup.css" rel="stylesheet">
+  <script type="text/javascript" src="../js/popup.js"></script>
+</head>
+
+<body>
+  <div id="header">
+    <i id="statusIcon" class="fa fa-clock-o"></i>
+    <span id="statusDetail">Tab will be discarded</span>
+  </div>
+
+  <div class="group optsCurrent">
     <div class="menuOption" id="discardOne">
       <i class="fa fa-stop"></i> <span class="optionText">Discard this tab</span>
     </div>
-		<div class="menuOption hidden" id="tempWhitelist">
-			<i class="fa fa-pause"></i> <span class="optionText">Don't discard for now</span>
-		</div>
-		<div class="menuOption hidden" id="whitelist">
-			<i class="fa fa-ban"></i> <span class="optionText">Never discard this site</span>
-		</div>
-	</div>
+    <div class="menuOption hidden" id="tempWhitelist">
+      <i class="fa fa-pause"></i> <span class="optionText">Don't discard for now</span>
+    </div>
+    <div class="menuOption hidden" id="whitelist">
+      <i class="fa fa-ban"></i> <span class="optionText">Never discard this site</span>
+    </div>
+  </div>
 
-	<div class="group optsAll">
-		<div class="menuOption" id="discardAll">
-			<i class="fa fa-stop"></i> <span class="optionText">Discard other tabs</span>
-		</div>
-		<div class="menuOption" href="#" id="reloadAll">
-			<i class="fa fa-play"></i> <span class="optionText">Reload all tabs</span>
-		</div>
-	</div>
+  <div class="group optsAll">
+    <div class="menuOption" id="discardAllEligible">
+      <i class="fa fa-check-square"></i> <span class="optionText">Discard other eligible tabs</span>
+      <div id="eligibleText" class="subtext"></div>
+    </div>
+    <div class="menuOption" id="discardAll">
+      <i class="fa fa-stop"></i> <span class="optionText">Discard other tabs</span>
+    </div>
+    <div class="menuOption" href="#" id="reloadAll">
+      <i class="fa fa-play"></i> <span class="optionText">Reload all tabs</span>
+    </div>
+  </div>
 
-	<div class="group optsSelected hidden" id="discardSelectedGroup">
-		<div class="menuOption" id="discardSelected">
-			<i class="fa fa-stop"></i> <span class="optionText">Discard selected tabs</span>
-		</div>
-		<div class="menuOption" href="#" id="reloadSelected">
-			<i class="fa fa-play"></i> <span class="optionText">Reload selected tabs</span>
-		</div>
-	</div>
+  <div class="group optsSelected hidden" id="discardSelectedGroup">
+    <div class="menuOption" id="discardSelected">
+      <i class="fa fa-stop"></i> <span class="optionText">Discard selected tabs</span>
+    </div>
+    <div class="menuOption" href="#" id="reloadSelected">
+      <i class="fa fa-play"></i> <span class="optionText">Reload selected tabs</span>
+    </div>
+  </div>
 
-	<div class="group optsSettings">
-		<div class="menuOption" id="settingsLink">
-			<i class="fa fa-wrench"></i> <span class="optionText">Settings</span>
-		</div>
-	</div>
+  <div class="group optsSettings">
+    <div class="menuOption" id="settingsLink">
+      <i class="fa fa-wrench"></i> <span class="optionText">Settings</span>
+    </div>
+  </div>
+
+  <div class="group optsDiscards hidden" id="showDiscardsLinkGroup">
+    <div class="menuOption" id="discardsLink">
+      <i class="fa fa-bug"></i> <span class="optionText">chrome://discards/</span>
+    </div>
+  </div>
 </body>
+
 </html>

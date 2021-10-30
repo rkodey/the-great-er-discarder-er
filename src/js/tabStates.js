@@ -60,7 +60,7 @@
         return server.update(self.TAB_STATES, tabState);
       })
       .catch(function (e) {
-        console.log(e);
+        console.error(e);
       });
   }
 
@@ -89,7 +89,7 @@
 
   function clearTabStates(callback) {
 
-    console.log('Removing all tabStates');
+    // console.log('Removing all tabStates');
     callback = callback || noop;
 
     getDb()

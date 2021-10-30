@@ -1,4 +1,5 @@
 /* global chrome */
+
 (function (window) {
 
   'use strict';
@@ -12,10 +13,10 @@
     IGNORE_AUDIO: 'dontDiscardAudio',
     IGNORE_CACHE: 'ignoreCache',
     ADD_CONTEXT: 'addContextMenu',
-    NO_NAG: 'noNag',
     WHITELIST: 'whitelist',
     SYNC_OPTIONS: 'syncOptions',
     DISCARD_STARTUP: 'discardAtStartup',
+    ADD_DISCARDS: 'addDiscardsMenu',
 
     getOption: getOption,
     getOptions: getOptions,
@@ -25,7 +26,6 @@
     saveToWhitelist: saveToWhitelist,
     removeFromWhitelist: removeFromWhitelist,
     cleanupWhitelist: cleanupWhitelist
-
   };
   window.storage = self;
 
@@ -149,24 +149,19 @@
   function getSettingsDefaults() {
 
     var defaults = {};
-    defaults[self.ONLINE_CHECK] = false;
-    defaults[self.BATTERY_CHECK] = false;
-    defaults[self.IGNORE_PINNED] = true;
-    defaults[self.IGNORE_FORMS] = true;
-    defaults[self.IGNORE_AUDIO] = true;
-    defaults[self.IGNORE_CACHE] = false;
-    defaults[self.ADD_CONTEXT] = true;
-    defaults[self.SUSPEND_TIME] = '60';
-    defaults[self.NO_NAG] = false;
-    defaults[self.WHITELIST] = '';
-    defaults[self.SYNC_OPTIONS] = true;
-    defaults[self.DISCARD_STARTUP] = false;
-
+    defaults[self.ONLINE_CHECK]     = false;
+    defaults[self.BATTERY_CHECK]    = false;
+    defaults[self.IGNORE_PINNED]    = true;
+    defaults[self.IGNORE_FORMS]     = true;
+    defaults[self.IGNORE_AUDIO]     = true;
+    defaults[self.IGNORE_CACHE]     = false;
+    defaults[self.ADD_CONTEXT]      = true;
+    defaults[self.SUSPEND_TIME]     = '60';
+    defaults[self.WHITELIST]        = '';
+    defaults[self.SYNC_OPTIONS]     = true;
+    defaults[self.DISCARD_STARTUP]  = false;
+    defaults[self.ADD_DISCARDS]     = false;
     return defaults;
   }
 
-
-
-
 }(window));
-

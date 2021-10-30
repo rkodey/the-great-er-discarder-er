@@ -1,4 +1,5 @@
-/* global chrome, storage, ga, tabStates */
+/* global chrome, storage, tabStates */
+
 'use strict';
 
 const CURRENT_TAB_ID = 'currentTabId';
@@ -7,30 +8,30 @@ const TEMPORARY_WHITELIST = 'temporaryWhitelist';
 
 const suspensionActiveIcon = '/img/icon19.png';
 const suspensionPausedIcon = '/img/icon19b.png';
-const debug = true;
+const debug = false;
 
+function log(msg) { if(debug) console.log(msg); }
 
 //initialise global state vars
 var chargingMode = false;
 
 // chrome.alarms.getAll(function (alarms) {
-//   console.log(alarms);
+//   log(alarms);
 //     chrome.alarms.clearAll(function () {
 //   });
 // });
 
 chrome.runtime.onInstalled.addListener(function() {
-
   storage.getOptions(function (options) {
     if (options[storage.ADD_CONTEXT]) {
-      buildContextMenu(true);
+      buildContextMenu(true, options[storage.ADD_DISCARDS]);
     }
   });
 });
 
 //reset tabStates on extension load
 chrome.runtime.onStartup.addListener(function () {
-  if (debug) { console.log('Extension started.'); }
+  log('Extension started.');
 
   chrome.alarms.clearAll(function () {
     localStorage.setItem(TEMPORARY_WHITELIST, []);
@@ -52,10 +53,10 @@ chrome.runtime.onStartup.addListener(function () {
 
 //listen for alarms
 chrome.alarms.onAlarm.addListener(function (alarm) {
-  console.log('alarm fired:', alarm);
+  log('alarm fired:', alarm);
   chrome.tabs.get(parseInt(alarm.name), function (tab) {
     if (chrome.runtime.lastError) {
-      if (debug) { console.log(chrome.runtime.lastError.message); }
+      log(chrome.runtime.lastError.message);
     }
     else {
       requestTabSuspension(tab);
@@ -70,7 +71,7 @@ if (navigator.getBattery) {
     chargingMode = battery.charging;
     battery.onchargingchange = function () {
       chargingMode = battery.charging;
-      if (debug) { console.log('Battery state updated', chargingMode); }
+      log('Battery state updated', chargingMode);
     };
   });
 }
@@ -85,12 +86,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     return;
   }
 
-  if (debug) { console.log('Tab updated: ' + tabId + '. Status: ' + changeInfo.status); }
+  log('Tab updated: ' + tabId + '. Status: ' + changeInfo.status);
 
   tabStates.getTabState(tabId, function (previousTabState) {
     chrome.alarms.get(String(tab.id), function (alarm) {
 
-      if (debug) { console.log('previousTabState',previousTabState); }
+      log('previousTabState',previousTabState);
 
       if (!alarm && changeInfo.status === 'complete') {
         resetTabTimer(tab);
@@ -98,7 +99,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
       //check for tab playing audio
       else if (!tab.audible && previousTabState && previousTabState.audible) {
-        if (debug) { console.log('tab finished playing audio. restarting timer: ' + tab.id); }
+        log('tab finished playing audio. restarting timer: ' + tab.id);
         resetTabTimer(tab);
       }
 
@@ -115,20 +116,16 @@ chrome.contextMenus.onClicked.addListener(contextMenuListener);
 
 //listen for focus changes
 chrome.windows.onFocusChanged.addListener(function (windowId) {
-  if (debug) {
-    console.log('window changed: ' + windowId);
-  }
+  log('window changed: ' + windowId);
 });
 chrome.tabs.onActivated.addListener(function (activeInfo) {
 
-  console.log(activeInfo);
+  log(activeInfo);
   var tabId = activeInfo.tabId;
   var windowId = activeInfo.windowId;
   var lastTabId = localStorage.getItem(CURRENT_TAB_ID);
 
-  if (debug) {
-    console.log('tab changed: ' + tabId);
-  }
+  log('tab changed: ' + tabId);
 
   // clear timer on current tab
   clearTabTimer(tabId);
@@ -137,7 +134,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
   if (lastTabId) {
     chrome.tabs.get(parseInt(lastTabId), function (lastTab) {
       if (chrome.runtime.lastError) {
-        console.log(chrome.runtime.lastError.message);
+        log(chrome.runtime.lastError.message);
       }
       else {
         resetTabTimer(lastTab);
@@ -165,6 +162,32 @@ function isSpecialTab(tab) {
     return true;
   }
   return false;
+}
+
+var openTabManager = {
+  'options'   : { tabId:null, url:chrome.extension.getURL('html/options.html') },
+  'discards'  : { tabId:null, url:'chrome://discards/' },
+}
+
+function createTab(name) {
+  chrome.tabs.create( { url:openTabManager[name].url }, function(tab) {
+    log(['createTab', openTabManager[name].tabId, tab.id]);
+    openTabManager[name].tabId = tab.id;
+  } );
+}
+
+function openTab(name) {
+  if(openTabManager[name].tabId) {
+    log(['openTab', openTabManager[name].tabId]);
+    chrome.tabs.update(openTabManager[name].tabId, {active:true}, function(tab) {
+      if (chrome.runtime.lastError || !tab) {
+        createTab(name);
+      }
+    });
+  }
+  else {
+    createTab(name);
+  }
 }
 
 function isExcluded(tab, options) {
@@ -253,6 +276,7 @@ function requestTabSuspension(tab, force) {
 
   //if forcing tab discard then skip other checks
   if (force) {
+    log(['requestTabSuspension', force, tab.index, tab.url]);
     discardTab(tab);
 
   //otherwise perform soft checks before discarding
@@ -263,6 +287,7 @@ function requestTabSuspension(tab, force) {
       if (!isExcluded(tab, options) &&
           !(options[storage.ONLINE_CHECK] && !navigator.onLine) &&
           !(options[storage.BATTERY_CHECK] && chargingMode)) {
+        log(['requestTabSuspension', force, tab.index, tab.url]);
         discardTab(tab);
       }
     });
@@ -278,16 +303,16 @@ function resetTabTimer(tab) {
   storage.getOption(storage.SUSPEND_TIME, function (suspendTime) {
 
     if (suspendTime === '0') {
-      if (debug) { console.log('Clearing timer for tab: ' + tab.id); }
+      log('Clearing timer for tab: ' + tab.id);
       clearTabTimer(tab.id);
     }
     else if (!isDiscarded(tab) && !tab.active && !isSpecialTab(tab)) {
-      if (debug) { console.log('Resetting timer for tab: ' + tab.id); }
+      log('Resetting timer for tab: ' + tab.id);
       var dateToSuspend = parseInt(Date.now() + (parseFloat(suspendTime) * 1000 * 60));
       chrome.alarms.create(String(tab.id), {when:  dateToSuspend});
     }
     else {
-      if (debug) { console.log("Skipping tab timer reset: ",tab); }
+      log("Skipping tab timer reset: ",tab);
     }
   });
 }
@@ -297,7 +322,7 @@ function discardTab(tab) {
   chrome.tabs.discard(tab.id, function (discardedTab) {
 
     if (chrome.runtime.lastError) {
-      console.log(chrome.runtime.lastError.message);
+      log(chrome.runtime.lastError.message);
     }
   });
 }
@@ -386,7 +411,7 @@ function reloadHighlightedTab() {
 function discardAllTabs(args) {
   args      = args || {};
   var force = !args.noForce;
-  if (debug) { console.log("discardAllTabs", force); }
+  log("discardAllTabs", args);
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     var curWindowId = tabs[0].windowId;
     chrome.windows.get(curWindowId, {populate: true}, function(curWindow) {
@@ -562,17 +587,22 @@ function updateIcon(status) {
 //HANDLERS FOR MESSAGE REQUESTS
 
 function messageRequestListener(request, sender, sendResponse) {
-  if (debug) {
-    console.log('listener fired:', request.action);
-  }
+  log(['messageRequestListener', request]);
 
   switch (request.action) {
+
+  case 'requestCurrentOptions':
+    storage.getOptions(function (options) {
+      log(['requestCurrentOptions', options]);
+      sendResponse(options);
+    });
+    break;
 
   case 'requestCurrentTabInfo':
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
       if (tabs.length > 0) {
         requestTabInfo(tabs[0], function(info) {
-          console.log('tab info', info);
+          log(['requestCurrentTabInfo', info]);
           sendResponse(info);
         });
       }
@@ -594,7 +624,7 @@ function messageRequestListener(request, sender, sendResponse) {
     break;
 
   case 'updateContextMenuItems':
-    buildContextMenu(request.visible);
+    buildContextMenu(request.visible, request.discards);
     break;
 
   case 'discardOne':
@@ -621,6 +651,10 @@ function messageRequestListener(request, sender, sendResponse) {
     discardAllTabs();
     break;
 
+  case 'discardAllEligible':
+    discardAllTabs({noForce:true});
+    break;
+
   case 'reloadAll':
     reloadAllTabs();
     break;
@@ -631,6 +665,14 @@ function messageRequestListener(request, sender, sendResponse) {
 
   case 'reloadSelected':
     reloadSelectedTabs();
+    break;
+
+  case 'openOptionsTab':
+    openTab('options');
+    break;
+
+  case 'openDiscardsTab':
+    openTab('discards');
     break;
 
   default:
@@ -690,9 +732,11 @@ function contextMenuListener(info, tab) {
       break;
 
     case 'settings':
-      chrome.tabs.create({
-        url: chrome.extension.getURL('html/options.html')
-      });
+      openTab('options');
+      break;
+
+    case 'discards':
+      openTab('discards');
       break;
 
     default:
@@ -701,23 +745,13 @@ function contextMenuListener(info, tab) {
 }
 
 
-function buildContextMenu(showContextMenu) {
+function buildContextMenu(showContextMenu, showDiscards) {
 
   var allContexts = ["page", "frame", "editable", "image", "video", "audio"];
 
   chrome.contextMenus.removeAll();
 
   if (showContextMenu) {
-
-    //Open tab discarded
-    // chrome.contextMenus.create({
-    //   id: "open-in-new-discarded-tab",
-    //   title: "Open link in new discarded tab",
-    //   contexts:["link"],
-    //   onclick: function (info, tab) {
-    //     openLinkInDiscardedTab(tab, info.linkUrl);
-    //   }
-    // });
 
     //Suspend present tab
     chrome.contextMenus.create({
@@ -766,5 +800,20 @@ function buildContextMenu(showContextMenu) {
       title: "Settings",
       contexts: allContexts
     });
+
+    if (showDiscards) {
+      chrome.contextMenus.create({
+        id: "separator2",
+        contexts: allContexts,
+        type: "separator"
+      });
+
+      //Open chrome Discards
+      chrome.contextMenus.create({
+        id: "discards",
+        title: "chrome://discards/",
+        contexts: allContexts
+      });
+    }
   }
 }
