@@ -6,11 +6,9 @@ var elementPrefMap;
 var elementIdMap;
 var currentOptions;
 var storage;
-var whitelist;
 
 chrome.runtime.getBackgroundPage(function (backgroundPage) {
   storage = backgroundPage.storage;
-  whitelist = backgroundPage.whitelist;
   storage.getOptions(initialise);
 });
 
