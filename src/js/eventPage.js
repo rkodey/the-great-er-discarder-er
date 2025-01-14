@@ -165,7 +165,7 @@ function isSpecialTab(tab) {
 }
 
 var openTabManager = {
-  'options'   : { tabId:null, url:chrome.extension.getURL('html/options.html') },
+  'options'   : { tabId:null, url:chrome.runtime.getURL('html/options.html') },
   'discards'  : { tabId:null, url:'chrome://discards/' },
 }
 
