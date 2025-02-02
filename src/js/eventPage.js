@@ -154,14 +154,13 @@ function isDiscarded(tab) {
 function isSpecialTab(tab) {
   var url = tab.url;
 
-  if (url.indexOf('chrome-extension:') === 0 ||
-      url.indexOf('chrome:') === 0 ||
-      url.indexOf('chrome-devtools:') === 0 ||
-      url.indexOf('file:') === 0 ||
-      url.indexOf('chrome.google.com/webstore') >= 0) {
-    return true;
-  }
-  return false;
+  return (
+      url.startsWith('chrome-extension:') ||
+      url.startsWith('chrome:') ||
+      url.startsWith('chrome-devtools:') ||
+      url.startsWith('file:') ||
+      url.indexOf('chrome.google.com/webstore') >= 0
+  );
 }
 
 var openTabManager = {
