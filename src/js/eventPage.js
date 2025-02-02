@@ -114,10 +114,6 @@ chrome.commands.onCommand.addListener(commandListener);
 chrome.contextMenus.onClicked.addListener(contextMenuListener);
 
 
-//listen for focus changes
-chrome.windows.onFocusChanged.addListener(function (windowId) {
-  log('window changed: ' + windowId);
-});
 chrome.tabs.onActivated.addListener(function (activeInfo) {
 
   log(activeInfo);
