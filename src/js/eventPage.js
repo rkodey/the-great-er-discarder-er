@@ -122,7 +122,6 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
   log(activeInfo);
   var tabId = activeInfo.tabId;
-  var windowId = activeInfo.windowId;
   var lastTabId = localStorage.getItem(CURRENT_TAB_ID);
 
   log('tab changed: ' + tabId);
