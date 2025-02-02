@@ -530,6 +530,11 @@ function requestTabInfo(tab, callback) {
         callback(info);
       });
 
+    // Check if it's been unloaded.
+    } else if (tab.status === 'unloaded') {
+      info.status = 'unloaded';
+      callback(info);
+
     } else {
       processActiveTabStatus(tab, function (status) {
         info.status = status;
