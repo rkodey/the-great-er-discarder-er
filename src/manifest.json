@@ -10,7 +10,7 @@
     "alarms"
   ],
   "background": {
-    "scripts": ["js/db.js", "js/storage.js", "js/tabStates.js", "js/eventPage.js"],
+    "scripts": ["js/background.js"],
     "persistent": false
   },
   "content_scripts": [
