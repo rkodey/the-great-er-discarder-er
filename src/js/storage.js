@@ -164,4 +164,4 @@
     return defaults;
   }
 
-}(window));
+}(globalThis));
