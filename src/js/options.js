@@ -9,11 +9,11 @@ var storage;
 
 chrome.runtime.sendMessage({ action: 'dumpStorage' }, (storage) => {
   globalThis.storage = storage;
-  chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, initialise);
+  chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, initialize);
 });
 
 
-function initialise(options) {
+function initialize(options) {
 
   currentOptions = options;
 
@@ -39,12 +39,19 @@ function initialise(options) {
   var i;
 
   saveEl.onclick = function () {
-    saveChanges(optionEls, function () {
-      closeSettings();
-    });
+    saveChanges(optionEls)
+      .then(() => {
+        closeSettings();
+      })
+      .catch((e) => {
+        // closeSettings();
+      });
+    return false;
   };
+
   cancelEl.onclick = function () {
     closeSettings();
+    return false;
   };
 
   for (i = 0; i < optionEls.length; i++) {
@@ -147,7 +154,7 @@ function handleChange(element) {
   };
 }
 
-async function saveChanges(elements, callback) {
+async function saveChanges(elements) {
   // console.log(['saveChanges',elements]);
   var options = {};
   for (var i = 0; i < elements.length; i++) {
@@ -179,7 +186,6 @@ async function saveChanges(elements, callback) {
   await chrome.runtime.sendMessage({ action: 'setOptions', options });
   // Push out all our saved settings to sync storage.
   await chrome.runtime.sendMessage({ action: 'syncOptions', options });
-  callback();
 }
 
 function closeSettings() {
