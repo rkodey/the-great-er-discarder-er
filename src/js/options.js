@@ -7,13 +7,13 @@ var elementIdMap;
 var currentOptions;
 var storage;
 
-chrome.runtime.getBackgroundPage(function (backgroundPage) {
-  storage = backgroundPage.storage;
-  storage.getOptions(initialise);
+chrome.runtime.sendMessage({ action: 'dumpStorage' }, (storage) => {
+  globalThis.storage = storage;
+  chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, initialize);
 });
 
 
-function initialise(options) {
+function initialize(options) {
 
   currentOptions = options;
 
@@ -39,12 +39,19 @@ function initialise(options) {
   var i;
 
   saveEl.onclick = function () {
-    saveChanges(optionEls, function () {
-      closeSettings();
-    });
+    saveChanges(optionEls)
+      .then(() => {
+        closeSettings();
+      })
+      .catch((e) => {
+        // closeSettings();
+      });
+    return false;
   };
+
   cancelEl.onclick = function () {
     closeSettings();
+    return false;
   };
 
   for (i = 0; i < optionEls.length; i++) {
@@ -147,7 +154,7 @@ function handleChange(element) {
   };
 }
 
-function saveChanges(elements, callback) {
+async function saveChanges(elements) {
   // console.log(['saveChanges',elements]);
   var options = {};
   for (var i = 0; i < elements.length; i++) {
@@ -160,7 +167,7 @@ function saveChanges(elements, callback) {
 
     //clean up whitelist before saving
     if (pref === storage.WHITELIST) {
-      newValue = storage.cleanupWhitelist(newValue);
+      newValue = (await chrome.runtime.sendMessage({ action: 'cleanupWhitelist', value: newValue })).value;
     }
 
     //if interval has changed then reset the tab timers
@@ -176,12 +183,9 @@ function saveChanges(elements, callback) {
   chrome.runtime.sendMessage({ action: 'updateContextMenuItems', visible: options[storage.ADD_CONTEXT], discards: options[storage.ADD_DISCARDS] });
 
   //save option
-  storage.setOptions(options, function() {
-
-    // Push out all our saved settings to sync storage.
-    storage.syncOptions(options);
-    callback();
-  });
+  await chrome.runtime.sendMessage({ action: 'setOptions', options });
+  // Push out all our saved settings to sync storage.
+  await chrome.runtime.sendMessage({ action: 'syncOptions', options });
 }
 
 function closeSettings() {
