@@ -30,7 +30,8 @@
     "url": "https://github.com/rkodey/the-great-er-discarder-er/issues"
   },
   "devDependencies": {
-    "grunt": "~1.3.0",
-    "grunt-crx": "~2.0.0"
+    "grunt": "~1.6",
+    "grunt-contrib-concat": "~2.1",
+    "grunt-crx": "~2.0"
   }
 }
