@@ -89,13 +89,13 @@
     });
   }
 
-  function syncOptions(options) {
+  function syncOptions(options, callback) {
     if (options[self.SYNC_OPTIONS]) {
       // Since sync is a local setting, delete it to simplify things.
       var syncObjects = Object.assign({}, options);
       delete syncObjects[self.SYNC_OPTIONS];
       // console.log('Pushing local options to sync');
-      chrome.storage.sync.set(syncObjects, noop);
+      chrome.storage.sync.set(syncObjects, callback);
     }
   }
 
@@ -164,4 +164,4 @@
     return defaults;
   }
 
-}(window));
+}(globalThis));

@@ -12,7 +12,7 @@ const debug = false;
 
 function log(msg) { if(debug) console.log(msg); }
 
-//initialise global state vars
+// initialize global state vars
 var chargingMode = false;
 
 // chrome.alarms.getAll(function (alarms) {
@@ -34,11 +34,11 @@ chrome.runtime.onStartup.addListener(function () {
   log('Extension started.');
 
   chrome.alarms.clearAll(function () {
-    localStorage.setItem(TEMPORARY_WHITELIST, []);
+    chrome.storage.session.set({[TEMPORARY_WHITELIST]: []});
     tabStates.clearTabStates(function () {
       chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         if (tabs.length > 0) {
-          localStorage.setItem(CURRENT_TAB_ID, tabs[0].id);
+          chrome.storage.session.set({[CURRENT_TAB_ID]: tabs[0].id});
         }
       });
     });
@@ -114,12 +114,11 @@ chrome.commands.onCommand.addListener(commandListener);
 chrome.contextMenus.onClicked.addListener(contextMenuListener);
 
 
-chrome.tabs.onActivated.addListener(function (activeInfo) {
+chrome.tabs.onActivated.addListener(async function (activeInfo) {
 
   log(activeInfo);
   var tabId = activeInfo.tabId;
-  var windowId = activeInfo.windowId;
-  var lastTabId = localStorage.getItem(CURRENT_TAB_ID);
+  var lastTabId = (await chrome.storage.session.get(CURRENT_TAB_ID))[CURRENT_TAB_ID];
 
   log('tab changed: ' + tabId);
 
@@ -137,8 +136,10 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
       }
     });
   }
-  localStorage.setItem(CURRENT_TAB_ID, tabId);
-  localStorage.setItem(PREVIOUS_TAB_ID, lastTabId);
+  chrome.storage.session.set({
+    [CURRENT_TAB_ID]: tabId,
+    [PREVIOUS_TAB_ID]: lastTabId,
+  });
 });
 
 
@@ -150,18 +151,17 @@ function isDiscarded(tab) {
 function isSpecialTab(tab) {
   var url = tab.url;
 
-  if (url.indexOf('chrome-extension:') === 0 ||
-      url.indexOf('chrome:') === 0 ||
-      url.indexOf('chrome-devtools:') === 0 ||
-      url.indexOf('file:') === 0 ||
-      url.indexOf('chrome.google.com/webstore') >= 0) {
-    return true;
-  }
-  return false;
+  return (
+      url.startsWith('chrome-extension:') ||
+      url.startsWith('chrome:') ||
+      url.startsWith('chrome-devtools:') ||
+      url.startsWith('file:') ||
+      url.indexOf('chrome.google.com/webstore') >= 0
+  );
 }
 
 var openTabManager = {
-  'options'   : { tabId:null, url:chrome.extension.getURL('html/options.html') },
+  'options'   : { tabId:null, url:chrome.runtime.getURL('html/options.html') },
   'discards'  : { tabId:null, url:'chrome://discards/' },
 }
 
@@ -186,13 +186,13 @@ function openTab(name) {
   }
 }
 
-function isExcluded(tab, options) {
+async function isExcluded(tab, options) {
 
   //check whitelist
   if (checkWhiteList(tab.url, options[storage.WHITELIST])) {
     return true;
   }
-  else if (checkTemporaryWhiteList(tab.id)) {
+  else if (await checkTemporaryWhiteList(tab.id)) {
     return true;
   }
   else if (tab.active) {
@@ -213,14 +213,14 @@ function isExcluded(tab, options) {
   }
 }
 
-function getTemporaryWhitelist() {
-  var tempWhitelist = localStorage.getItem(TEMPORARY_WHITELIST);
+async function getTemporaryWhitelist() {
+  var tempWhitelist = (await chrome.storage.session.get(TEMPORARY_WHITELIST))[TEMPORARY_WHITELIST];
   return tempWhitelist ? tempWhitelist.split(',') : [];
 }
 
-function checkTemporaryWhiteList(tabId) {
+async function checkTemporaryWhiteList(tabId) {
 
-  var tempWhitelist = getTemporaryWhitelist();
+  var tempWhitelist = await getTemporaryWhitelist();
   return tempWhitelist.some(function (element, index, array) {
     return element === String(tabId);
   });
@@ -278,9 +278,9 @@ function requestTabSuspension(tab, force) {
   //otherwise perform soft checks before discarding
   } else {
 
-    storage.getOptions(function (options) {
+    storage.getOptions(async function (options) {
 
-      if (!isExcluded(tab, options) &&
+      if (!await isExcluded(tab, options) &&
           !(options[storage.ONLINE_CHECK] && !navigator.onLine) &&
           !(options[storage.BATTERY_CHECK] && chargingMode)) {
         log(['requestTabSuspension', force, tab.index, tab.url]);
@@ -351,35 +351,35 @@ function unwhitelistHighlightedTab() {
 
 function temporarilyWhitelistHighlightedTab() {
 
-  chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+  chrome.tabs.query({active: true, currentWindow: true}, async function (tabs) {
     if (tabs.length > 0) {
-      var tempWhitelist = getTemporaryWhitelist();
+      var tempWhitelist = await getTemporaryWhitelist();
       tempWhitelist.push(tabs[0].id);
-      localStorage.setItem(TEMPORARY_WHITELIST, tempWhitelist);
+      chrome.storage.session.set({[TEMPORARY_WHITELIST]: tempWhitelist});
     }
   });
 }
 
 function undoTemporarilyWhitelistHighlightedTab() {
-  chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+  chrome.tabs.query({active: true, currentWindow: true}, async function (tabs) {
     if (tabs.length > 0) {
-      var tempWhitelist = getTemporaryWhitelist(),
+      var tempWhitelist = await getTemporaryWhitelist(),
         i;
       for (i = tempWhitelist.length - 1; i >= 0; i--) {
         if (tempWhitelist[i] === String(tabs[0].id)) {
           tempWhitelist.splice(i, 1);
         }
       }
-      localStorage.setItem(TEMPORARY_WHITELIST, tempWhitelist);
+      chrome.storage.session.set({[TEMPORARY_WHITELIST]: tempWhitelist});
     }
   });
 }
 
 function discardHighlightedTab() {
-  chrome.tabs.query({active: true, currentWindow: true, discarded: false}, function (tabs) {
+  chrome.tabs.query({active: true, currentWindow: true, discarded: false}, async function (tabs) {
     if (tabs.length > 0) {
       var tabToDiscard = tabs[0];
-      var previousTabId = parseInt(localStorage.getItem(PREVIOUS_TAB_ID));
+      var previousTabId = parseInt((await chrome.storage.session.get(PREVIOUS_TAB_ID))[PREVIOUS_TAB_ID]);
       chrome.tabs.get(previousTabId, function (prevTab) {
           if (prevTab) {
               chrome.tabs.update(previousTabId, { active: true, highlighted: true }, function (tab) {
@@ -414,7 +414,7 @@ function discardAllTabs(args) {
       curWindow.tabs.forEach(function (tab) {
         if (!tab.active) {
           // There's a good argument that requestTabSuspension should NEVER be forced, and should always obey user options
-          // But for now, only Discard at Startup will use non-froced discards
+          // But for now, only Discard at Startup will use non-forced discards
           requestTabSuspension(tab, force);
         }
       });
@@ -526,6 +526,11 @@ function requestTabInfo(tab, callback) {
         callback(info);
       });
 
+    // Check if it's been unloaded.
+    } else if (tab.status === 'unloaded') {
+      info.status = 'unloaded';
+      callback(info);
+
     } else {
       processActiveTabStatus(tab, function (status) {
         info.status = status;
@@ -539,14 +544,14 @@ function processActiveTabStatus(tab, callback) {
 
   var status = 'normal';
 
-  storage.getOptions(function (options) {
+  storage.getOptions(async function (options) {
 
     //check whitelist
     if (checkWhiteList(tab.url, options[storage.WHITELIST])) {
       status = 'whitelisted';
 
     //check temporary whitelist
-    } else if (checkTemporaryWhiteList(tab.id)) {
+    } else if (await checkTemporaryWhiteList(tab.id)) {
       status = 'tempWhitelist';
 
     //check pinned tab
@@ -576,7 +581,7 @@ function processActiveTabStatus(tab, callback) {
 //change the icon to either active or inactive
 function updateIcon(status) {
   var icon = status !== 'normal' ? suspensionPausedIcon : suspensionActiveIcon;
-  chrome.browserAction.setIcon({path: icon});
+  chrome.action.setIcon({path: icon});
 }
 
 
@@ -592,6 +597,30 @@ function messageRequestListener(request, sender, sendResponse) {
       log(['requestCurrentOptions', options]);
       sendResponse(options);
     });
+    break;
+
+  case 'setOptions':
+    log(['setOptions', request.options]);
+    storage.setOptions(request.options, () => {
+      sendResponse();
+    });
+    break;
+
+  case 'syncOptions':
+    log(['syncOptions', request.options]);
+    storage.syncOptions(request.options, () => {
+      sendResponse();
+    });
+    break;
+
+  case 'dumpStorage':
+    log(['dumpStorage', storage]);
+    sendResponse(storage);
+    break;
+
+  case 'cleanupWhitelist':
+    log(['cleanupWhitelist'])
+    sendResponse({value: storage.cleanupWhitelist(request.value)});
     break;
 
   case 'requestCurrentTabInfo':
@@ -672,6 +701,7 @@ function messageRequestListener(request, sender, sendResponse) {
     break;
 
   default:
+    console.error(`Unknown message action: ${request.action}`);
     break;
   }
   return true;
@@ -763,7 +793,7 @@ function buildContextMenu(showContextMenu, showDiscards) {
       contexts: allContexts
     });
 
-    //Add present tab to permenant whitelist
+    //Add present tab to permanent whitelist
     chrome.contextMenus.create({
       id: "never-discard",
       title: "Never discard this site",

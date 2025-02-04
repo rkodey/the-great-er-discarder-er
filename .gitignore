@@ -6,3 +6,4 @@
 .idea/*
 /src/*.sublime-workspace
 /src/*.sublime-project
+/src/js/background.js

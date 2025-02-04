@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.0.0 - Feb 2025
+- Update to Manifest V3.  Finally!
+- Huge thanks to **Mike Frysinger** ([vapier](https://github.com/vapier)) for doing all the hard stuff!
+- Almost 4 years between releases... Yikes!
+
 ## 0.2.1 - Oct 2021
 - Add new popup command to discard all eligible tabs based on options (aka no force) (Closes upstream #18)
 - Discard at startup option has its own group and visibility (Closes #9 - thanks @LordXerus)
