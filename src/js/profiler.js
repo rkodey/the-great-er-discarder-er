@@ -4,8 +4,6 @@
 
   'use strict';
 
-  var currentTabs = {};
-
   function generateTabInfo(info) {
     var html = '',
       windowId = info && info.windowId ? info.windowId : '?',
@@ -28,8 +26,6 @@
   function fetchInfo() {
     chrome.tabs.query({}, function (tabs) {
       tabs.forEach(function (curTab, i, tabs) {
-        currentTabs[tabs[i].id] = tabs[i];
-
         chrome.runtime.sendMessage({ action: 'requestTabInfo', tab: curTab }, function (discardInfo) {
           var html = '',
             tableEl = document.getElementById('gsProfilerBody');
