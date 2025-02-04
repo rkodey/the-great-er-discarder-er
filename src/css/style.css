@@ -360,4 +360,10 @@ table#gsProfiler tr.newrow {
 table#gsProfiler td {
   padding-left: 0.5em;
   padding-right: 0.5em;
+  white-space: nowrap;
+}
+table#gsProfiler td.title {
+  max-width: 800px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

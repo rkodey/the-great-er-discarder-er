@@ -4,27 +4,26 @@
 
   'use strict';
 
-  function generateTabInfo(info, first) {
-    var html = '',
-      windowId = info && info.windowId ? info.windowId : '?',
-      tabId = info && info.tabId ? info.tabId : '?',
-      tabTitle = info && info.tab ? info.tab.title : 'unknown',
-      tabTimer = info ? info.timerUp : -1,
-      tabStatus = info ? info.status : 'unknown';
+  function generateTabInfo(table, info, first) {
+    const
+      windowId = info?.windowId ?? '?',
+      tabId = info?.tabId ?? '?',
+      tabTitle = info?.tab.title ?? 'unknown',
+      tabTimer = info?.timerUp ?? -1,
+      tabStatus = info?.status ?? 'unknown';
 
+    const row = table.insertRow();
+    let cell;
     if (first) {
-      html += '<tr class="newrow">';
-    } else {
-      html += '<tr>';
+      row.className = 'newrow';
     }
-    html += '<td>' + windowId + '</td>';
-    html += '<td>' + tabId + '</td>';
-    html += '<td style="max-width:800px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + tabTitle + '</td>';
-    html += '<td>' + tabTimer + '</td>';
-    html += '<td>' + tabStatus + '</td>';
-    html += '</tr>';
-
-    return html;
+    row.insertCell().innerText = windowId;
+    row.insertCell().innerText = tabId;
+    cell = row.insertCell();
+    cell.className = 'title';
+    cell.innerText = tabTitle;
+    row.insertCell().innerText = tabTimer;
+    row.insertCell().innerText = tabStatus;
   }
 
   async function fetchInfo() {
@@ -47,8 +46,7 @@
       const infos = windows.get(winId);
       let first = true;
       for (const discardInfo of infos) {
-        const html = generateTabInfo(discardInfo, first);
-        tableEl.innerHTML += html;
+        generateTabInfo(tableEl, discardInfo, first);
         first = false;
       }
     }
