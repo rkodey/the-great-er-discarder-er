@@ -1,4 +1,4 @@
-# <img src="/src/img/icon48.png" align="left" /> The Great-*er*  Discarder-*er*
+# <img src="./src/img/icon48.png" align="left" /> The Great-*er*  Discarder-*er*
 ```diff
 - The Great Discarder
 + The Great-er Discarder-er
@@ -17,6 +17,14 @@ Discarding tabs should let Chrome run faster while consuming less memory.
 
 <br>
 
+## Chrome Web Store
+
+**The Great-*er* Discarder-*er*** is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
+
+**Feb 2025**:  New version is now available supporting "Manifest V3" so Chrome should stop bugging you about this extension being unsupported.
+
+<br>
+
 ## Added Features
 - **Discard all tabs at startup** - Prevents Chrome from loading all your tabs at startup, while preserving the tabs in your last session.
 - **Discard other eligible tabs** - Same as "Discard other tabs" but observes the current auto-discard settings, like skipping Pinned and Audio tabs.
@@ -32,11 +40,32 @@ If you have suggestions or problems using the extension, please [submit a bug or
 
 <br>
 
-## Chrome Web Store
+## Notes on tab state "lastAccessed"
 
-**The Great-*er* Discarder-*er*** is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
+The [`lastAccessed`](https://developer.chrome.com/docs/extensions/reference/api/tabs)
+API looks like it almost does what we need, but it tracks slightly different
+state that makes it not useful to us.
+
+The field is described as:
+> The last time the tab became active in its window as the number of milliseconds since epoch.
+
+That means when you activate a tab, the field is updated.  But if you leave the
+tab active for an hour, and then switch away, the field does not change.  It is
+not tracking the last time the tab was used or focused, only the last time focus
+changed to it.  If we used that to determine when a tab as last used, we would
+prematurely discard tabs held active for a long time.
+
+<br>
+
+## Contributors
+- Huge thanks to **Mike Frysinger** ([vapier](https://github.com/vapier)) for updating to Manifest V3!
+- [LordXerus](https://github.com/LordXerus)
+
 
 <br><br>
+----------
+<br><br>
+
 
 # Notes from the original author...
 
@@ -50,8 +79,8 @@ It is also compatible with chrome tab history syncing.
 
 1. Download the **[latest release](https://github.com/rkodey/the-great-er-discarder-er/releases)** and unarchive to your preferred location (whichever suits you).
 2. Using **Google Chrome**, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
-3. Click on the <kbd>Load unpacked extension...</kbd> button.
-4. Browse to the src directory of the downloaded, unarchived release and confirm.
+3. Click on the `Load unpacked extension...` button.
+4. Browse to the src directory of the downloaded, un-archived release and confirm.
 
 
 ## Build from github
@@ -76,6 +105,6 @@ The extension in crx format will be inside the build/crx/ directory. You can dra
 
 This work is licensed under a GNU GENERAL PUBLIC LICENSE (v2)
 
-## Shoutouts
-deanoemcke for original extension (before selling it) [thegreatdiscarder] (https://github.com/deanoemcke/thegreatdiscarder)<br>
-This package uses the indexedDb wrapper [db.js] (https://github.com/aaronpowell/db.js) written by Aaron Powell.<br>
+## Shout-outs
+- deanoemcke for original extension (before selling it) [thegreatdiscarder](https://github.com/deanoemcke/).
+- This package uses the indexedDb wrapper [db.js](https://github.com/aaronpowell/db.js) written by Aaron Powell.
