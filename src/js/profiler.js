@@ -4,7 +4,7 @@
 
   'use strict';
 
-  function generateTabInfo(info) {
+  function generateTabInfo(info, first) {
     var html = '',
       windowId = info && info.windowId ? info.windowId : '?',
       tabId = info && info.tabId ? info.tabId : '?',
@@ -12,7 +12,11 @@
       tabTimer = info ? info.timerUp : -1,
       tabStatus = info ? info.status : 'unknown';
 
-    html += '<tr>';
+    if (first) {
+      html += '<tr class="newrow">';
+    } else {
+      html += '<tr>';
+    }
     html += '<td>' + windowId + '</td>';
     html += '<td>' + tabId + '</td>';
     html += '<td style="max-width:800px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + tabTitle + '</td>';
@@ -23,20 +27,31 @@
     return html;
   }
 
-  function fetchInfo() {
-    chrome.tabs.query({}, function (tabs) {
-      tabs.forEach(function (curTab, i, tabs) {
-        chrome.runtime.sendMessage({ action: 'requestTabInfo', tab: curTab }, function (discardInfo) {
-          var html = '',
-            tableEl = document.getElementById('gsProfilerBody');
+  async function fetchInfo() {
+    const windows = new Map();
+    const tabs = await chrome.tabs.query({});
+    for (let i = 0; i < tabs.length; ++i) {
+      const curTab = tabs[i];
+      if (!windows.has(curTab.windowId)) {
+        windows.set(curTab.windowId, []);
+      }
+      const win = windows.get(curTab.windowId);
 
-          discardInfo.tab = curTab;
+      const discardInfo = await chrome.runtime.sendMessage({ action: 'requestTabInfo', tab: curTab });
+      discardInfo.tab = curTab;
+      win.push(discardInfo);
+    }
 
-          html = generateTabInfo(discardInfo);
-          tableEl.innerHTML = tableEl.innerHTML + html;
-        });
-      });
-    });
+    const tableEl = document.getElementById('gsProfilerBody');
+    for (const winId of Array.from(windows.keys()).sort()) {
+      const infos = windows.get(winId);
+      let first = true;
+      for (const discardInfo of infos) {
+        const html = generateTabInfo(discardInfo, first);
+        tableEl.innerHTML += html;
+        first = false;
+      }
+    }
   }
 
   window.onload = function () {
