@@ -1,21 +1,15 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "The Great-er Discarder-er",
   "description": "Helps Chrome run faster by freeing up memory and system resources being used by inactive tabs or old tabs",
-  "version": "0.2.1",
-  "permissions": [
-    "tabs",
-    "storage",
-    "contextMenus",
-    "alarms"
-  ],
+  "version": "1.0.0",
+  "permissions": [ "tabs", "storage", "contextMenus", "alarms" ],
   "background": {
-    "scripts": ["js/background.js"],
-    "persistent": false
+    "service_worker": "js/background.js",
+      "type": "module"
   },
-  "content_scripts": [
-  ],
-  "browser_action": {
+  "content_scripts": [],
+   "action": {
     "default_title": "The Great-er Discarder-er",
     "default_icon": "img/icon19.png",
     "default_popup": "html/popup.html"
@@ -27,7 +21,7 @@
     "128": "img/icon128.png"
   },
   "incognito": "split",
-  "minimum_chrome_version": "54",
+   "minimum_chrome_version": "108",
 
   "commands": {
     "1-discard-tab": {

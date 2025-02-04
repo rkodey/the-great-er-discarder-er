@@ -29,6 +29,10 @@ module.exports = function(grunt) {
         mySignedExtension: {
           src: [
               "src/**/*",
+              "!src/js/db.js",
+              "!src/js/storage.js",
+              "!src/js/tabStates.js",
+              "!src/js/eventPage.js",
               "!**/screenshot*.png",
               "!**/Thumbs.db"
           ],
