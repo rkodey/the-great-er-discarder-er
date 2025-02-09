@@ -1,14 +1,20 @@
 # Change Log
 
+## 1.0.1 - Feb 2025
+- Fix tempWhitelist bug introduced in the Manifest V3 changes ( [Closes #33](https://github.com/rkodey/the-great-er-discarder-er/issues/33) )
+- Update the Profiler page to show tab group and pinned status
+- Update the Profiler page to group by Window - thanks again to ( [vapier](https://github.com/vapier) )
+- Add a link to the Profiler page in the extension popup
+
 ## 1.0.0 - Feb 2025
 - Update to Manifest V3.  Finally!
-- Huge thanks to **Mike Frysinger** ([vapier](https://github.com/vapier)) for doing all the hard stuff!
+- Huge thanks to **Mike Frysinger** ( [vapier](https://github.com/vapier) ) for doing all the hard stuff!
 - Almost 4 years between releases... Yikes!
 
 ## 0.2.1 - Oct 2021
-- Add new popup command to discard all eligible tabs based on options (aka no force) (Closes upstream #18)
-- Discard at startup option has its own group and visibility (Closes #9 - thanks @LordXerus)
-- Add option to enable links to the Chrome Discards page (Closes upstream #39)
+- Add new popup command to discard all eligible tabs based on options (aka no force) ( Closes upstream #18 )
+- Discard at startup option has its own group and visibility ( ( [Closes #9](https://github.com/rkodey/the-great-er-discarder-er/issues/9) ) - thanks @LordXerus )
+- Add option to enable links to the Chrome Discards page ( Closes upstream #39 )
 - Update options tab to switch to an existing tab instead of always opening a new tab
 - Update HTML to be a bit easier to read with heavier font and tweaked layout
 - Standardize and format HTML and CSS files
