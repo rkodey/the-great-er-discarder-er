@@ -344,3 +344,26 @@ textarea {
 textarea:hover, textarea:focus {
   border-color: #4994b3;
 }
+
+/* Profiling page */
+table#gsProfiler {
+  border-collapse: collapse;
+  padding: 0;
+}
+table#gsProfiler th {
+  font-weight: bolder;
+  vertical-align: middle;
+}
+table#gsProfiler tr.newrow {
+  border-top: 1px dotted;
+}
+table#gsProfiler td {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  white-space: nowrap;
+}
+table#gsProfiler td.title {
+  max-width: 800px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

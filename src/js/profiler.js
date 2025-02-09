@@ -4,43 +4,52 @@
 
   'use strict';
 
-  var currentTabs = {};
+  function generateTabInfo(table, info, first) {
+    const
+      windowId = info?.windowId ?? '?',
+      tabId = info?.tabId ?? '?',
+      tabTitle = info?.tab.title ?? 'unknown',
+      tabTimer = info?.timerUp ?? -1,
+      tabStatus = info?.status ?? 'unknown';
 
-  function generateTabInfo(info) {
-    var html = '',
-      windowId = info && info.windowId ? info.windowId : '?',
-      tabId = info && info.tabId ? info.tabId : '?',
-      tabTitle = info && info.tab ? info.tab.title : 'unknown',
-      tabTimer = info ? info.timerUp : -1,
-      tabStatus = info ? info.status : 'unknown';
-
-    html += '<tr>';
-    html += '<td>' + windowId + '</td>';
-    html += '<td>' + tabId + '</td>';
-    html += '<td style="max-width:800px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + tabTitle + '</td>';
-    html += '<td>' + tabTimer + '</td>';
-    html += '<td>' + tabStatus + '</td>';
-    html += '</tr>';
-
-    return html;
+    const row = table.insertRow();
+    let cell;
+    if (first) {
+      row.className = 'newrow';
+    }
+    row.insertCell().innerText = windowId;
+    row.insertCell().innerText = tabId;
+    cell = row.insertCell();
+    cell.className = 'title';
+    cell.innerText = tabTitle;
+    row.insertCell().innerText = tabTimer;
+    row.insertCell().innerText = tabStatus;
   }
 
-  function fetchInfo() {
-    chrome.tabs.query({}, function (tabs) {
-      tabs.forEach(function (curTab, i, tabs) {
-        currentTabs[tabs[i].id] = tabs[i];
+  async function fetchInfo() {
+    const windows = new Map();
+    const tabs = await chrome.tabs.query({});
+    for (let i = 0; i < tabs.length; ++i) {
+      const curTab = tabs[i];
+      if (!windows.has(curTab.windowId)) {
+        windows.set(curTab.windowId, []);
+      }
+      const win = windows.get(curTab.windowId);
 
-        chrome.runtime.sendMessage({ action: 'requestTabInfo', tab: curTab }, function (discardInfo) {
-          var html = '',
-            tableEl = document.getElementById('gsProfilerBody');
+      const discardInfo = await chrome.runtime.sendMessage({ action: 'requestTabInfo', tab: curTab });
+      discardInfo.tab = curTab;
+      win.push(discardInfo);
+    }
 
-          discardInfo.tab = curTab;
-
-          html = generateTabInfo(discardInfo);
-          tableEl.innerHTML = tableEl.innerHTML + html;
-        });
-      });
-    });
+    const tableEl = document.getElementById('gsProfilerBody');
+    for (const winId of Array.from(windows.keys()).sort()) {
+      const infos = windows.get(winId);
+      let first = true;
+      for (const discardInfo of infos) {
+        generateTabInfo(tableEl, discardInfo, first);
+        first = false;
+      }
+    }
   }
 
   window.onload = function () {
