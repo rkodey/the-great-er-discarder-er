@@ -118,7 +118,7 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
 
   log(activeInfo);
   var tabId = activeInfo.tabId;
-  var lastTabId = (await chrome.storage.session.get(CURRENT_TAB_ID))[CURRENT_TAB_ID];
+  var lastTabId = parseInt((await chrome.storage.session.get(CURRENT_TAB_ID))[CURRENT_TAB_ID]);
 
   log('tab changed: ' + tabId);
 
@@ -215,7 +215,7 @@ async function isExcluded(tab, options) {
 
 async function getTemporaryWhitelist() {
   var tempWhitelist = (await chrome.storage.session.get(TEMPORARY_WHITELIST))[TEMPORARY_WHITELIST];
-  return tempWhitelist ? tempWhitelist.split(',') : [];
+  return Array.isArray(tempWhitelist) ? tempWhitelist : [];
 }
 
 async function checkTemporaryWhiteList(tabId) {
