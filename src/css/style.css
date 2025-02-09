@@ -114,6 +114,7 @@ select {
 .formRow select {
   background: #fff;
   border-radius: 3px;
+  appearance: none;
   -webkit-appearance: none;
   padding: 10px 30px 10px 10px;
   font-size: 14px;
@@ -191,6 +192,10 @@ ul.unorderedList li {
 }
 .hidden {
   visibility: hidden;
+}
+.mainContent.expandable {
+  min-width: 900px;
+  width:40%
 }
 .mainContent {
   width: 900px;

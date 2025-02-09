@@ -498,6 +498,8 @@ function requestTabInfo(tab, callback) {
   var info = {
       windowId: '',
       tabId: '',
+      groupId: '',
+      pinned: false,
       status: 'unknown',
       timerUp: '-'
   };
@@ -510,6 +512,8 @@ function requestTabInfo(tab, callback) {
 
     info.windowId = tab.windowId;
     info.tabId = tab.id;
+    info.groupId = tab.groupId;
+    info.pinned = tab.pinned;
 
     //check if it is a special tab
     if (isSpecialTab(tab)) {
