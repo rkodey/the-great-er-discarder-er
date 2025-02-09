@@ -164,6 +164,11 @@
       chrome.runtime.sendMessage({ action: 'openDiscardsTab' });
       window.close();
     });
+    document.getElementById('profilerLink').addEventListener('click', function (e) {
+      console.log('profiler');
+      chrome.runtime.sendMessage({ action: 'openProfilerTab' });
+      window.close();
+    });
 
     chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, function (options) {
       setShowDiscardsLinkVisibility(options.addDiscardsMenu);

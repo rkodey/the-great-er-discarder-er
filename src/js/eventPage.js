@@ -162,6 +162,7 @@ function isSpecialTab(tab) {
 
 var openTabManager = {
   'options'   : { tabId:null, url:chrome.runtime.getURL('html/options.html') },
+  'profiler'  : { tabId:null, url:chrome.runtime.getURL('html/profiler.html') },
   'discards'  : { tabId:null, url:'chrome://discards/' },
 }
 
@@ -698,6 +699,10 @@ function messageRequestListener(request, sender, sendResponse) {
 
   case 'openDiscardsTab':
     openTab('discards');
+    break;
+
+  case 'openProfilerTab':
+    openTab('profiler');
     break;
 
   default:
