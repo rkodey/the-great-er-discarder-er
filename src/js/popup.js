@@ -10,11 +10,11 @@
       message;
 
     if (status === 'normal') {
-      statusDetail = 'Tab will be discarded automatically.';
+      statusDetail = 'This tab can be discarded automatically.';
       statusIconClass = 'fa fa-clock-o';
 
     } else if (status === 'special') {
-      statusDetail = 'Tab cannot be discarded.';
+      statusDetail = 'This tab cannot be discarded.';
       statusIconClass = 'fa fa-remove';
 
     } else if (status === 'whitelisted') {
@@ -23,11 +23,11 @@
       message = 'removeWhitelist';
 
     } else if (status === 'audible') {
-      statusDetail = 'Tab is playing audio.';
+      statusDetail = 'This tab is playing audio.';
       statusIconClass = 'fa fa-volume-up';
 
     } else if (status === 'pinned') {
-      statusDetail = 'Tab has been pinned.';
+      statusDetail = 'This tab has been pinned.';
       statusIconClass = 'fa fa-thumb-tack';
 
     } else if (status === 'tempWhitelist') {
