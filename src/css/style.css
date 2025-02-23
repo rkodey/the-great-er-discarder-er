@@ -127,27 +127,23 @@ img.favicon {
 select {
   min-width: 150px;
 }
-.formRow select {
+select {
   background: #fff;
-  border-radius: 3px;
-  appearance: none;
-  -webkit-appearance: none;
+  border-radius: 5px;
   padding: 10px 30px 10px 10px;
   font-size: 14px;
   border-color: #ccc;
-  /* TODO: make this better / more scalable */
-  background-image: url(/img/ddArrow.png);
-  background-repeat: no-repeat;
-  background-position: 90% 16px;
 }
 input, select, button {
   margin-bottom: 8px;
+  border-radius: 5px;
   cursor: pointer;
 }
 textarea {
   font-family: "Open Sans", sans-serif;
   width: 100%;
   border-color: #c3c3c3;
+  border-radius: 5px;
   font-size: 16px;
   font-weight: 300;
   padding: 3px 5px;
@@ -168,10 +164,13 @@ ol.orderedList li {
   list-style-type: auto;
 }
 
+a.btn {
+  text-decoration: none;
+}
 .btn {
   background: #52a6c8;
   color: #fff;
-  border-radius: 3px;
+  border-radius: 5px;
   height: 40px;
   line-height: 40px;
   padding: 0 20px;
@@ -184,11 +183,11 @@ ol.orderedList li {
   background: #4994b3;
 }
 .btn.btnNeg {
-  background: #ddd;
+  background: #ccc;
   color: #333;
 }
 .btn.btnNeg:hover {
-  background: #ddd;
+  background: #aaa;
 }
 .btn.secondary {
   background: #e3f7fc;
@@ -290,7 +289,7 @@ ol.orderedList li {
   padding: 20px;
   width: 350px;
   height: 150px;
-  border-radius: 3px;
+  border-radius: 5px;
   background: rgba(255, 255, 255, 1);
   border: 1px solid rgba(0, 0, 0, 0.8);
   z-index: 2000;
@@ -322,7 +321,6 @@ table, tr, td {
   white-space: nowrap;
 }
 
-/* custom checkboxes */
 .cbLabel {
   line-height: 20px;
   display: inline-block;
@@ -337,18 +335,7 @@ input[type="checkbox"] {
   margin: 0;
   padding: 0;
   position: absolute;
-}
-input[type="checkbox"]:before {
-  content: "";
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-}
-input[type="checkbox"]:before {
-  background: url(/img/checkOff.png) #fff;
-}
-input[type="checkbox"]:checked:before {
-  background: url(/img/checkOn.png) #fff;
+  accent-color:  #4994b3;
 }
 input[type="checkbox"] + label {
   position: relative;
@@ -356,21 +343,13 @@ input[type="checkbox"] + label {
   cursor: pointer;
 }
 
-/* new styling 2021 */
 i.icon-help {
   margin-left: 0.5rem;
 }
-input[type="checkbox"]:checked:hover:before {
-  background: url(/img/checkOnHover.png) #fff;
-}
-input[type="checkbox"]:hover:before {
-  background: url(/img/checkOffHover.png) #fff;
-}
-
-.formRow select {
+select {
   outline: 0;
 }
-.formRow select:focus, .formRow select:hover {
+select:focus, select:hover {
   border-color: #4994b3;
 }
 textarea {
@@ -401,4 +380,66 @@ table#gsProfiler td.title {
   max-width: 800px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+
+/* Automatically use dark mode based on OS settings */
+@media (prefers-color-scheme: dark) {
+
+body {
+  background:#181818;
+  color:#ccc;
+}
+hr {
+  border-top: 1px solid #666;
+}
+.mainContent {
+  color:#ccc;
+  background: #222;
+}
+.content {
+  border-left: 1px solid #666;
+}
+a, a:visited {
+  color:#8bf;
+}
+a.active {
+  color: #159;
+}
+input[type="checkbox"] {
+  accent-color:  #159;
+}
+input[type="checkbox"] + label {
+  background: #222c;
+}
+input[type="checkbox"] + label:hover {
+  background: #222d;
+}
+input[type="checkbox"]:checked + label {
+  background: #2220;
+}
+input[type="checkbox"]:checked + label:hover {
+  background: #2220;
+}
+textarea {
+  color:#ccc;
+  background: #313131;
+  border-color: #666;
+}
+textarea:hover, textarea:focus, select:hover, select:focus, input:hover, input:focus {
+  border-color: #0078d4;
+}
+select {
+  color:#ccc;
+  background: #313131;
+  border-color: #666;
+}
+.btn, a.btn {
+  background: #159;
+  color: #ccc;
+}
+.btn:hover {
+  background: #048;
+}
+
 }

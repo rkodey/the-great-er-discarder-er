@@ -30,6 +30,7 @@ Tab suspending is the old-school approach at saving memory.  Problem is, Chrome 
 ## Feb 2025 What's New
 - Updated to "Manifest V3" so no more warning messages from Chrome!
 - Migrate suspended tabs from several other extensions, like "The Marvellous Suspender" and "The Great Suspender (notrack)"
+- Automatic dark mode.
 - New name!  Sort-of.  Small change for now, to see if visibility changes.
 
 **The Great-*er* Tab Discarder** is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
