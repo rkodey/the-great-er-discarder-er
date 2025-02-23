@@ -2,25 +2,25 @@
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 300;
-  src: url("../fonts/open-sans-300.woff2") format("woff2");
+  src: url("/fonts/open-sans-300.woff2") format("woff2");
 }
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 400;
-  src: url("../fonts/open-sans-400.woff2") format("woff2");
+  src: url("/fonts/open-sans-400.woff2") format("woff2");
 }
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 600;
-  src: url("../fonts/open-sans-600.woff2") format("woff2");
+  src: url("/fonts/open-sans-600.woff2") format("woff2");
 }
 @font-face {
   font-family: "Open Sans";
   font-style: bold;
   font-weight: 700;
-  src: url("../fonts/open-sans-700.woff2") format("woff2");
+  src: url("/fonts/open-sans-700.woff2") format("woff2");
 }
 
 /* RESET */
@@ -55,6 +55,7 @@ body {
   padding: 0;
   margin: 0;
   color: #444;
+  overflow-y: scroll;
 }
 p {
   margin: 0 0 15px;
@@ -80,8 +81,17 @@ hr {
   margin: 23px 0;
 }
 
+.none {
+  display: none;
+}
 .bold {
   font-weight: 600;
+}
+.center {
+  text-align:center;
+}
+.small {
+  font-size: 0.8rem;
 }
 .fl {
   float: left;
@@ -107,6 +117,12 @@ img.headerIcon {
   margin: 19px 5px -2px 0;
   float: right;
 }
+img.favicon {
+  margin: 0 0 -2px 0;
+  padding: 0 6px;
+  height: 16px;
+  width: 16px;
+}
 
 select {
   min-width: 150px;
@@ -126,6 +142,7 @@ select {
 }
 input, select, button {
   margin-bottom: 8px;
+  cursor: pointer;
 }
 textarea {
   font-family: "Open Sans", sans-serif;
@@ -145,6 +162,10 @@ ul.unorderedList, ol.orderedList {
 ul.unorderedList li {
   margin: 0 0 3 10px;
   list-style: disc;
+}
+ol.orderedList li {
+  margin: 10px 0 0 10px;
+  list-style-type: auto;
 }
 
 .btn {
@@ -193,9 +214,12 @@ ul.unorderedList li {
 .hidden {
   visibility: hidden;
 }
-.mainContent.expandable {
-  min-width: 900px;
-  width:40%
+.mainContent.expanded {
+  width: auto;
+  display: table;
+}
+.content.expanded {
+  width: auto;
 }
 .mainContent {
   width: 900px;
@@ -312,6 +336,7 @@ input[type="checkbox"] {
   display: inline-block;
   margin: 0;
   padding: 0;
+  position: absolute;
 }
 input[type="checkbox"]:before {
   content: "";
@@ -324,6 +349,11 @@ input[type="checkbox"]:before {
 }
 input[type="checkbox"]:checked:before {
   background: url(/img/checkOn.png) #fff;
+}
+input[type="checkbox"] + label {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
 }
 
 /* new styling 2021 */
