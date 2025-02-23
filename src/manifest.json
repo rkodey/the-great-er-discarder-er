@@ -1,16 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "The Great-er Discarder-er",
-  "description": "Helps Chrome run faster by freeing up memory and system resources being used by inactive tabs or old tabs",
-  "version": "1.0.1",
-  "permissions": [ "tabs", "storage", "contextMenus", "alarms" ],
+  "name": "The Great-er Tab Discarder",
+  "description": "Helps Chrome load faster and run quicker by freeing up memory and resources used by inactive or old tabs. No tracking. No drama.",
+  "version": "1.1.0",
+
+  "permissions": [ "tabs", "storage", "contextMenus", "alarms", "favicon" ],
   "background": {
     "service_worker": "js/background.js",
       "type": "module"
   },
   "content_scripts": [],
    "action": {
-    "default_title": "The Great-er Discarder-er",
+    "default_title": "The Great-er Tab Discarder",
     "default_icon": "img/icon19.png",
     "default_popup": "html/popup.html"
   },
@@ -21,7 +22,7 @@
     "128": "img/icon128.png"
   },
   "incognito": "split",
-   "minimum_chrome_version": "108",
+  "minimum_chrome_version": "108",
 
   "commands": {
     "1-discard-tab": {
@@ -41,4 +42,5 @@
       "description": "Reload all tabs in all windows"
     }
   }
+
 }

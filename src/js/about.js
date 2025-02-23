@@ -10,7 +10,7 @@
       window.clearInterval(readyStateCheckInterval);
 
       var versionEl = document.getElementById('aboutVersion');
-      versionEl.innerHTML = 'The Great-er Discarder-er v' + chrome.runtime.getManifest().version;
+      versionEl.innerHTML = 'The Great-er Tab Discarder v' + chrome.runtime.getManifest().version;
 
     }
   }, 50);

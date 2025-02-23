@@ -1,37 +1,32 @@
 {
+
   "name": "the-great-er-discarder-er",
-  "version": "0.0.0",
-  "description": "A chrome extension to free up system resources used by active tabs",
-  "main": "",
+  "description": "Helps Chrome load faster and run quicker by freeing up memory and resources used by inactive or old tabs. No tracking. No drama.",
+  "version": "1.1.0",
+
+  "keywords": [ "chrome", "extension", "addon", "memory", "tab", "discard", "suspend" ],
+  "author": "rkodey (https://github.com/rkodey)",
+  "contributors": [ "deanoemcke" ],
+  "license": "GPL-2.0",
   "homepage": "https://github.com/rkodey/the-great-er-discarder-er/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rkodey/the-great-er-discarder-er.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rkodey/the-great-er-discarder-er/issues"
+  },
+
   "scripts": {
     "build": "grunt",
     "generate-key": "openssl genrsa -out key.pem",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rkodey/the-great-er-discarder-er.git"
-  },
-  "keywords": [
-    "chrome",
-    "extension",
-    "addon",
-    "memory",
-    "discard",
-    "tab"
-  ],
-  "author": "rkodey",
-  "contributors": [
-    "deanoemcke"
-  ],
-  "license": "GPL-2.0",
-  "bugs": {
-    "url": "https://github.com/rkodey/the-great-er-discarder-er/issues"
-  },
+  "main": "",
   "devDependencies": {
     "grunt": "~1.6",
     "grunt-contrib-concat": "~2.1",
     "grunt-crx": "~2.0"
   }
+
 }

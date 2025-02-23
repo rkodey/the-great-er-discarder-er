@@ -1,59 +1,56 @@
-# <img src="./src/img/icon48.png" align="left" /> The Great-*er*  Discarder-*er*
+# <img src="./src/img/icon48.png" align="left" /> The Great-*er* Tab Discarder
 ```diff
 - The Great Discarder
-+ The Great-er Discarder-er
++ The Great-er Tab Discarder
 ```
 
-Since the "The Great Discarder" project has been dormant for years, and the semi-related "The Great Suspender" has hit some bumps in the road,
-I thought I'd take a crack at publishing this clean fork.
-
-**The Great-*er* Discarder-*er*** continues where "The Great Discarder" left off some 4 years ago.  I plan to add some functionality and address some old open issues while keeping things simple.
+This is a fork of the dormant "The Great Discarder" project, now updated with new features.<br>
+No tracking.  No drama.  Full Manifest V3 support in Chrome.
 
 <br>
 
-## What does "Discard" mean?
-Discarding a tab does not close or remove or delete the tab.  It's a feature of Chrome that simply frees up resources and memory that the tab is using.
-Discarding tabs should let Chrome run faster while consuming less memory.
+**Welcome** to all users coming from "The Marvellous Suspender", "The Great Suspender (notrack)", or other similar extensions!
+
+> **Is your current tab "Suspender" extension showing a warning "This extension may soon no longer be supported" ?**<br>
+
+Don't risk losing your suspended tabs!<br>
+This extension can migrate your existing suspended tabs,
+so you won't lose them if/when Chrome removes your old unsupported extensions.
 
 <br>
 
-## Chrome Web Store
+## What does "Discarding" a tab mean?
+Discarding a tab does NOT close or remove or delete the tab.  Discarding simply frees up memory.  It's a feature of Chrome, and the preferred way to keep your browser running fast and efficient.
 
-**The Great-*er* Discarder-*er*** is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
+## What about "Suspending" tabs?
+Tab suspending is the old-school approach at saving memory.  Problem is, Chrome still assigns resources to the suspended mini-pages.  Chrome added tab discarding for a reason, as it's able to natively free up memory.
 
-**Feb 2025**:  New version is now available supporting "Manifest V3" so Chrome should stop bugging you about this extension being unsupported.
+<br>
+
+## Feb 2025 What's New
+- Updated to "Manifest V3" so no more warning messages from Chrome!
+- Migrate suspended tabs from several other extensions, like "The Marvellous Suspender" and "The Great Suspender (notrack)"
+- New name!  Sort-of.  Small change for now, to see if visibility changes.
+
+**The Great-*er* Tab Discarder** is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
 
 <br>
 
 ## Added Features
+- **Migrate Tabs** - Migrate your suspended using a similar suspend technique - OR, you can convert them to proper Discarded tabs!
 - **Discard all tabs at startup** - Prevents Chrome from loading all your tabs at startup, while preserving the tabs in your last session.
 - **Discard other eligible tabs** - Same as "Discard other tabs" but observes the current auto-discard settings, like skipping Pinned and Audio tabs.
 - **Optional link to Chrome Discards** - Adds a link on the context and popup menus to launch the built-in chrome://discards/ page.
-- **Options / Settings** page now switches to an existing tab if one exists, instead of always launching a new tab.
-- **Removed Google Analytics** tracking from original code.
+- **Options / Settings** - Will switch to an existing tab if one exists, instead of always launching a new tab.
+- **Removed Google Analytics** - No tracking. No drama.
 
-see [CHANGELOG](./CHANGELOG.md) for full **Release Notes**
+see [CHANGELOG.md](./CHANGELOG.md) for full **Release Notes**
 
-<br>
-
-If you have suggestions or problems using the extension, please [submit a bug or a feature request](https://github.com/rkodey/the-great-er-discarder-er/issues).
+see [DEVNOTES.md](./DEVNOTES.md) for additional Developer Notes
 
 <br>
 
-## Notes on tab state "lastAccessed"
-
-The [`lastAccessed`](https://developer.chrome.com/docs/extensions/reference/api/tabs)
-API looks like it almost does what we need, but it tracks slightly different
-state that makes it not useful to us.
-
-The field is described as:
-> The last time the tab became active in its window as the number of milliseconds since epoch.
-
-That means when you activate a tab, the field is updated.  But if you leave the
-tab active for an hour, and then switch away, the field does not change.  It is
-not tracking the last time the tab was used or focused, only the last time focus
-changed to it.  If we used that to determine when a tab as last used, we would
-prematurely discard tabs held active for a long time.
+If you have suggestions or problems using the extension, please [submit a bug or a feature request on github](https://github.com/rkodey/the-great-er-discarder-er/issues).
 
 <br>
 
