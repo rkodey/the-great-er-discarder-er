@@ -64,46 +64,14 @@
     }
   }
 
-  function setWhitelistVisibility(visible) {
-    if (visible) {
-      document.getElementById('whitelist').style.display = 'block';
-    } else {
-      document.getElementById('whitelist').style.display = 'none';
-    }
+  function setVisibility(id, visible) {
+    document.getElementById(id).style.display = visible ? 'block' : 'none';
   }
 
-  function setPauseVisibility(visible) {
-    if (visible) {
-      document.getElementById('tempWhitelist').style.display = 'block';
-    } else {
-      document.getElementById('tempWhitelist').style.display = 'none';
-    }
-  }
-
-  function setDiscardOneVisibility(visible) {
-    if (visible) {
-      document.getElementById('discardOne').style.display = 'block';
-    } else {
-      document.getElementById('discardOne').style.display = 'none';
-    }
-  }
-
-  function setDiscardSelectedVisibility() {
+  function setVisibilityForSelectedGroup() {
     chrome.tabs.query({ highlighted: true, lastFocusedWindow: true }, function (tabs) {
-      if (tabs && tabs.length > 1) {
-        document.getElementById('discardSelectedGroup').style.display = 'block';
-      } else {
-        document.getElementById('discardSelectedGroup').style.display = 'none';
-      }
+      setVisibility('discardSelectedGroup', tabs && tabs.length > 1);
     });
-  }
-
-  function setShowDiscardsLinkVisibility(visible) {
-    if (visible) {
-      document.getElementById('showDiscardsLinkGroup').style.display = 'block';
-    } else {
-      document.getElementById('showDiscardsLinkGroup').style.display = 'none';
-    }
   }
 
   function setEligibleOptions(options) {
@@ -115,7 +83,7 @@
       if (options.dontDiscardAudio) aExcludes.push('audio');
       if (aExcludes.length) {
         menu.style.display = 'block';
-        div.innerText = 'excluding ' + aExcludes.join(' and ') + ' tabs';
+        div.innerText = 'Skip ' + aExcludes.join(' and ') + ' tabs';
       }
       else {
         menu.style.display = 'none';
@@ -123,55 +91,30 @@
     }
   }
 
+  function addClickListener(idMessage) {
+    document.getElementById(idMessage).addEventListener('click', function (e) {
+      console.log(`click ${idMessage}`);
+      chrome.runtime.sendMessage({ action: idMessage });
+      window.close();
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('discardOne').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'discardOne' });
-      window.close();
-    });
-    document.getElementById('discardAll').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'discardAll' });
-      window.close();
-    });
-    document.getElementById('discardAllEligible').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'discardAllEligible' });
-      window.close();
-    });
-    document.getElementById('reloadAll').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'reloadAll' });
-      window.close();
-    });
-    document.getElementById('discardSelected').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'discardSelected' });
-      window.close();
-    });
-    document.getElementById('reloadSelected').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'reloadSelected' });
-      window.close();
-    });
-    document.getElementById('whitelist').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'whitelist' });
-      window.close();
-    });
-    document.getElementById('tempWhitelist').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'tempWhitelist' });
-      window.close();
-    });
-    document.getElementById('settingsLink').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'openOptionsTab' });
-      window.close();
-    });
-    document.getElementById('discardsLink').addEventListener('click', function (e) {
-      chrome.runtime.sendMessage({ action: 'openDiscardsTab' });
-      window.close();
-    });
-    document.getElementById('profilerLink').addEventListener('click', function (e) {
-      console.log('profiler');
-      chrome.runtime.sendMessage({ action: 'openProfilerTab' });
-      window.close();
-    });
+
+    addClickListener('discardOne');
+    addClickListener('discardAll');
+    addClickListener('discardAllEligible');
+    addClickListener('reloadAll');
+    addClickListener('discardSelected');
+    addClickListener('reloadSelected');
+    addClickListener('whitelist');
+    addClickListener('tempWhitelist');
+    addClickListener('openOptionsTab');
+    addClickListener('openDiscardsTab');
+    addClickListener('openProfilerTab');
 
     chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, function (options) {
-      setShowDiscardsLinkVisibility(options.addDiscardsMenu);
+      setVisibility('showDiscardsLinkGroup', options.addDiscardsMenu);
       setEligibleOptions(options);
     });
 
@@ -183,10 +126,11 @@
         whitelistVisible = (status !== 'whitelisted' && status !== 'special') ? true : false,
         pauseVisible = (status === 'normal') ? true : false;
 
-      setDiscardSelectedVisibility();
-      setDiscardOneVisibility(discardOneVisible);
-      setWhitelistVisibility(whitelistVisible);
-      setPauseVisibility(pauseVisible);
+      setVisibilityForSelectedGroup();
+      setVisibility('currentGroup', discardOneVisible || whitelistVisible || pauseVisible);
+      setVisibility('discardOne', discardOneVisible);
+      setVisibility('whitelist', whitelistVisible);
+      setVisibility('tempWhitelist', pauseVisible);
       setStatus(status);
 
     });

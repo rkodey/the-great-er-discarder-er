@@ -791,14 +791,14 @@ function buildContextMenu(showContextMenu, showDiscards) {
     //Suspend present tab
     chrome.contextMenus.create({
       id: "discard-tab",
-      title: "Discard tab",
+      title: "Discard this tab",
       contexts: allContexts
     });
 
     //Add present tab to temporary whitelist
     chrome.contextMenus.create({
       id: "dont-suspend-for-now",
-      title: "Don't discard for now",
+      title: "Don't discard this tab for now",
       contexts: allContexts
     });
 
@@ -818,14 +818,14 @@ function buildContextMenu(showContextMenu, showDiscards) {
     //Suspend all the tabs
     chrome.contextMenus.create({
       id: "discard-others",
-      title: "Discard other tabs",
+      title: "Discard all other tabs",
       contexts: allContexts
     });
 
     //Unsuspend all the tabs
     chrome.contextMenus.create({
       id: "reload-all",
-      title: "Reload all tabs",
+      title: "Restore all discarded tabs",
       contexts: allContexts
     });
 

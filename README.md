@@ -40,7 +40,7 @@ Tab suspending is the old-school approach at saving memory.  Problem is, Chrome 
 ## Added Features
 - **Migrate Tabs** - Migrate your suspended using a similar suspend technique - OR, you can convert them to proper Discarded tabs!
 - **Discard all tabs at startup** - Prevents Chrome from loading all your tabs at startup, while preserving the tabs in your last session.
-- **Discard other eligible tabs** - Same as "Discard other tabs" but observes the current auto-discard settings, like skipping Pinned and Audio tabs.
+- **Discard other eligible tabs** - Same as "Discard all other tabs" but observes the current auto-discard settings, like skipping Pinned and Audio tabs.
 - **Optional link to Chrome Discards** - Adds a link on the context and popup menus to launch the built-in chrome://discards/ page.
 - **Options / Settings** - Will switch to an existing tab if one exists, instead of always launching a new tab.
 - **Removed Google Analytics** - No tracking. No drama.

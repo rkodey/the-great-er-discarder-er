@@ -9,17 +9,17 @@
 </head>
 
 <body>
-  <div id="header">
-    <i id="statusIcon" class="fa fa-clock-o"></i>
-    <span id="statusDetail">Tab will be discarded</span>
-  </div>
 
-  <div class="group optsCurrent">
+  <div class="group optsCurrent" id="currentGroup">
+    <div id="header">
+      <i id="statusIcon" class="fa fa-clock-o"></i>
+      <span id="statusDetail">Tab will be discarded</span>
+    </div>
     <div class="menuOption" id="discardOne">
       <i class="fa fa-stop"></i> <span class="optionText">Discard this tab</span>
     </div>
     <div class="menuOption hidden" id="tempWhitelist">
-      <i class="fa fa-pause"></i> <span class="optionText">Don't discard for now</span>
+      <i class="fa fa-pause"></i> <span class="optionText">Don't discard this tab for now</span>
     </div>
     <div class="menuOption hidden" id="whitelist">
       <i class="fa fa-ban"></i> <span class="optionText">Never discard this site</span>
@@ -27,15 +27,16 @@
   </div>
 
   <div class="group optsAll">
+    <div class="header">In this window</div>
     <div class="menuOption" id="discardAllEligible">
-      <i class="fa fa-check-square"></i> <span class="optionText">Discard other eligible tabs</span>
+      <i class="fa fa-check-square"></i> <span class="optionText">Discard all eligible tabs</span>
       <div id="eligibleText" class="subtext"></div>
     </div>
     <div class="menuOption" id="discardAll">
-      <i class="fa fa-stop"></i> <span class="optionText">Discard other tabs</span>
+      <i class="fa fa-stop"></i> <span class="optionText">Discard all other tabs</span>
     </div>
     <div class="menuOption" href="#" id="reloadAll">
-      <i class="fa fa-play"></i> <span class="optionText">Reload all tabs</span>
+      <i class="fa fa-play"></i> <span class="optionText">Restore all discarded tabs</span>
     </div>
   </div>
 
@@ -44,24 +45,24 @@
       <i class="fa fa-stop"></i> <span class="optionText">Discard selected tabs</span>
     </div>
     <div class="menuOption" href="#" id="reloadSelected">
-      <i class="fa fa-play"></i> <span class="optionText">Reload selected tabs</span>
+      <i class="fa fa-play"></i> <span class="optionText">Restore selected tabs</span>
     </div>
   </div>
 
   <div class="group optsSettings">
-    <div class="menuOption" id="settingsLink">
+    <div class="menuOption" id="openOptionsTab">
       <i class="fa fa-wrench"></i> <span class="optionText">Settings</span>
+    </div>
+    <div class="hidden" id="showDiscardsLinkGroup">
+      <div class="menuOption" id="openProfilerTab">
+        <i class="fa fa-list"></i> <span class="optionText">Tab Profiler</span>
+      </div>
+      <div class="menuOption" id="openDiscardsTab">
+        <i class="fa fa-bug"></i> <span class="optionText">chrome://discards/</span>
+      </div>
     </div>
   </div>
 
-  <div class="group optsDiscards hidden" id="showDiscardsLinkGroup">
-    <div class="menuOption" id="profilerLink">
-      <i class="fa fa-list"></i> <span class="optionText">Tab Profiler</span>
-    </div>
-    <div class="menuOption" id="discardsLink">
-      <i class="fa fa-bug"></i> <span class="optionText">chrome://discards/</span>
-    </div>
-  </div>
 </body>
 
 </html>

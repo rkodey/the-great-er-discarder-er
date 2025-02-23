@@ -29,7 +29,7 @@ body {
 	color: #444;
 	padding: 0;
 	margin: 0;
-	min-width: 300px;
+	min-width: 340px;
 	position: relative;
 	font-size: 16px;
 	background: #f5f5f5;
@@ -44,12 +44,11 @@ a {
 .hidden {
 	display: none;
 }
-#header {
+#header, .header {
 	padding: 5px 15px 5px 16px;
 	border-bottom: 1px solid #ccc;
 	font-size: 14px;
 	height: 20px;
-	width: 100%;
 	line-height: 19px;
 	background: #134960;
 	color: #fff;
@@ -59,9 +58,9 @@ a {
 	padding-right: 3px;
 }
 
-
 .group {
-	padding: 5px 0;
+  margin: 10px;
+	border: 1px solid #ccc;
 }
 .optsCurrent, .optsAll, .optsSelected {
 	border-bottom: 1px solid #ccc;
@@ -106,8 +105,11 @@ body {
   color:#ccc;
   border: 1px solid #333;
 }
-#header {
+#header, .header {
 	border-bottom: 1px solid #666;
+}
+.group {
+	border: 1px solid #666;
 }
 .optsCurrent, .optsAll, .optsSelected {
 	border-bottom: 1px solid #666;
