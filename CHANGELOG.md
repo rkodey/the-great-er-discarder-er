@@ -1,3 +1,9 @@
+# <img src="./src/img/icon48.png" align="left" /> The Great-*er* Tab Discarder
+```diff
+- The Great Discarder
++ The Great-er Tab Discarder
+```
+
 # Change Log
 
 ## 1.0.1 - Feb 2025

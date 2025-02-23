@@ -1,7 +1,7 @@
-# <img src="./src/img/icon48.png" align="left" /> The Great-*er*  Discarder-*er*
+# <img src="./src/img/icon48.png" align="left" /> The Great-*er* Tab Discarder
 ```diff
 - The Great Discarder
-+ The Great-er Discarder-er
++ The Great-er Tab Discarder
 ```
 
 Since the "The Great Discarder" project has been dormant for years, and the semi-related "The Great Suspender" has hit some bumps in the road,
@@ -19,9 +19,7 @@ Discarding tabs should let Chrome run faster while consuming less memory.
 
 ## Chrome Web Store
 
-**The Great-*er* Discarder-*er*** is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
-
-**Feb 2025**:  New version is now available supporting "Manifest V3" so Chrome should stop bugging you about this extension being unsupported.
+**The Great-*er* Tab Discarder** is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
 
 <br>
 

@@ -9,7 +9,7 @@
       windowId = info?.windowId ?? '?',
       tabId = info?.tabId ?? '?',
       groupId = info?.groupId > 0 ? info.groupId : '',
-      // @TODO Not enabling tabGroups yet since it requires a new permission in the Manifest
+      // @INFO Not enabling tabGroups yet since it requires a new permission in the Manifest
       // groupName = info?.group?.title ?? '',
       // groupColor = info?.group?.color ?? '',
       pinned = info?.pinned ? '<i class="fa fa-thumb-tack"></i>' : '',
