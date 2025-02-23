@@ -96,3 +96,24 @@ div.subtext {
     line-height: 1em;
     margin: -0.5em 1.6rem 0.5em;
 }
+
+
+/* Automatically use dark mode based on OS settings */
+@media (prefers-color-scheme: dark) {
+
+body {
+  background:#222;
+  color:#ccc;
+  border: 1px solid #333;
+}
+#header {
+	border-bottom: 1px solid #666;
+}
+.optsCurrent, .optsAll, .optsSelected {
+	border-bottom: 1px solid #666;
+}
+.optsDiscards {
+	border-top: 1px solid #666;
+}
+
+}
