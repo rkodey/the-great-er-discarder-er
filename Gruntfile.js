@@ -23,7 +23,7 @@ module.exports = function(grunt) {
               "!**/screenshot*.png",
               "!**/Thumbs.db"
           ],
-          dest: "build/zip/<%= pkg.name %>-<%= manifest.version %>.zip",
+          dest: "build/zip/<%= pkg.name %>.zip",
         },
 
         mySignedExtension: {
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
               "!**/screenshot*.png",
               "!**/Thumbs.db"
           ],
-          dest: "build/crx/<%= pkg.name %>-<%= manifest.version %>.crx",
+          dest: "build/crx/<%= pkg.name %>.crx",
           options: {
             privateKey: "key.pem"
           }

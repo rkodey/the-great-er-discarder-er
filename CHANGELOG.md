@@ -6,6 +6,10 @@
 
 # Change Log
 
+## 1.1.0 - Feb 2025
+- New: Migrate suspended tabs from several other extensions, like "The Marvellous Suspender" and "The Great Suspender (notrack)"
+- New Name!  Sort-of.  Small change for now, to see if visibility changes.
+
 ## 1.0.1 - Feb 2025
 - Fix tempWhitelist bug introduced in the Manifest V3 changes ( [Closes #33](https://github.com/rkodey/the-great-er-discarder-er/issues/33) )
 - Update the Profiler page to show tab group and pinned status
