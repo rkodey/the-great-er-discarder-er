@@ -5,12 +5,12 @@
   "version": "1.1.0",
 
   "permissions": [ "tabs", "storage", "contextMenus", "alarms", "favicon" ],
+  "optional_permissions": ["tabGroups"],
   "background": {
     "service_worker": "js/background.js",
       "type": "module"
   },
-  "content_scripts": [],
-   "action": {
+  "action": {
     "default_title": "The Great-er Tab Discarder",
     "default_icon": "img/icon19.png",
     "default_popup": "html/popup.html"

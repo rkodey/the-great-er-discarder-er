@@ -87,6 +87,9 @@ hr {
 .bold {
   font-weight: 600;
 }
+.italic {
+  font-style: italic;
+}
 .center {
   text-align:center;
 }
@@ -213,12 +216,18 @@ a.btn {
 .hidden {
   visibility: hidden;
 }
-.mainContent.expanded {
+.mainContent.profiler {
   width: auto;
   display: table;
 }
-.content.expanded {
+.content.profiler {
   width: auto;
+}
+.content.profiler div.links {
+  margin-top: 1em;
+}
+.content.profiler div.links a {
+  margin: 0 0.5em;
 }
 .mainContent {
   width: 900px;
@@ -361,10 +370,14 @@ textarea:hover, textarea:focus {
 
 /* Profiling page */
 table#gsProfiler {
+  table-layout: fixed;
   border-collapse: collapse;
   padding: 0;
+  margin-top: 1em
 }
 table#gsProfiler th {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
   font-weight: bolder;
   vertical-align: middle;
 }
@@ -380,6 +393,41 @@ table#gsProfiler td.title {
   max-width: 800px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* tab groups */
+span.group {
+  color: #fff;
+  border-radius: 6px;
+  font-size: 0.8em;
+  padding: 0px 5px 0;
+}
+span.group.grey {
+  background: #5f6368
+}
+span.group.blue {
+  background: #1a73e8;
+}
+span.group.red {
+  background: #d93025;
+}
+span.group.yellow {
+  background: #f9ab00;
+}
+span.group.green {
+  background: #188038;
+}
+span.group.pink {
+  background: #d01884;
+}
+span.group.purple {
+  background: #a142f4;
+}
+span.group.cyan {
+  background: #007b83;
+}
+span.group.orange {
+  background: #fa903e;
 }
 
 
@@ -440,6 +488,36 @@ select {
 }
 .btn:hover {
   background: #048;
+}
+span.group {
+  color: #000;
+}
+span.group.grey {
+  background: #dadce0;
+}
+span.group.blue {
+  background: #8ab4f8;
+}
+span.group.red {
+  background: #f28b82;
+}
+span.group.yellow {
+  background: #fdd663;
+}
+span.group.green {
+  background: #81c995;
+}
+span.group.pink {
+  background: #ff8bcb;
+}
+span.group.purple {
+  background: #c58af9;
+}
+span.group.cyan {
+  background: #78d9ec;
+}
+span.group.orange {
+  background: #fcad70;
 }
 
 }

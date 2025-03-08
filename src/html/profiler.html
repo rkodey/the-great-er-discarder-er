@@ -9,26 +9,31 @@
 </head>
 
 <body id="body">
-  <div class="mainContent expanded">
-    <h1 class="pageHeader"><img src="/img/icon64_hidden.png" class="headerIcon" />The Great-er Tab Discarder</h1>
+  <div class="mainContent profiler">
+    <h1 class="pageHeader"><img src="/img/icon64_hidden.png" class="headerIcon" />The Great-<span class="italic">er</span> Tab Discarder</h1>
 
-    <div class="content expanded">
-      <p></p>
-      <p><a id='refreshProfiler' href='#'>reload</a></p>
-      <table id="gsProfiler" style="table-layout: fixed">
+    <div class="content profiler">
+
+      <div class="links">
+        <a id='refreshProfiler' href='#'>Reload</a>
+        <a id='enableTabGroups' href='#'>Tab Groups</a>
+      </div>
+
+      <table id="gsProfiler">
         <thead>
           <tr>
             <th>Window Id</th>
             <th>Tab Id</th>
             <th>Tab Group</th>
             <th>Title</th>
-            <th>Discard Time<br>(seconds)</th>
+            <th>Timer (s)</th>
             <th>Status</th>
             <th>Pin</th>
           </tr>
         </thead>
         <tbody id="gsProfilerBody"></tbody>
       </table>
+
     </div>
   </div>
 </body>
