@@ -1,5 +1,3 @@
-/* global chrome, storage, tabStates */
-
 'use strict';
 
 const CURRENT_TAB_ID = 'currentTabId';
@@ -152,9 +150,11 @@ function isSpecialTab(tab) {
   var url = tab.url;
 
   return (
+      url.startsWith('chrome-devtools:') ||
       url.startsWith('chrome-extension:') ||
       url.startsWith('chrome:') ||
-      url.startsWith('chrome-devtools:') ||
+      url.startsWith('edge:') ||
+      url.startsWith('extension:') ||
       url.startsWith('file:') ||
       url.indexOf('chrome.google.com/webstore') >= 0
   );

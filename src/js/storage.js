@@ -1,4 +1,3 @@
-/* global chrome */
 
 (function (window) {
 

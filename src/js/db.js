@@ -867,7 +867,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                         };
                         request.onerror = function (e) {
                             // Prevent default for `BadVersion` and `AbortError` errors, etc.
-                            // These are not necessarily reported in console in Chrome but present; see
+                            // These are not necessarily reported in console but present; see
                             //  https://bugzilla.mozilla.org/show_bug.cgi?id=872873
                             //  http://stackoverflow.com/questions/36225779/aborterror-within-indexeddb-upgradeneeded-event/36266502
                             e.preventDefault();

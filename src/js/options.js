@@ -1,5 +1,3 @@
-/* global chrome */
-
 'use strict';
 
 var elementPrefMap;
