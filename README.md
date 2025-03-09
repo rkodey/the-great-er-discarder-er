@@ -5,13 +5,14 @@
 ```
 
 This is a fork of the dormant "The Great Discarder" project, now updated with new features.<br>
-No tracking.  No drama.  Full Manifest V3 support in Chrome.
+No tracking.  No drama.  Only fast-*er* browsing!<br>
+Full Manifest V3 support in Chrome and Edge.
 
 <br>
 
-**Welcome** to all users coming from "The Marvellous Suspender", "The Great Suspender (notrack)", or other similar extensions!
+**Welcome** to all users coming from "**The Marvellous Suspender**", "**The Great Suspender (notrack)**", "**Tab Suspender**", or other similar extensions!
 
-> **Is your current tab "Suspender" extension showing a warning "This extension may soon no longer be supported" ?**<br>
+> Is your current tab "Suspender" extension showing a warning "This extension may soon no longer be supported" ?<br>
 
 Don't risk losing your suspended tabs!<br>
 This extension can migrate your existing suspended tabs,
@@ -20,28 +21,42 @@ so you won't lose them if/when Chrome removes your old unsupported extensions.
 <br>
 
 ## What does "Discarding" a tab mean?
-Discarding a tab does NOT close or remove or delete the tab.  Discarding simply frees up memory.  It's a feature of Chrome, and the preferred way to keep your browser running fast and efficient.
+> A discarded tab is one whose content has been unloaded from memory, but is still visible in the tab strip.
+> Its content is reloaded the next time it is activated."
+
+Discarding a tab does NOT close or remove or delete the tab.
+It natively tells your browser it can frees up memory and resources, and is the preferred way to keep your browser running fast and efficient.
 
 ## What about "Suspending" tabs?
-Tab suspending is the old-school approach at saving memory.  Problem is, Chrome still assigns resources to the suspended mini-pages.  Chrome added tab discarding for a reason, as it's able to natively free up memory.
+Tab suspending is the old-school approach at saving memory.
+Problem is, the browsers still assign resources to the suspended mini-pages.
+Tab discarding was added for a reason, as it allows the browser to natively free up memory.
 
 <br>
 
+## Mar 2025 ( In Progress )
+- Migrate `park.html` tabs from "**Tab Suspender**".
+- Tab Groups are now ( optionally ) displayed on the Profiler page.
+
+
 ## Feb 2025 What's New
 - Updated to "Manifest V3" so no more warning messages from Chrome!
-- Migrate suspended tabs from several other extensions, like "The Marvellous Suspender" and "The Great Suspender (notrack)"
+- Migrate `suspended.html` tabs from several other extensions, like "**The Marvellous Suspender**" and "**The Great Suspender (notrack)**"
 - Automatic dark mode.
 - New name!  Sort-of.  Small change for now, to see if visibility changes.
 
-**The Great-*er* Tab Discarder** is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
+<br>
+
+**The Great-*er* Tab Discarder** is available on
+- [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
 
 <br>
 
 ## Added Features
-- **Migrate Tabs** - Migrate your suspended using a similar suspend technique - OR, you can convert them to proper Discarded tabs!
-- **Discard all tabs at startup** - Prevents Chrome from loading all your tabs at startup, while preserving the tabs in your last session.
+- **Migrate Tabs** - Migrate your suspended tabs from another extension - OR, you can convert them to proper Discarded tabs!
+- **Discard all tabs at startup** - Prevents loading all your tabs at startup, while preserving the tabs in your last session.
 - **Discard other eligible tabs** - Same as "Discard all other tabs" but observes the current auto-discard settings, like skipping Pinned and Audio tabs.
-- **Optional link to Chrome Discards** - Adds a link on the context and popup menus to launch the built-in chrome://discards/ page.
+- **Optional link to Discards debug page** - Adds a link on the context and popup menus to launch the built-in chrome://discards/ page.
 - **Options / Settings** - Will switch to an existing tab if one exists, instead of always launching a new tab.
 - **Removed Google Analytics** - No tracking. No drama.
 
@@ -67,16 +82,16 @@ If you have suggestions or problems using the extension, please [submit a bug or
 
 # Notes from the original author...
 
-"The Great Discarder" started as a clone of another (former) open source chrome extension "The Great Suspender".
+"The Great Discarder" started as a clone of another (former) open source extension "The Great Suspender".
 It was built to take advantage of Chromium's 'tab discarding' functionality which is essentially a native implementation of tab suspension.
 This extension is more robust and performant, both in the resources consumed by the extension, and the memory savings of the tab suspension.
-It is also compatible with chrome tab history syncing.
+It is also compatible with tab history syncing.
 
 
 ## Install as a local extension from source
 
 1. Download the **[latest release](https://github.com/rkodey/the-great-er-discarder-er/releases)** and unarchive to your preferred location (whichever suits you).
-2. Using **Google Chrome**, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
+2. Navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
 3. Click on the `Load unpacked extension...` button.
 4. Browse to the src directory of the downloaded, un-archived release and confirm.
 

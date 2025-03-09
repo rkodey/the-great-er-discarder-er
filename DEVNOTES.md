@@ -6,7 +6,7 @@
 
 # Developer Notes
 
-## tab state "lastAccessed"
+## Tab state "lastAccessed"
 
 The [`lastAccessed`](https://developer.chrome.com/docs/extensions/reference/api/tabs)
 API looks like it almost does what we need, but it tracks slightly different
@@ -23,3 +23,15 @@ prematurely discard tabs held active for a long time.
 
 <br>
 
+## Tab migration
+
+### "Suspender" type URL format
+- uri is unencoded at the end -- their code explicitly notes this
+  > chrome-extension://`EXTID`/suspended.html#ttl=`TITLE`&pos=0&uri=`URI`
+
+
+### "Tab Profiler" URL format
+- 
+  > chrome-extension://`EXTID`/park.html?title=`TITLE`&url=`URI`&tabId=`INT`&sessionId=`INT`&icon=data%3Aimage%2Fpng%3Bbase64%2C`data`
+
+<br>

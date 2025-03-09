@@ -6,11 +6,12 @@
 
 # Change Log
 
-## 1.1.1 - ( In Progress )
+## 1.2.0 - ( In Progress )
+- New: Migrate `park.html` tabs from "**Tab Suspender**".
 - New: Tab Groups are now ( optionally ) displayed on the Profiler page.
 
 ## 1.1.0 - Feb 2025
-- New: Migrate suspended tabs from several other extensions, like "The Marvellous Suspender" and "The Great Suspender (notrack)"
+- New: Migrate `suspended.html` tabs from several other extensions, like "**The Marvellous Suspender**" and "**The Great Suspender (notrack)**"
 - New: Automatic dark mode
 - New Name!  Sort-of.  Small change for now, to see if visibility changes.
 

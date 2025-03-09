@@ -12,39 +12,39 @@
   }
 
   function updatePage() {
-    // console.log('fetchInfo');
-    let hosts   = {};
+    let found   = {};
     let aTabs   = [];
     let nLimit  = 1;
 
-    const knownHosts  = {
-      'bboojcojcpjjojafogcbkpfmllncnbdj'  : 'The Great-er Tab Discarder ( this extension! )',
+    const knownExtensions  = {
       'noogafoofpebimajpfpamcfhoaifemoa'  : 'The Marvellous Suspender',
       'klbibkeccnjlkjkiokjodocebajanakg'  : 'The Great Suspender',
       'ahkbmjhfoplmfkpncgoedjgkajkehcgo'  : 'The Great Suspender (notrack)',
+      'fiabciakcmgepblmdkmemdbbkilneeeh'  : 'Tab Suspender',
     }
+    knownExtensions[chrome.runtime.id]    = 'The Great-<span class="italic">er</span> Tab Discarder ( this extension! )';
 
     chrome.tabs.query({}, function (tabs) {
 
       for (let i  = 0; i < tabs.length; ++i) {
         const tab = tabs[i];
         const url = new URL(tab.url);
-        if (url.protocol.toLowerCase() === 'chrome-extension:'
-          && url.pathname.match(/\/suspended.html$/i)
+        if (url.protocol.match(/extension:$/i)
+          && url.pathname.match(/\/(suspended|park).html$/i)
           // && url.host.toLowerCase() !== chrome.runtime.id
           ) {
+          // console.log(url);
           aTabs.push({ tab, url });
-          hosts[knownHosts[url.host] ?? url.host]++;
+          found[knownExtensions[url.host] ?? url.host]++;
         }
       }
-      // nLimit = aTabs.length;
 
-      const nHosts  = Object.keys(hosts).length;
+      const nHosts  = Object.keys(found).length;
 
       const suspendedDiv = document.getElementById('suspendedDiv');
       if (suspendedDiv) {
         suspendedDiv.innerHTML = `Found ${aTabs.length} suspended tab${plural(aTabs.length)} from ${nHosts} extension${plural(nHosts)}<br>
-        <br>${Object.keys(hosts).join('<br>')}`;
+        <br>${Object.keys(found).join('<br>')}`;
 
       }
 
@@ -61,15 +61,18 @@
       const migrateBtn = document.getElementById('migrateBtn');
       if (migrateBtn) {
         setButton(migrateBtn, 'Migrate', nLimit);
-        // migrateBtn.innerText = `Migrate ${aTabs.length} tab${plural(aTabs.length)}`;
+
+        // To migrate a tab, simply drop in this extension's ID into the host, and update the pathname.  QueryString is maintained.
         migrateBtn.onclick = function () {
           while (aTabs.length && nLimit > 0) {
             nLimit--;
             const obj = aTabs.shift();
             // console.log(obj.url);
-            obj.url.host      = chrome.runtime.id;
-            obj.url.pathname  = '/html/suspended.html'
-            chrome.tabs.update(obj.tab.id, { url: obj.url.href });
+            if (obj.url.host   != chrome.runtime.id) {
+              obj.url.host      = chrome.runtime.id;
+              obj.url.pathname  = '/html/suspended.html'
+              chrome.tabs.update(obj.tab.id, { url: obj.url.href });
+            }
           }
           document.location.href = '/html/migrate.html';
           return false;
@@ -94,19 +97,23 @@
       const discardBtn = document.getElementById('discardBtn');
       if (discardBtn) {
         setButton(discardBtn, 'Convert', nLimit);
-        // discardBtn.innerText = `Convert ${aTabs.length} tab${plural(aTabs.length)}`;
+
+        // To convert to a Discard tab, grab the uri, tell the browser to load that URI, wait for the tab to get past "loading", then discard it.
         discardBtn.onclick = function () {
           while (aTabs.length && nLimit > 0) {
             nLimit--;
             const obj = aTabs.shift();
+
             const [query, uri] = obj.url.hash.split(/&uri=/i);
-            chrome.tabs.update(obj.tab.id, { url: uri }, function(tab) {
+            const str_uri = uri || obj.url.searchParams.get('url');   // Get the url from both formats
+            chrome.tabs.update(obj.tab.id, { url: str_uri }, function(tab) {
               waitForTab(tab.id, function(id) {
                 chrome.tabs.discard(id, function() {
                   updatePage();
                 });
               });
             });
+
           }
           return false;
         }

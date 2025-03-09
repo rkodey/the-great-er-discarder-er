@@ -1,8 +1,7 @@
 {
-
   "name": "the-great-er-discarder-er",
-  "description": "Helps Chrome load faster and run quicker by freeing up memory and resources used by inactive or old tabs. No tracking. No drama.",
-  "version": "1.1.0",
+  "description": "Helps your browser load and run faster by freeing up memory and resources used by inactive or old tabs. No tracking. No drama.",
+  "version": "1.2.0",
 
   "keywords": [ "chrome", "extension", "addon", "memory", "tab", "discard", "suspend" ],
   "author": "rkodey (https://github.com/rkodey)",
