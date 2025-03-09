@@ -31,7 +31,7 @@
 
     } else if (status === 'tempWhitelist') {
       statusDetail = 'Tab suspension paused. <a href="#">Unpause</a>';
-      statusIconClass = 'fa fa-pause';
+      statusIconClass = 'fa fa-pause-circle';
       message = 'undoTempWhitelist';
 
     } else if (status === 'never') {
@@ -40,11 +40,11 @@
 
     } else if (status === 'noConnectivity') {
       statusDetail = 'No network connection.';
-      statusIconClass = 'fa fa-pause';
+      statusIconClass = 'fa fa-pause-circle';
 
     } else if (status === 'charging') {
       statusDetail = 'Connected to power source.';
-      statusIconClass = 'fa fa-pause';
+      statusIconClass = 'fa fa-pause-circle';
     }
 
     if (document.getElementsByTagName('a')[0]) {
@@ -111,6 +111,7 @@
     addClickListener('openOptionsTab');
     addClickListener('openDiscardsTab');
     addClickListener('openProfilerTab');
+    addClickListener('debugReload');
 
     chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, function (options) {
       setVisibility('showDiscardsLinkGroup', options.addDiscardsMenu);
@@ -130,6 +131,7 @@
       setVisibility('discardOne', discardOneVisible);
       setVisibility('whitelist', whitelistVisible);
       setVisibility('tempWhitelist', pauseVisible);
+      setVisibility('debugReload', !(chrome.runtime.getManifest().update_url));
       setStatus(status);
 
     });

@@ -6,10 +6,15 @@ module.exports = function(grunt) {
       concat: {
         options: {},
         dist: {
-          src: [
-            "src/js/db.js", "src/js/storage.js", "src/js/tabStates.js", "src/js/eventPage.js",
-          ],
+          src: [ "src/js/db.js", "src/js/storage.js", "src/js/tabStates.js", "src/js/eventPage.js" ],
           dest: "src/js/background.js",
+        },
+      },
+      watch: {
+        scripts: {
+          files: [ "src/js/db.js", "src/js/storage.js", "src/js/tabStates.js", "src/js/eventPage.js" ],
+          tasks: ['concat'],
+          options: { spawn: false },
         },
       },
       crx: {
@@ -45,7 +50,7 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-crx');
     grunt.registerTask('default', ['concat', 'crx']);
 };
-

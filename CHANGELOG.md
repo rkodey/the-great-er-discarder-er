@@ -6,8 +6,13 @@
 
 # Change Log
 
-## 1.2.0 - ( In Progress )
-- New: Migrate `park.html` tabs from "**Tab Suspender**".
+## 1.2.0 - Mar 2025
+- New: Migrate `park.html` tabs from "**Tab Suspender**". ( [Closes #40](https://github.com/rkodey/the-great-er-discarder-er/issues/40) )
+- Fix: "Don't discard this tab for now" ( [Closes #39](https://github.com/rkodey/the-great-er-discarder-er/issues/39) )
+  - Renamed this action to "Pause discarding this tab" to try to clarify / simplify.
+- Fix: Several other issues related to popup and context menu actions.
+  - Several of the popup and context menu actions were not working.
+  - Re-wrote a bunch of the options storage code.
 - New: Tab Groups are now ( optionally ) displayed on the Profiler page.
 
 ## 1.1.0 - Feb 2025

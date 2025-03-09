@@ -5,7 +5,7 @@ var elementIdMap;
 var currentOptions;
 var storage;
 
-chrome.runtime.sendMessage({ action: 'dumpStorage' }, (storage) => {
+chrome.runtime.sendMessage({ action: 'getStorageObject' }, (storage) => {
   globalThis.storage = storage;
   chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, initialize);
 });
@@ -16,16 +16,16 @@ function initialize(options) {
   currentOptions = options;
 
   elementPrefMap = {
-    'onlineCheck': storage.ONLINE_CHECK,
-    'batteryCheck': storage.BATTERY_CHECK,
-    'dontDiscardPinned': storage.IGNORE_PINNED,
-    'dontDiscardAudio': storage.IGNORE_AUDIO,
-    'timeToDiscard': storage.SUSPEND_TIME,
-    'whitelist': storage.WHITELIST,
-    'addContextMenu': storage.ADD_CONTEXT,
-    'syncOptions': storage.SYNC_OPTIONS,
-    'discardAtStartup': storage.DISCARD_STARTUP,
-    'addDiscardsMenu': storage.ADD_DISCARDS
+    'onlineCheck'       : storage.ONLINE_CHECK,
+    'batteryCheck'      : storage.BATTERY_CHECK,
+    'dontDiscardPinned' : storage.IGNORE_PINNED,
+    'dontDiscardAudio'  : storage.IGNORE_AUDIO,
+    'timeToDiscard'     : storage.SUSPEND_TIME,
+    'whitelist'         : storage.WHITELIST,
+    'addContextMenu'    : storage.ADD_CONTEXT,
+    'syncOptions'       : storage.SYNC_OPTIONS,
+    'discardAtStartup'  : storage.DISCARD_STARTUP,
+    'addDiscardsMenu'   : storage.ADD_DISCARDS
   };
   elementIdMap = invert(elementPrefMap);
 
@@ -165,7 +165,7 @@ async function saveChanges(elements) {
 
     //clean up whitelist before saving
     if (pref === storage.WHITELIST) {
-      newValue = (await chrome.runtime.sendMessage({ action: 'cleanupWhitelist', value: newValue })).value;
+      newValue = (await chrome.runtime.sendMessage({ action: 'cleanWhitelist', value: newValue })).value;
     }
 
     //if interval has changed then reset the tab timers
@@ -180,10 +180,8 @@ async function saveChanges(elements) {
   // console.log(['saveChanges context',options[storage.ADD_CONTEXT], options[storage.ADD_DISCARDS]]);
   chrome.runtime.sendMessage({ action: 'updateContextMenuItems', visible: options[storage.ADD_CONTEXT], discards: options[storage.ADD_DISCARDS] });
 
-  //save option
   await chrome.runtime.sendMessage({ action: 'setOptions', options });
-  // Push out all our saved settings to sync storage.
-  await chrome.runtime.sendMessage({ action: 'syncOptions', options });
+  // sync options are now saved within setOptions
 }
 
 function closeSettings() {

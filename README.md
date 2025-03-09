@@ -34,12 +34,15 @@ Tab discarding was added for a reason, as it allows the browser to natively free
 
 <br>
 
-## Mar 2025 ( In Progress )
+## What's New
+see [CHANGELOG.md](./CHANGELOG.md) for full details.
+
+### Mar 2025
 - Migrate `park.html` tabs from "**Tab Suspender**".
+- Fixed several issues ( introduced by Manifest V3 ) affecting popup and context menu actions.
 - Tab Groups are now ( optionally ) displayed on the Profiler page.
 
-
-## Feb 2025 What's New
+### Feb 2025
 - Updated to "Manifest V3" so no more warning messages from Chrome!
 - Migrate `suspended.html` tabs from several other extensions, like "**The Marvellous Suspender**" and "**The Great Suspender (notrack)**"
 - Automatic dark mode.
@@ -47,12 +50,13 @@ Tab discarding was added for a reason, as it allows the browser to natively free
 
 <br>
 
-**The Great-*er* Tab Discarder** is available on
-- [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp).
+## Installation
+- [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp)
+- Microsoft Edge Add-ons ( coming soon )
 
 <br>
 
-## Added Features
+## Added Features ( beyond the original )
 - **Migrate Tabs** - Migrate your suspended tabs from another extension - OR, you can convert them to proper Discarded tabs!
 - **Discard all tabs at startup** - Prevents loading all your tabs at startup, while preserving the tabs in your last session.
 - **Discard other eligible tabs** - Same as "Discard all other tabs" but observes the current auto-discard settings, like skipping Pinned and Audio tabs.
@@ -60,13 +64,11 @@ Tab discarding was added for a reason, as it allows the browser to natively free
 - **Options / Settings** - Will switch to an existing tab if one exists, instead of always launching a new tab.
 - **Removed Google Analytics** - No tracking. No drama.
 
-see [CHANGELOG.md](./CHANGELOG.md) for full **Release Notes**
-
-see [DEVNOTES.md](./DEVNOTES.md) for additional Developer Notes
-
 <br>
 
 If you have suggestions or problems using the extension, please [submit a bug or a feature request on github](https://github.com/rkodey/the-great-er-discarder-er/issues).
+
+see [DEVNOTES.md](./DEVNOTES.md) for additional Developer Notes
 
 <br>
 

@@ -30,6 +30,7 @@
         <br />
         <select id="timeToDiscard" class="option" style="margin-top: 8px">
           <option value="0">Never</option>
+          <option value="0.05">3 seconds</option>
           <option value="0.33">20 seconds</option>
           <option value="1">1 min</option>
           <option value="5">5 mins</option>
@@ -101,13 +102,13 @@ You can also specify regular expressions by enclosing the text in forward slashe
         <label for="addContextMenu" class="cbLabel">Add The Great-<span class="italic">er</span> Tab Discarder to right-click context menu</label>
       </div>
       <div class="formRow">
-        <input type="checkbox" id="addDiscardsMenu" class="option" />
-        <label for="addDiscardsMenu" class="cbLabel">Enable link to chrome://discards/ on context and popup menus</label>
-      </div>
-      <div class="formRow">
         <input type="checkbox" id="syncOptions" class="option" />
         <label for="syncOptions" class="cbLabel">Sync settings between different systems</label>
         <div id="syncNote" class="note">Turning this on will overwrite settings on all synced systems</div>
+      </div>
+      <div class="formRow">
+        <input type="checkbox" id="addDiscardsMenu" class="option" />
+        <label for="addDiscardsMenu" class="cbLabel">Enable debug links on context and popup menus</label>
       </div>
 
       <hr />

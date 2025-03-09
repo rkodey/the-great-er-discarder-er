@@ -19,7 +19,7 @@
       <i class="fa fa-stop"></i> <span class="optionText">Discard this tab</span>
     </div>
     <div class="menuOption hidden" id="tempWhitelist">
-      <i class="fa fa-pause"></i> <span class="optionText">Don't discard this tab for now</span>
+      <i class="fa fa-pause-circle"></i> <span class="optionText">Pause discarding this tab</span>
     </div>
     <div class="menuOption hidden" id="whitelist">
       <i class="fa fa-ban"></i> <span class="optionText">Never discard this site</span>
@@ -51,15 +51,19 @@
 
   <div class="group optsSettings">
     <div class="menuOption" id="openOptionsTab">
-      <i class="fa fa-wrench"></i> <span class="optionText">Settings</span>
+      <i class="fa fa-gear"></i> <span class="optionText">Settings</span>
     </div>
-    <div class="hidden" id="showDiscardsLinkGroup">
-      <div class="menuOption" id="openProfilerTab">
-        <i class="fa fa-list"></i> <span class="optionText">Tab Profiler</span>
-      </div>
-      <div class="menuOption" id="openDiscardsTab">
-        <i class="fa fa-bug"></i> <span class="optionText">chrome://discards/</span>
-      </div>
+  </div>
+
+  <div class="group hidden" id="showDiscardsLinkGroup">
+    <div class="menuOption" id="openProfilerTab">
+      <i class="fa fa-list"></i> <span class="optionText">Tab Profiler</span>
+    </div>
+    <div class="menuOption" id="openDiscardsTab">
+      <i class="fa fa-chrome"></i> <span class="optionText">chrome://discards/</span>
+    </div>
+    <div class="menuOption hidden" id="debugReload">
+      <i class="fa fa-refresh"></i> <span class="optionText">Reload</span>
     </div>
   </div>
 
