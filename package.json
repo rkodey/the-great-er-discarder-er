@@ -18,12 +18,13 @@
 
   "scripts": {
     "build": "grunt",
-    "watch": "grunt watch",
+    "build-watch": "grunt build-watch",
     "generate-key": "openssl genrsa -out key.pem",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "",
   "devDependencies": {
+    "@types/chrome": "~0.0.308",
     "grunt": "~1.6",
     "grunt-contrib-concat": "~2.1",
     "grunt-contrib-watch": "~1.1",
