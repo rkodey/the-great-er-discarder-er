@@ -12,7 +12,7 @@ Full Manifest V3 support in Chrome and Edge.
 
 **Welcome** to all users coming from "**The Marvellous Suspender**", "**The Great Suspender (notrack)**", "**Tab Suspender**", or other similar extensions!
 
-> Is your current tab "Suspender" extension showing a warning "This extension may soon no longer be supported" ?<br>
+> Is your tab "Suspender" extension showing a warning "This extension may soon no longer be supported" ?<br>
 
 Don't risk losing your suspended tabs!<br>
 This extension can migrate your existing suspended tabs,
@@ -38,20 +38,25 @@ Tab discarding was added for a reason, as it allows the browser to natively free
 see [CHANGELOG.md](./CHANGELOG.md) for full details.
 
 ### Mar 2025
-- Migrate `park.html` tabs from "**Tab Suspender**".
-- Fixed several issues ( introduced by Manifest V3 ) affecting popup and context menu actions.
-- Tab Groups are now ( optionally ) displayed on the Profiler page.
+- Migrate `park.html` tabs from "**Tab Suspender**"
+- Fixed several issues ( introduced by Manifest V3 ) affecting popup and context menu actions
+- Fixed "Discard at startup" to handle occasional browser startup quirks
+- Rearrange the tab migration page to simplify it a bit
+- Tab Groups are now ( optionally ) displayed on the Profiler page
 
 ### Feb 2025
 - Updated to "Manifest V3" so no more warning messages from Chrome!
 - Migrate `suspended.html` tabs from several other extensions, like "**The Marvellous Suspender**" and "**The Great Suspender (notrack)**"
-- Automatic dark mode.
-- New name!  Sort-of.  Small change for now, to see if visibility changes.
+- Automatic dark mode
+- New name!  ( Sort-of. )  Small change for now, to see if visibility changes
 
 <br>
 
 ## Installation
-- [Chrome Web Store](https://chrome.google.com/webstore/detail/the-great-er-discarder-er/plpkmjcnhhnpkblimgenmdhghfgghdpp)
+
+Help others find this extension -- **submit a rating** on the App Store(s)!
+
+- [Chrome Web Store](https://chromewebstore.google.com/detail/the-great-er-tab-discarder/plpkmjcnhhnpkblimgenmdhghfgghdpp)
 - Microsoft Edge Add-ons ( coming soon )
 
 <br>

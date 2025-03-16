@@ -1,9 +1,7 @@
 **/Thumbs.db
 **/*.pem
+.vscode/bookmarks.json
 /node_modules
 /build/crx/*.crx
 /build/zip/*.zip
-.idea/*
-/src/*.sublime-workspace
-/src/*.sublime-project
 /src/js/background.js

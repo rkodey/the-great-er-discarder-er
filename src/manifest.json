@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "The Great-er Tab Discarder",
-  "description": "Helps your browser load and run faster by freeing up memory and resources used by inactive or old tabs. No tracking. No drama.",
-  "version": "1.2.0",
+  "description": "Compatible with latest Chrome! Helps your browser load and run faster by freeing up memory and resources used by old inactive tabs.",
+  "version": "1.2.1",
 
   "permissions": [ "tabs", "storage", "contextMenus", "alarms", "favicon" ],
   "optional_permissions": ["tabGroups"],

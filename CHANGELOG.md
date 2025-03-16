@@ -6,22 +6,31 @@
 
 # Change Log
 
+## 1.2.1 - Mar 2025
+- Fix: "Discard at startup" would occasionally get skipped during browser startup
+- Rearrange the tab migration page to simplify it a bit
+
 ## 1.2.0 - Mar 2025
-- New: Migrate `park.html` tabs from "**Tab Suspender**". ( [Closes #40](https://github.com/rkodey/the-great-er-discarder-er/issues/40) )
-- Fix: "Don't discard this tab for now" ( [Closes #39](https://github.com/rkodey/the-great-er-discarder-er/issues/39) )
-  - Renamed this action to "Pause discarding this tab" to try to clarify / simplify.
-- Fix: Several other issues related to popup and context menu actions.
-  - Several of the popup and context menu actions were not working.
-  - Re-wrote a bunch of the options storage code.
-- New: Tab Groups are now ( optionally ) displayed on the Profiler page.
+- New: Migrate `park.html` tabs from "**Tab Suspender**"
+  ( [Closes #40](https://github.com/rkodey/the-great-er-discarder-er/issues/40) )
+- Fix: "Don't discard this tab for now"
+  ( [Closes #39](https://github.com/rkodey/the-great-er-discarder-er/issues/39) )
+  - Renamed this action to "Pause discarding this tab" to try to clarify / simplify
+- Fix: Several other issues related to popup and context menu actions
+  - Several of the popup and context menu actions were not working
+  - Re-wrote a bunch of the options storage code
+- New: Tab Groups are now ( optionally ) displayed on the Profiler page
 
 ## 1.1.0 - Feb 2025
-- New: Migrate `suspended.html` tabs from several other extensions, like "**The Marvellous Suspender**" and "**The Great Suspender (notrack)**"
+- New: Migrate `suspended.html` tabs from several other extensions,
+  like "**The Marvellous Suspender**" and "**The Great Suspender (notrack)**"
+  ( [Closes #35](https://github.com/rkodey/the-great-er-discarder-er/issues/35) )
 - New: Automatic dark mode
-- New Name!  Sort-of.  Small change for now, to see if visibility changes.
+- New Name!  Sort-of.  Small change for now, to see if visibility changes
 
 ## 1.0.1 - Feb 2025
-- Fix tempWhitelist bug introduced in the Manifest V3 changes ( [Closes #33](https://github.com/rkodey/the-great-er-discarder-er/issues/33) )
+- Fix tempWhitelist bug introduced in the Manifest V3 changes
+  ( [Closes #33](https://github.com/rkodey/the-great-er-discarder-er/issues/33) )
 - Update the Profiler page to show tab group and pinned status
 - Update the Profiler page to group by Window - thanks again to ( [vapier](https://github.com/vapier) )
 - Add a link to the Profiler page in the extension popup
@@ -33,7 +42,8 @@
 
 ## 0.2.1 - Oct 2021
 - Add new popup command to discard all eligible tabs based on options (aka no force) ( Closes upstream #18 )
-- Discard at startup option has its own group and visibility ( ( [Closes #9](https://github.com/rkodey/the-great-er-discarder-er/issues/9) ) - thanks @LordXerus )
+- Discard at startup option has its own group and visibility
+  ( ( [Closes #9](https://github.com/rkodey/the-great-er-discarder-er/issues/9) ) - thanks @LordXerus )
 - Add option to enable links to the browser Discards page ( Closes upstream #39 )
 - Update options tab to switch to an existing tab instead of always opening a new tab
 - Update HTML to be a bit easier to read with heavier font and tweaked layout
