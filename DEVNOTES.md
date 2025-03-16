@@ -26,12 +26,12 @@ prematurely discard tabs held active for a long time.
 ## Tab migration
 
 ### "Suspender" type URL format
-- uri is unencoded at the end -- their code explicitly notes this
+- uri is NOT encoded at the end -- their code explicitly notes this
   > chrome-extension://`EXTID`/suspended.html#ttl=`TITLE`&pos=0&uri=`URI`
 
 
 ### "Tab Profiler" URL format
-- 
+- The querystring looks correctly coded here, and using URL.searchParams produces good results so far
   > chrome-extension://`EXTID`/park.html?title=`TITLE`&url=`URI`&tabId=`INT`&sessionId=`INT`&icon=data%3Aimage%2Fpng%3Bbase64%2C`data`
 
 <br>
