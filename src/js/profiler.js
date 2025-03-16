@@ -3,6 +3,8 @@
 
   'use strict';
 
+  const browser   = navigator.userAgent.match(/Chrome\/.*Edg\//i) ? 'edge' : 'chrome';
+
   function generateTabInfo(table, info, first) {
 
     const
@@ -27,7 +29,7 @@
 
     const group       = row.insertCell();
     group.className   = 'center';
-    group.innerHTML   = groupName ? `<span class="group ${groupColor}">${groupName}</span>` : groupId;
+    group.innerHTML   = groupName ? `<span class="group ${browser} ${groupColor}">${groupName}</span>` : groupId;
 
     const title       = row.insertCell();
     title.className   = 'title';
