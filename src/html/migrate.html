@@ -22,44 +22,38 @@
     </div>
 
     <div class="content">
+
       <h2>Migrate from "Suspender" extensions ( BETA )</h2>
       <hr />
 
-      <p>
-        <div>If you're stuck with one of the "Suspender" extensions that <span class="bold">may soon no longer be supported by Chrome</span>...</div>
-        <h2></h2>
-        <ol class="orderedList">
-          <li><span class="bold">Save a backup copy of your tabs.</span><br>
-              Some "Suspender" extensions have this built-in. Export a fresh copy.</li>
-          <li><span class="bold">No, really. Back them up.</span><br>
-              The migration here is super simple, but just in case you should really have a backup.</li>
-          <li><span class="bold">What's "Migrate" vs "Convert" below</span><br>
-              <div class="formRow">Migrate simulates Suspended tabs like you might be used to.  It's old-school.</div>
-              <div class="formRow">
-                Convert will un-Suspend your tabs, then tell your browser to immediately Discard them.
-                <span class="bold">This is the preferred option, native to the browser</span>, but removes your "Suspended" placeholder page.
-              </div>
-          </li>
-        </ol>
-      </p>
+      <!-- <div>If you're stuck with one of the "Suspender" extensions that <span class="bold">may soon no longer be supported by Chrome</span>...</div> -->
+      <h2>Make a backup copy of your tabs.</h2>
+      <div class="formRow">
+        Some "Suspender" extensions have an export feature built-in.<br>
+        Export a fresh copy.<br>
+      </div>
+      <div class="formRow"></div>
+      <div class="formRow"></div>
       <hr />
 
-      <div id="suspendedDiv"></div>
-      <div id="notFoundDiv" class="none">
-        If you're using a tab Suspending browser extension, I'm not recognizing it.
+      <div id="suspendedDiv" class="formRow"></div>
+      <div id="extensionDiv" class="formRow"></div>
+      <div id="nextTab" class="formRow"></div>
+      <div id="notFoundDiv" class="formRow none">
+        <br>
+        If you're using a tab Suspending browser extension, I don't recognizing it.
         Please <a href="https://github.com/rkodey/the-great-er-discarder-er/issues" target="_blank">submit a new issue</a> and include:
         <ol class="orderedList">
           <li>The <span class="bold">name of the extension</span> you're using</li>
           <li>An <span class="bold">example URL</span> of a suspended tab from your browser</li>
         </ol>
       </div>
-      <hr />
 
       <div id="migrateDiv" class="none">
         <div>
           <table>
             <tr><td class="center" colspan="3">
-              <div>( you made a backup, right? )</div>
+              <!-- <div>( you made a backup, right? )</div> -->
             </td></tr>
             <tr>
               <td class="center">
@@ -79,16 +73,23 @@
             <tr><td class="center" colspan="3">
               <br>
               <div>
-                <div id="nextTab"></div>
-                <br>
-                <div class="formRow">
                 <input type="checkbox" id="processAll" class="option" />
                 <label for="processAll" class="cbLabel">Process all tabs</label>
-                </div>
+              </div>
             </td></tr>
           </table>
         </div>
         <hr />
+
+        <div>
+          <h2>What's "Migrate" vs "Convert" ?</h2>
+          <div class="formRow">Migrate simulates Suspended tabs like you might be used to.  It's old-school.</div>
+          <div class="formRow">
+            Convert will un-Suspend your tabs, then tell your browser to immediately Discard them.
+            <span class="bold">This is the preferred option</span>, native to the browser, but removes your "Suspended" placeholder page.
+          </div>
+        </div>
+
       </div>
 
     </div>

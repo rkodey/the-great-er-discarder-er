@@ -41,11 +41,13 @@
 
       const nHosts  = Object.keys(found).length;
 
-      const suspendedDiv = document.getElementById('suspendedDiv');
-      if (suspendedDiv) {
-        suspendedDiv.innerHTML = `Found ${aTabs.length} suspended tab${plural(aTabs.length)} from ${nHosts} extension${plural(nHosts)}<br>
-        <br>${Object.keys(found).join('<br>')}`;
-
+      const suspendedDiv  = document.getElementById('suspendedDiv');
+      const extensionDiv  = document.getElementById('extensionDiv');
+      if (suspendedDiv && extensionDiv) {
+        const strTabs           = `<H2>Found ${aTabs.length} suspended tab${plural(aTabs.length)}`;
+        const strExtensions     = nHosts > 0 ? `from ${nHosts} extension${plural(nHosts)}</H2>` : '';
+        suspendedDiv.innerHTML  = `${strTabs} ${strExtensions}`;
+        extensionDiv.innerHTML  = `${Object.keys(found).join('<br>')}`;
       }
 
       const migrateDiv = document.getElementById('migrateDiv');
@@ -56,28 +58,6 @@
       const notFoundDiv = document.getElementById('notFoundDiv');
       if (notFoundDiv && !aTabs.length) {
         notFoundDiv.style.display = 'block';
-      }
-
-      const migrateBtn = document.getElementById('migrateBtn');
-      if (migrateBtn) {
-        setButton(migrateBtn, 'Migrate', nLimit);
-
-        // To migrate a tab, simply drop in this extension's ID into the host, and update the pathname.  QueryString is maintained.
-        migrateBtn.onclick = function () {
-          while (aTabs.length && nLimit > 0) {
-            nLimit--;
-            const obj = aTabs.shift();
-            // console.log(obj.url);
-            if (obj.url.host   != chrome.runtime.id) {
-              obj.url.host      = chrome.runtime.id;
-              obj.url.pathname  = '/html/suspended.html'
-              chrome.tabs.update(obj.tab.id, { url: obj.url.href });
-            }
-          }
-          document.location.href = '/html/migrate.html';
-          return false;
-        };
-
       }
 
       function waitForTab(id, fn, nRetry = 20) {
@@ -92,6 +72,31 @@
             fn(id);
           }
         });
+      }
+
+      const migrateBtn = document.getElementById('migrateBtn');
+      if (migrateBtn) {
+        setButton(migrateBtn, 'Migrate', nLimit);
+
+        // To migrate a tab, simply drop in this extension's ID into the host, and update the pathname.  QueryString is maintained.
+        migrateBtn.onclick = function () {
+          while (aTabs.length && nLimit > 0) {
+            nLimit--;
+            const obj = aTabs.shift();
+
+            if (obj.url.host   != chrome.runtime.id) {
+              obj.url.host      = chrome.runtime.id;
+              obj.url.pathname  = '/html/suspended.html'
+              chrome.tabs.update(obj.tab.id, { url: obj.url.href });
+              waitForTab(obj.tab.id, function(id) {
+                updatePage();
+              });
+            }
+          }
+          document.location.href = '/html/migrate.html';
+          return false;
+        };
+
       }
 
       const discardBtn = document.getElementById('discardBtn');
@@ -123,6 +128,7 @@
       const nextTab = document.getElementById('nextTab');
       if (processAll && nextTab && aTabs.length) {
         nextTab.innerHTML = `Next tab: <img src="${aTabs[0].tab.favIconUrl}" class="favicon" /><span style="bold">${aTabs[0].tab.title}</span>`;
+
         processAll.onclick = function () {
           nLimit = processAll.checked ? aTabs.length : 1;
           setButton(migrateBtn, 'Migrate', nLimit);
