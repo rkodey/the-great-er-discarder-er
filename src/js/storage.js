@@ -6,7 +6,7 @@
   var self = {
     ONLINE_CHECK        : 'onlineCheck',
     BATTERY_CHECK       : 'batteryCheck',
-    SUSPEND_TIME        : 'timeToDiscard',
+    DISCARD_TIME        : 'timeToDiscard',
     IGNORE_PINNED       : 'dontDiscardPinned',
     IGNORE_FORMS        : 'dontDiscardForms',
     IGNORE_AUDIO        : 'dontDiscardAudio',
@@ -37,7 +37,7 @@
     defaults[self.IGNORE_AUDIO]     = true;
     defaults[self.IGNORE_CACHE]     = false;
     defaults[self.ADD_CONTEXT]      = true;
-    defaults[self.SUSPEND_TIME]     = '60';
+    defaults[self.DISCARD_TIME]     = '60';
     defaults[self.WHITELIST]        = '';
     defaults[self.SYNC_OPTIONS]     = true;
     defaults[self.DISCARD_STARTUP]  = false;

@@ -30,12 +30,12 @@
       statusIconClass = 'fa fa-thumb-tack';
 
     } else if (status === 'tempWhitelist') {
-      statusDetail = 'Tab suspension paused. <a href="#">Unpause</a>';
+      statusDetail = 'Tab discarding paused. <a href="#">Unpause</a>';
       statusIconClass = 'fa fa-pause-circle';
       message = 'undoTempWhitelist';
 
     } else if (status === 'never') {
-      statusDetail = 'Automatic tab suspension disabled.';
+      statusDetail = 'Automatic tab discarding disabled.';
       statusIconClass = 'fa fa-ban';
 
     } else if (status === 'noConnectivity') {

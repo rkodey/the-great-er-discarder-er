@@ -20,7 +20,7 @@ function initialize(options) {
     'batteryCheck'      : storage.BATTERY_CHECK,
     'dontDiscardPinned' : storage.IGNORE_PINNED,
     'dontDiscardAudio'  : storage.IGNORE_AUDIO,
-    'timeToDiscard'     : storage.SUSPEND_TIME,
+    'timeToDiscard'     : storage.DISCARD_TIME,
     'whitelist'         : storage.WHITELIST,
     'addContextMenu'    : storage.ADD_CONTEXT,
     'syncOptions'       : storage.SYNC_OPTIONS,
@@ -62,7 +62,7 @@ function initialize(options) {
     populateOption(element, options[pref]);
   }
 
-  setAutoDiscardOptionsVisibility(options[storage.SUSPEND_TIME] > 0);
+  setAutoDiscardOptionsVisibility(options[storage.DISCARD_TIME] > 0);
   setSyncNoteVisibility(!options[storage.SYNC_OPTIONS]);
 }
 
@@ -142,7 +142,7 @@ function handleChange(element) {
       interval;
 
     //add specific screen element listeners
-    if (pref === storage.SUSPEND_TIME) {
+    if (pref === storage.DISCARD_TIME) {
       interval = getOptionValue(element);
       setAutoDiscardOptionsVisibility(interval > 0);
 
@@ -169,7 +169,7 @@ async function saveChanges(elements) {
     }
 
     //if interval has changed then reset the tab timers
-    if (pref === storage.SUSPEND_TIME && oldValue !== newValue) {
+    if (pref === storage.DISCARD_TIME && oldValue !== newValue) {
       chrome.runtime.sendMessage({ action: 'resetTabTimers' });
     }
 

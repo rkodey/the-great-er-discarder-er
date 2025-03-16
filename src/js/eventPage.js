@@ -69,7 +69,7 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
       log(chrome.runtime.lastError.message);
     }
     else {
-      requestTabSuspension(tab);
+      requestTabDiscard(tab);
     }
   });
 });
@@ -311,7 +311,7 @@ async function doTabDiscard(tab, options, tempWhitelist = null) {
   }
 }
 
-function requestTabSuspension(tab, force = false, options = null, tempWhitelist = null) {
+function requestTabDiscard(tab, force = false, options = null, tempWhitelist = null) {
 
   //safety check
   if (typeof(tab) === 'undefined') { return; }
@@ -321,7 +321,7 @@ function requestTabSuspension(tab, force = false, options = null, tempWhitelist 
 
   //if forcing tab discard then skip other checks
   if (force) {
-    log('requestTabSuspension force', force, tab.index, tab.url);
+    log('requestTabDiscard force', force, tab.index, tab.url);
     discardTab(tab);
 
   }
@@ -346,16 +346,16 @@ function clearTabTimer(tabId) {
 
 function resetTabTimer(tab) {
 
-  storage.getOption(storage.SUSPEND_TIME, function (suspendTime) {
+  storage.getOption(storage.DISCARD_TIME, function (discardTime) {
 
-    if (suspendTime === '0') {
+    if (discardTime === '0') {
       log('Clearing timer for tab: ' + tab.id);
       clearTabTimer(tab.id);
     }
     else if (!isDiscarded(tab) && !tab.active && !isSpecialTab(tab)) {
       log('Resetting timer for tab: ' + tab.id);
-      var dateToSuspend = parseInt(Date.now() + (parseFloat(suspendTime) * 1000 * 60));
-      chrome.alarms.create(String(tab.id), {when:  dateToSuspend});
+      const whenToDiscard = parseInt(Date.now() + (parseFloat(discardTime) * 1000 * 60));
+      chrome.alarms.create(String(tab.id), {when: whenToDiscard});
     }
     else {
       log("Skipping tab timer reset: ",tab);
@@ -476,9 +476,9 @@ async function discardAllTabs(args = {}) {
       chrome.windows.get(curWindowId, {populate: true}, function(curWindow) {
         curWindow.tabs.forEach(function (tab) {
           if (!tab.active) {
-            // There's a good argument that requestTabSuspension should NEVER be forced, and should always obey user options
+            // There's a good argument that requestTabDiscard should NEVER be forced, and should always obey user options
             // But for now, only Discard at Startup will use non-forced discards
-            requestTabSuspension(tab, !args.noForce, options, tempWhitelist);
+            requestTabDiscard(tab, !args.noForce, options, tempWhitelist);
           }
         });
       });
@@ -496,7 +496,7 @@ async function discardAllTabsInAllWindows(args = {}) {
     chrome.tabs.query({}, function (tabs) {
       tabs.forEach(function (tab) {
         if (!tab.active) {
-          requestTabSuspension(tab, !args.noForce, options, tempWhitelist);
+          requestTabDiscard(tab, !args.noForce, options, tempWhitelist);
         }
       });
     });
@@ -530,7 +530,7 @@ function reloadAllTabsInAllWindows() {
 function discardSelectedTabs() {
   chrome.tabs.query({highlighted: true, lastFocusedWindow: true}, function (selectedTabs) {
     selectedTabs.forEach(function (tab) {
-      requestTabSuspension(tab, true);
+      requestTabDiscard(tab, true);
     });
   });
 }
@@ -549,21 +549,21 @@ function reloadTab(tab) {
   chrome.tabs.reload(tab.id);
 }
 
-//get info for a tab. defaults to currentTab if no id passed in
-//returns the current tab suspension and timer states. possible suspension states are:
+// get info for a tab. defaults to currentTab if no id passed in
+// returns the current tab discard and timer states. possible discard states are:
 
-//normal: a tab that will be discarded
-//special: a tab that cannot be discarded
-//discarded: a tab that is discarded
-//never: suspension timer set to 'never discard'
-//formInput: a tab that has a partially completed form (and IGNORE_FORMS is true)
-//audible: a tab that is playing audio (and IGNORE_AUDIO is true)
-//tempWhitelist: a tab that has been manually paused
-//pinned: a pinned tab (and IGNORE_PINNED is true)
-//whitelisted: a tab that has been whitelisted
-//charging: computer currently charging (and BATTERY_CHECK is true)
-//noConnectivity: internet currently offline (and ONLINE_CHECK is true)
-//unknown: an error detecting tab status
+// normal         : a tab that will be discarded
+// special        : a tab that cannot be discarded
+// discarded      : a tab that is discarded
+// never          : discard timer set to 'never discard'
+// formInput      : a tab that has a partially completed form (and IGNORE_FORMS is true)
+// audible        : a tab that is playing audio (and IGNORE_AUDIO is true)
+// tempWhitelist  : a tab that has been manually paused
+// pinned         : a pinned tab (and IGNORE_PINNED is true)
+// whitelisted    : a tab that has been whitelisted
+// charging       : computer currently charging (and BATTERY_CHECK is true)
+// noConnectivity : internet currently offline (and ONLINE_CHECK is true)
+// unknown        : an error detecting tab status
 function requestTabInfo(tab, callback) {
 
   var info = {
@@ -639,7 +639,7 @@ function processActiveTabStatus(tab, callback) {
       status = 'audible';
 
     //check never discard
-    } else if (options[storage.SUSPEND_TIME] === "0") {
+    } else if (options[storage.DISCARD_TIME] === "0") {
       status = 'never';
 
     //check running on battery
@@ -820,7 +820,7 @@ function contextMenuListener(info, tab) {
       discardHighlightedTab();
       break;
 
-    case 'dont-suspend-for-now':
+    case 'dont-discard-for-now':
       temporarilyWhitelistHighlightedTab();
       break;
 
@@ -858,21 +858,21 @@ function buildContextMenu(showContextMenu, showDiscards) {
 
   if (showContextMenu) {
 
-    //Suspend present tab
+    // discard present tab
     chrome.contextMenus.create({
       id: "discard-tab",
       title: "Discard this tab",
       contexts: allContexts
     });
 
-    //Add present tab to temporary whitelist
+    // Add present tab to temporary whitelist
     chrome.contextMenus.create({
-      id: "dont-suspend-for-now",
+      id: "dont-discard-for-now",
       title: "Pause discarding this tab",
       contexts: allContexts
     });
 
-    //Add present tab to permanent whitelist
+    // Add present tab to permanent whitelist
     chrome.contextMenus.create({
       id: "never-discard",
       title: "Never discard this site",
@@ -885,14 +885,14 @@ function buildContextMenu(showContextMenu, showDiscards) {
       type: "separator"
     });
 
-    //Suspend all the tabs
+    // discard all the tabs
     chrome.contextMenus.create({
       id: "discard-others",
       title: "Discard all other tabs",
       contexts: allContexts
     });
 
-    //Unsuspend all the tabs
+    // restore all the tabs
     chrome.contextMenus.create({
       id: "reload-all",
       title: "Restore all discarded tabs",
