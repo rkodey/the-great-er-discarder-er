@@ -6,16 +6,17 @@ const TEMPORARY_WHITELIST = 'temporaryWhitelist';
 
 const extensionActiveIcon = '/img/icon19.png';
 const extensionPausedIcon = '/img/icon19b.png';
-const DEBUG = false;
+const DEBUG               = !(chrome.runtime.getManifest().update_url); // Turn on debug for local unpacked extension
 
 const  log = function(...msg) { if(DEBUG) console.log(...msg); }
-const  err = function(...msg) { if(DEBUG) console.error(...msg); }
 const warn = function(...msg) { if(DEBUG) console.warn(...msg); }
+// const  err = function(...msg) { if(DEBUG) console.error(...msg); }
 
 log('Extension loading...');
 
 // initialize global state vars
-var chargingMode = false;
+var chargingMode          = false;
+var startupDone           = false;
 
 // chrome.alarms.getAll(function (alarms) {
 //   log(alarms);
@@ -23,18 +24,14 @@ var chargingMode = false;
 //   });
 // });
 
-async function asyncSessionGet(name) {
-  const ret = ( await chrome.storage.session.get([ name ]) ) [ name ];
-  log('asyncSessionGet', name, ret);
-  return ret;
-}
-
-async function asyncSessionSet(obj) {
-  log('asyncSessionSet', obj);
-  chrome.storage.session.set(obj);
-}
+log('Registering listeners...');
 
 chrome.runtime.onInstalled.addListener(function() {
+  log('onInstalled');
+  // Fired when the extension is first installed, when the extension is updated to a new version, and when Chrome is updated to a new version.
+  // Fired when an unpacked extension is reloaded
+
+  log('onInstalled getOptions');
   storage.getOptions(function (options) {
     if (options[storage.ADD_CONTEXT]) {
       buildContextMenu(true, options[storage.ADD_DISCARDS]);
@@ -44,7 +41,9 @@ chrome.runtime.onInstalled.addListener(function() {
 
 //reset tabStates on extension load
 chrome.runtime.onStartup.addListener(function () {
-  log('Extension started.');
+  log('onStartup');
+  // Fired when a profile that has this extension installed first starts up.
+  // This event is not fired when an incognito profile is started, even if this extension is operating in 'split' incognito mode.
 
   chrome.alarms.clearAll(function () {
     asyncSessionSet({ [TEMPORARY_WHITELIST]: {} });
@@ -57,16 +56,14 @@ chrome.runtime.onStartup.addListener(function () {
     });
   });
 
-  storage.getOptions(function (options) {
-    // If user has requested Discard at Startup, then discardAllTabs without the forced update.  This allows isExcluded() tabs to survive.
-    if (options[storage.DISCARD_STARTUP]) { discardAllTabs({noForce:true}); }
-  });
+  startupDiscard();
 
 });
 
 //listen for alarms
 chrome.alarms.onAlarm.addListener(function (alarm) {
-  log('alarm fired:', alarm);
+  log('onAlarm', alarm);
+
   chrome.tabs.get(parseInt(alarm.name), function (tab) {
     if (chrome.runtime.lastError) {
       log(chrome.runtime.lastError.message);
@@ -99,12 +96,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     return;
   }
 
-  log('Tab updated: ' + tabId + '. Status: ' + changeInfo.status);
+  // log(`onUpdated: ${tab.index}, ${tab.id}, Tab Status ${tab.status}`);
 
   tabStates.getTabState(tabId, function (previousTabState) {
     chrome.alarms.get(String(tab.id), function (alarm) {
 
-      log('previousTabState',previousTabState);
+      // log('previousTabState', previousTabState);
 
       if (!alarm && changeInfo.status === 'complete') {
         resetTabTimer(tab);
@@ -128,8 +125,8 @@ chrome.contextMenus.onClicked.addListener(contextMenuListener);
 
 
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
-
   log('onActivated', activeInfo);
+
   var tabId = activeInfo.tabId;
   var lastTabId = await asyncSessionGet(CURRENT_TAB_ID);
 
@@ -154,6 +151,37 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
     [PREVIOUS_TAB_ID]: lastTabId,
   });
 });
+
+
+log('Done registering listeners.');
+
+
+function startupDiscard(fCheckIfDone) {
+  warn('startupDiscard');
+  // The main onStartup will not pass in fCheckIfDone, and will thus ignore startupDone and always run
+  if (!fCheckIfDone || !startupDone) {
+    startupDone = true;
+    storage.getOptions(function (options) {
+      // If user has requested Discard at Startup, then discardAllTabsInAllWindows without the forced update.  This allows isExcluded() tabs to survive.
+      if (options[storage.DISCARD_STARTUP]) { discardAllTabsInAllWindows({ noForce: true }); }
+    });
+  }
+}
+
+// chrome.runtime.onStartup wasn't firing on browser start when cache was cleared, so this makes sure we run once
+// onStartup was running 2-3 seconds after this extension loads, so choosing 5 seconds should put us after onStartup has a chance
+setTimeout(function() { startupDiscard(true); }, 5000);
+
+async function asyncSessionGet(name) {
+  const ret = ( await chrome.storage.session.get([ name ]) ) [ name ];
+  log('asyncSessionGet', name, ret);
+  return ret;
+}
+
+async function asyncSessionSet(obj) {
+  log('asyncSessionSet', obj);
+  chrome.storage.session.set(obj);
+}
 
 
 function isDiscarded(tab) {
@@ -202,14 +230,14 @@ function openTab(name) {
   }
 }
 
-async function isExcluded(tab, options) {
-  log('isExcluded', tab.id)
+async function isExcluded(tab, options, tempWhitelist = null) {
+  // log('isExcluded', tab.id)
 
   //check whitelist
   if (checkWhiteList(tab.url, options[storage.WHITELIST])) {
     return true;
   }
-  else if (await checkTemporaryWhiteList(tab.id)) {
+  else if (await checkTemporaryWhiteList(tab.id, tempWhitelist)) {
     return true;
   }
   else if (tab.active) {
@@ -231,15 +259,15 @@ async function isExcluded(tab, options) {
 }
 
 async function getTemporaryWhitelist() {
-  var tempWhitelist = await asyncSessionGet(TEMPORARY_WHITELIST);
+  const tempWhitelist = await asyncSessionGet(TEMPORARY_WHITELIST);
   log('getTemporaryWhitelist', tempWhitelist);
   return tempWhitelist ?? {};
 }
 
-async function checkTemporaryWhiteList(tabId) {
-  var tempWhitelist = await getTemporaryWhitelist();
-  log('checkTemporaryWhiteList', tempWhitelist);
-  return tempWhitelist[tabId];
+async function checkTemporaryWhiteList(tabId, tempWhitelist = null) {
+  // If a tempWhitelist is provided, use it as a cache, otherwise retrieve from storage
+  const list = tempWhitelist ?? await getTemporaryWhitelist();
+  return list[tabId];
 }
 
 function checkWhiteList(url, whitelist) {
@@ -274,8 +302,16 @@ function testForMatch(whitelistItem, word) {
   }
 }
 
-function requestTabSuspension(tab, force) {
-  force = force || false;
+async function doTabDiscard(tab, options, tempWhitelist = null) {
+  if (!(await isExcluded(tab, options, tempWhitelist) &&
+      !(options[storage.ONLINE_CHECK] && !navigator.onLine) &&
+      !(options[storage.BATTERY_CHECK] && chargingMode))) {
+    // log('doTabDiscard', tab.index, tab.id);
+    discardTab(tab);
+  }
+}
+
+function requestTabSuspension(tab, force = false, options = null, tempWhitelist = null) {
 
   //safety check
   if (typeof(tab) === 'undefined') { return; }
@@ -288,18 +324,19 @@ function requestTabSuspension(tab, force) {
     log('requestTabSuspension force', force, tab.index, tab.url);
     discardTab(tab);
 
-  //otherwise perform soft checks before discarding
-  } else {
-
-    storage.getOptions(async function (options) {
-
-      if (!(await isExcluded(tab, options) &&
-          !(options[storage.ONLINE_CHECK] && !navigator.onLine) &&
-          !(options[storage.BATTERY_CHECK] && chargingMode))) {
-        log('requestTabSuspension', force, tab.index, tab.url);
-        discardTab(tab);
-      }
-    });
+  }
+  else {
+    // otherwise perform soft checks before discarding
+    if (options) {
+      // if we've been provided options, assume they're good and use them ( good for batches of tabs )
+      doTabDiscard(tab, options, tempWhitelist);
+    }
+    else {
+      // otherwise, go get the options and discard
+      storage.getOptions(function (new_options) {
+        doTabDiscard(tab, new_options, tempWhitelist);
+      });
+    }
   }
 }
 
@@ -428,29 +465,40 @@ function reloadHighlightedTab() {
   });
 }
 
-function discardAllTabs(args) {
-  args      = args || {};
-  var force = !args.noForce;
-  log("discardAllTabs", args);
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    var curWindowId = tabs[0].windowId;
-    chrome.windows.get(curWindowId, {populate: true}, function(curWindow) {
-      curWindow.tabs.forEach(function (tab) {
-        if (!tab.active) {
-          // There's a good argument that requestTabSuspension should NEVER be forced, and should always obey user options
-          // But for now, only Discard at Startup will use non-forced discards
-          requestTabSuspension(tab, force);
-        }
+async function discardAllTabs(args = {}) {
+  warn("discardAllTabs", args);
+
+  // Retrieve the tempWhitelist and options once before looping, to avoid each loop doing so
+  const tempWhitelist = await getTemporaryWhitelist();
+  storage.getOptions(function (options) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      var curWindowId = tabs[0].windowId;
+      chrome.windows.get(curWindowId, {populate: true}, function(curWindow) {
+        curWindow.tabs.forEach(function (tab) {
+          if (!tab.active) {
+            // There's a good argument that requestTabSuspension should NEVER be forced, and should always obey user options
+            // But for now, only Discard at Startup will use non-forced discards
+            requestTabSuspension(tab, !args.noForce, options, tempWhitelist);
+          }
+        });
       });
     });
   });
 }
 
+async function discardAllTabsInAllWindows(args = {}) {
+  warn("discardAllTabsInAllWindows", args);
 
-function discardAllTabsInAllWindows() {
-  chrome.tabs.query({}, function (tabs) {
-    tabs.forEach(function (currentTab) {
-      requestTabSuspension(currentTab, true);
+  // Retrieve the tempWhitelist and options once before looping, to avoid each loop doing so
+  // Retrieve the tempWhitelist and options once before looping, to avoid each loop doing so
+  const tempWhitelist = await getTemporaryWhitelist();
+  storage.getOptions(function (options) {
+    chrome.tabs.query({}, function (tabs) {
+      tabs.forEach(function (tab) {
+        if (!tab.active) {
+          requestTabSuspension(tab, !args.noForce, options, tempWhitelist);
+        }
+      });
     });
   });
 }
