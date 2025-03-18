@@ -26,12 +26,17 @@ var startupDone           = false;
 
 log('Registering listeners...');
 
+if (typeof self != 'undefined' && self instanceof ServiceWorkerGlobalScope) {
+  self.addEventListener("install", (event) => {
+    log('1 service worker install');
+  });
+}
+
 chrome.runtime.onInstalled.addListener(function() {
-  log('onInstalled');
+  log('2 chrome onInstalled');
   // Fired when the extension is first installed, when the extension is updated to a new version, and when Chrome is updated to a new version.
   // Fired when an unpacked extension is reloaded
 
-  log('onInstalled getOptions');
   storage.getOptions(function (options) {
     if (options[storage.ADD_CONTEXT]) {
       buildContextMenu(true, options[storage.ADD_DISCARDS]);
@@ -39,11 +44,20 @@ chrome.runtime.onInstalled.addListener(function() {
   });
 });
 
-//reset tabStates on extension load
+if (typeof self != 'undefined' && self instanceof ServiceWorkerGlobalScope) {
+  self.addEventListener("activate", (event) => {
+    log('3 service worker activate');
+    startupDiscard();
+  });
+}
+
 chrome.runtime.onStartup.addListener(function () {
-  log('onStartup');
+  log('4 chrome onStartup');
   // Fired when a profile that has this extension installed first starts up.
   // This event is not fired when an incognito profile is started, even if this extension is operating in 'split' incognito mode.
+
+  // chrome.runtime.onStartup wasn't firing on browser start when cache was cleared, so this makes sure we run once
+  // onStartup was running 2-3 seconds after this extension loads, so choosing 5 seconds should put us after onStartup has a chance
 
   chrome.alarms.clearAll(function () {
     asyncSessionSet({ [TEMPORARY_WHITELIST]: {} });
@@ -60,7 +74,6 @@ chrome.runtime.onStartup.addListener(function () {
 
 });
 
-//listen for alarms
 chrome.alarms.onAlarm.addListener(function (alarm) {
   log('onAlarm', alarm);
 
@@ -170,7 +183,7 @@ function startupDiscard(fCheckIfDone) {
 
 // chrome.runtime.onStartup wasn't firing on browser start when cache was cleared, so this makes sure we run once
 // onStartup was running 2-3 seconds after this extension loads, so choosing 5 seconds should put us after onStartup has a chance
-setTimeout(function() { startupDiscard(true); }, 5000);
+// setTimeout(function() { startupDiscard(true); }, 5000);
 
 async function asyncSessionGet(name) {
   const ret = ( await chrome.storage.session.get([ name ]) ) [ name ];

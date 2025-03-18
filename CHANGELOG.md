@@ -6,6 +6,10 @@
 
 # Change Log
 
+## 1.2.2 - Mar 2025
+- Fix: "Discard at startup" (again) to prevent discarding tabs when the browser restarts idle workers
+  ( [Closes #43](https://github.com/rkodey/the-great-er-discarder-er/issues/43) )
+
 ## 1.2.1 - Mar 2025
 - Fix: "Discard at startup" would occasionally get skipped during browser startup
 - Rearrange the tab migration page to simplify it a bit

@@ -22,7 +22,7 @@ so you won't lose them if/when Chrome removes your old unsupported extensions.
 
 ## What does "Discarding" a tab mean?
 > A discarded tab is one whose content has been unloaded from memory, but is still visible in the tab strip.
-> Its content is reloaded the next time it is activated."
+> Its content is reloaded the next time it is activated.
 
 Discarding a tab does NOT close or remove or delete the tab.
 It natively tells your browser it can frees up memory and resources, and is the preferred way to keep your browser running fast and efficient.
