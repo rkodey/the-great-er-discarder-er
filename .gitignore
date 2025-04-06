@@ -1,7 +1,8 @@
 **/Thumbs.db
 **/*.pem
 .vscode/bookmarks.json
-/node_modules
-/build/crx/*.crx
-/build/zip/*.zip
-/src/js/background.js
+node_modules
+build/crx/*.crx
+build/zip/*.zip
+src/js/background.js
+tmp

@@ -1,28 +1,43 @@
+const fs = require('fs');
 
 module.exports = function(grunt) {
 
-  const sources = [ "src/js/db.js", "src/js/storage.js", "src/js/tabStates.js", "src/js/eventPage.js" ];
+  const pkg       = grunt.file.readJSON('package.json');
+  const manifest  = grunt.file.readJSON('src/manifest.json');
+
+  const watchSources  = [
+    "src/js/db.js",
+    "src/js/storage.js",
+    "src/js/tabStates.js",
+    "src/js/eventPage.js",
+  ];
+
+  const bundleSources = [
+    "src/**/*",
+    "!src/js/db.js",
+    "!src/js/storage.js",
+    "!src/js/tabStates.js",
+    "!src/js/eventPage.js",
+    "!**/Thumbs.db"
+  ]
 
   grunt.initConfig({
-
-    pkg: grunt.file.readJSON('package.json'),
-    manifest: grunt.file.readJSON('src/manifest.json'),
 
     concat: {
       options: {
         banner:
           // '// @ts-check\n' +
-          '// <%= manifest.name %> - v<%= manifest.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\n'
+          `// ${manifest.name} - v${manifest.version} - <%= grunt.template.today("yyyy-mm-dd") %>\n\n`
       },
       dist: {
-        src: sources,
+        src: watchSources,
         dest: 'src/js/background.js',
       },
     },
 
     watch: {
       scripts: {
-        files: [ ...sources, 'Gruntfile.js' ],
+        files: [ ...watchSources, 'Gruntfile.js' ],
         tasks: [ 'concat' ],
         options: { spawn: false },
       },
@@ -30,35 +45,25 @@ module.exports = function(grunt) {
 
     crx: {
       myPublicExtension: {
-        src: [
-            "src/**/*",
-            "!src/js/db.js",
-            "!src/js/storage.js",
-            "!src/js/tabStates.js",
-            "!src/js/eventPage.js",
-            "!**/screenshot*.png",
-            "!**/Thumbs.db"
-        ],
-        dest: "build/zip/<%= pkg.name %>.zip",
+        src: bundleSources,
+        dest: `build/zip/${pkg.name}.zip`,
       },
 
       mySignedExtension: {
-        src: [
-            "src/**/*",
-            "!src/js/db.js",
-            "!src/js/storage.js",
-            "!src/js/tabStates.js",
-            "!src/js/eventPage.js",
-            "!**/screenshot*.png",
-            "!**/Thumbs.db"
-        ],
-        dest: "build/crx/<%= pkg.name %>.crx",
+        src: bundleSources,
+        dest: `build/crx/${pkg.name}.crx`,
         options: {
           privateKey: "key.pem"
         }
       }
     }
   });
+
+  // grunt.registerTask('clean', 'Remove zip and crx files', function() {
+  //   console.log(grunt.config.get(['crx']).myPublicExtension.dest);
+  //   // fs.rmSync(grunt.config.get(['crx']).myPublicExtension.dest);
+  //   // fs.rmSync(grunt.config.get(['crx']).mySignedExtension.dest);
+  // });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
