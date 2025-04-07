@@ -4,6 +4,8 @@
   'use strict';
 
   const browser   = navigator.userAgent.match(/Chrome\/.*Edg\//i) ? 'edge' : 'chrome';
+  const windows   = {};
+
 
   function generateTabInfo(table, info, first) {
 
@@ -24,8 +26,26 @@
     if (first) {
       row.className = 'newrow';
     }
-    row.insertCell().innerText = windowId;
-    row.insertCell().innerText = tabId;
+
+    // let win       = '';
+    if (!windows[windowId]) {
+      windows[windowId] = 1;
+      console.log(windows[windowId]);
+      const link  = document.createElement('a');
+      link.href   = '#';
+      link.innerText = `Window ${Object.keys(windows).length}`;
+      link.onclick  = () => {
+        chrome.windows.update(windowId, { focused: true });
+        return false;
+      }
+      row.insertCell().appendChild(link);
+      // win = `<a href="#" target="_blank"></a>`;
+    }
+    else {
+      row.insertCell();
+    }
+
+    // row.insertCell().innerText = tabId;
 
     const group       = row.insertCell();
     group.className   = 'center';
