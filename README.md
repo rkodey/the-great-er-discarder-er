@@ -57,7 +57,7 @@ see [CHANGELOG.md](./CHANGELOG.md) for full details.
 Help others find this extension -- **submit a rating** on the App Store(s)!
 
 - [Chrome Web Store](https://chromewebstore.google.com/detail/the-great-er-tab-discarder/plpkmjcnhhnpkblimgenmdhghfgghdpp)
-- Microsoft Edge Add-ons ( coming soon )
+- [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/the-greater-tab-discarder/lieejiddoadedggjdkgeellgeeibbnai)
 
 <br>
 
