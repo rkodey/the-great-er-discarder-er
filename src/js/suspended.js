@@ -46,25 +46,18 @@
 
   function parseURL() {
     const fullURL = new URL(document.location.href);
-    const hash    = fullURL.hash.substring(1);
-    console.log(hash);
 
-    const [hash_query, hash_uri] = hash.split(/&uri=/i);
-    console.log(hash_query, hash_uri);
-
-    const hash_vars   = new URLSearchParams(hash_query || fullURL.search.substring(1));  // Now we have a merged set of vars from both known formats
-    // if (uri) vars.set('uri', uri);
-    console.log(...Array.from(hash_vars.entries()));
+    const [hash_query, hash_uri] = fullURL.hash.split(/&uri=/i);
+    const hash_vars   = new URLSearchParams((hash_query || fullURL.search).substring(1));  // Now we have a merged set of vars from both known formats
+    // console.log(...Array.from(hash_vars.entries()));
 
     const full_title  = hash_vars.get('ttl') || hash_vars.get('title')  || '';
-    // const clean_title = full_title.replace(/^(\p{Emoji}*\s*)+/u, '').replace(/(\s*[|]\s*Suspended)+$/i, '');
-    // const emoji       = (full_title.match(/^\p{Emoji}/u) || [''])[0];
     const clean_title = full_title.replace(/^((&#\w+;)*\s*)+/, '').replace(/(\s*[|]\s*Suspended)+$/i, '');
     const emoji       = (full_title.match(/^&#(\w+);/) || [])[1];
 
     const target      = hash_vars.get('uri') || hash_vars.get('url')    || hash_uri;
 
-    return { fullURL, hash_uri, hash_vars, full_title, clean_title, emoji, target };
+    return { fullURL, hash_query, hash_uri, hash_vars, full_title, clean_title, emoji, target };
   }
 
   function updatePage() {
@@ -103,9 +96,15 @@
 
     setHeadTitle(str_title);
 
-    url.hash_vars.set('ttl', str_title);
+    url.hash_vars.delete('favicon');
+    url.hash_vars.delete('icon');
+    url.hash_vars.delete('ttl');
+    url.hash_vars.delete('uri');
+    url.hash_vars.set('title', str_title);
+    url.hash_vars.set('url', url.target);
+
     let hash      = `#${url.hash_vars.toString()}`;
-    if (url.hash_uri) hash += `&uri=${url.hash_uri}`;
+    // if (url.hash_uri) hash += `&uri=${url.hash_uri}`;
     document.location.hash = hash;
     console.log(hash);
     updatePage();
