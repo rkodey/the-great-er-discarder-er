@@ -1,3 +1,4 @@
+
 'use strict';
 
 const CURRENT_TAB_ID      = 'currentTabId';
@@ -316,15 +317,17 @@ function testForMatch(whitelistItem, word) {
 }
 
 async function doTabDiscard(tab, options, tempWhitelist = null) {
+  log('doTabDiscard', tab, options);
   if (!(await isExcluded(tab, options, tempWhitelist) &&
       !(options[storage.ONLINE_CHECK] && !navigator.onLine) &&
       !(options[storage.BATTERY_CHECK] && chargingMode))) {
     // log('doTabDiscard', tab.index, tab.id);
-    discardTab(tab);
+    discardTab(tab, options[storage.SUSPEND_MODE]);
   }
 }
 
 function requestTabDiscard(tab, force = false, options = null, tempWhitelist = null) {
+  log('requestTabDiscard', force, tab);
 
   //safety check
   if (typeof(tab) === 'undefined') { return; }
@@ -334,7 +337,7 @@ function requestTabDiscard(tab, force = false, options = null, tempWhitelist = n
 
   //if forcing tab discard then skip other checks
   if (force) {
-    log('requestTabDiscard force', force, tab.index, tab.url);
+    log('requestTabDiscard force', force, tab);
     discardTab(tab);
 
   }
@@ -376,24 +379,28 @@ function resetTabTimer(tab) {
   });
 }
 
-function discardTab(tab) {
-  chrome.tabs.discard(tab.id, function (discardedTab) {
-    if (chrome.runtime.lastError) {
-      log(chrome.runtime.lastError.message);
-    }
-  });
+/**
+ * @param {chrome.tabs.Tab}     tab
+ * @param {'suspend'|undefined} fSuspend
+ */
+function discardTab(tab, fSuspend) {
+  log('discardTab', fSuspend);
+  if (fSuspend) {
+    chrome.tabs.update(tab.id, { url: `chrome-extension://${chrome.runtime.id}/html/suspended.html#ttl=${tab.title}&uri=${tab.url}` }, (tab) => {});
+  }
+  else {
+    chrome.tabs.discard(tab.id, function (discardedTab) {
+      if (chrome.runtime.lastError) {
+        log(chrome.runtime.lastError.message);
+      }
+    });
+  }
 }
 
 function whitelistHighlightedTab() {
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
     // log('whitelistHighlightedTab');
     if (tabs.length > 0) {
-
-      // var rootUrlStr = tabs[0].url;
-      // if (rootUrlStr.indexOf('//') > 0) {
-      //     rootUrlStr = rootUrlStr.substring(rootUrlStr.indexOf('//') + 2);
-      // }
-      // rootUrlStr = rootUrlStr.substring(0, rootUrlStr.indexOf('/'));
 
       // Instead of manually parsing, let's use URL()
       const url = new URL(tabs[0].url);
@@ -432,12 +439,6 @@ function undoTemporarilyWhitelistHighlightedTab() {
     if (tabs.length > 0) {
       const tempWhitelist = await getTemporaryWhitelist();
 
-      // for (i = tempWhitelist.length - 1; i >= 0; i--) {
-      //   if (tempWhitelist[i] === String(tabs[0].id)) {
-      //     tempWhitelist.splice(i, 1);
-      //   }
-      // }
-
       // Now that we're using an object we can delete without a loop
       delete tempWhitelist[tabs[0].id];
 
@@ -446,23 +447,33 @@ function undoTemporarilyWhitelistHighlightedTab() {
   });
 }
 
-function discardHighlightedTab() {
-  chrome.tabs.query({active: true, currentWindow: true, discarded: false}, async function (tabs) {
+/**
+ * @param {'suspend'|undefined} fSuspend
+ */
+function discardHighlightedTab(fSuspend) {
+  chrome.tabs.query({active: true, currentWindow: true, discarded: false}, async (tabs) => {
     if (tabs.length > 0) {
       var tabToDiscard = tabs[0];
+
+      if (fSuspend) {
+        discardTab(tabToDiscard, true);
+        return;
+      }
+
       var previousTabId = await asyncSessionGet(PREVIOUS_TAB_ID);
-      chrome.tabs.get(previousTabId, function (prevTab) {
+      if (!previousTabId) return;
+      chrome.tabs.get(previousTabId, (prevTab) => {
         if (chrome.runtime.lastError) {
           log(chrome.runtime.lastError.message);
         }
         if (prevTab) {
-          chrome.tabs.update(previousTabId, { active: true, highlighted: true }, function (tab) {
-            discardTab(tabToDiscard, true);
+          chrome.tabs.update(previousTabId, { active: true, highlighted: true }, (tab) => {
+            discardTab(tabToDiscard);
           });
         }
         else {
-          chrome.tabs.create({}, function (tab) {
-            discardTab(tabToDiscard, true);
+          chrome.tabs.create({}, (tab) => {
+            discardTab(tabToDiscard);
           });
         }
       })
@@ -677,7 +688,7 @@ function updateIcon(status) {
 //HANDLERS FOR MESSAGE REQUESTS
 
 function messageRequestListener(request, sender, sendResponse) {
-  log('messageRequestListener', request);
+  // log('messageRequestListener', request);
 
   switch (request.action) {
 
@@ -736,6 +747,10 @@ function messageRequestListener(request, sender, sendResponse) {
 
   case 'discardOne':
     discardHighlightedTab();
+    break;
+
+  case 'suspendOne':
+    discardHighlightedTab('suspend');
     break;
 
   case 'tempWhitelist':
@@ -803,11 +818,13 @@ function messageRequestListener(request, sender, sendResponse) {
 //HANDLERS FOR KEYBOARD SHORTCUTS
 
 function commandListener (command) {
+  log('commandListener', command);
+
   if (command === '1-discard-tab') {
     discardHighlightedTab();
 
-  } else if (command === '2-reload-tab') {
-    reloadHighlightedTab();
+  } else if (command === '2-suspend-tab') {
+    discardHighlightedTab('suspend');
 
   } else if (command === '3-discard-active-window') {
     discardAllTabs();
@@ -826,6 +843,7 @@ function commandListener (command) {
 
 //HANDLERS FOR RIGHT-CLICK CONTEXT MENU
 function contextMenuListener(info, tab) {
+  log('contextMenuListener', info);
 
   switch (info.menuItemId) {
 
