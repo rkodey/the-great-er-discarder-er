@@ -101,6 +101,7 @@
   document.addEventListener('DOMContentLoaded', function () {
 
     addClickListener('discardOne');
+    addClickListener('suspendOne');
     addClickListener('discardAll');
     addClickListener('discardAllEligible');
     addClickListener('reloadAll');
@@ -129,6 +130,7 @@
       setVisibilityForSelectedGroup();
       setVisibility('currentGroup', discardOneVisible || whitelistVisible || pauseVisible);
       setVisibility('discardOne', discardOneVisible);
+      setVisibility('suspendOne', discardOneVisible);  // set suspendOne visibility same as discardOne
       setVisibility('whitelist', whitelistVisible);
       setVisibility('tempWhitelist', pauseVisible);
       setVisibility('debugReload', !(chrome.runtime.getManifest().update_url));
