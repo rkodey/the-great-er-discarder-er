@@ -316,41 +316,37 @@ function testForMatch(whitelistItem, word) {
   }
 }
 
-async function doTabDiscard(tab, options, tempWhitelist = null) {
-  log('doTabDiscard', tab, options);
+async function discardEligibleTab(tab, options, tempWhitelist = null) {
+  log('discardEligibleTab', options);
   if (!(await isExcluded(tab, options, tempWhitelist) &&
       !(options[storage.ONLINE_CHECK] && !navigator.onLine) &&
       !(options[storage.BATTERY_CHECK] && chargingMode))) {
-    // log('doTabDiscard', tab.index, tab.id);
-    discardTab(tab, options[storage.SUSPEND_MODE]);
+    // log('discardEligibleTab', tab.index, tab.id);
+    discardOrSuspendTab(tab, options[storage.SUSPEND_MODE]);
   }
 }
 
 function requestTabDiscard(tab, force = false, options = null, tempWhitelist = null) {
-  log('requestTabDiscard', force, tab);
+  log('requestTabDiscard', force);
 
   //safety check
   if (typeof(tab) === 'undefined') { return; }
 
-  //make sure tab is not special or already discarded
-  if (isDiscarded(tab) || isSpecialTab(tab)) { return; }
-
   //if forcing tab discard then skip other checks
   if (force) {
-    log('requestTabDiscard force', force, tab);
-    discardTab(tab);
+    discardOrSuspendTab(tab);
 
   }
   else {
     // otherwise perform soft checks before discarding
     if (options) {
       // if we've been provided options, assume they're good and use them ( good for batches of tabs )
-      doTabDiscard(tab, options, tempWhitelist);
+      discardEligibleTab(tab, options, tempWhitelist);
     }
     else {
       // otherwise, go get the options and discard
       storage.getOptions(function (new_options) {
-        doTabDiscard(tab, new_options, tempWhitelist);
+        discardEligibleTab(tab, new_options, tempWhitelist);
       });
     }
   }
@@ -383,13 +379,18 @@ function resetTabTimer(tab) {
  * @param {chrome.tabs.Tab}     tab
  * @param {'suspend'|undefined} fSuspend
  */
-function discardTab(tab, fSuspend) {
-  log('discardTab', fSuspend);
+function discardOrSuspendTab(tab, fSuspend) {
+  log('discardOrSuspendTab', fSuspend);
+
   if (fSuspend) {
-    chrome.tabs.update(tab.id, { url: `chrome-extension://${chrome.runtime.id}/html/suspended.html#ttl=${tab.title}&uri=${tab.url}` }, (tab) => {});
+    // make sure tab is not special
+    if (isSpecialTab(tab)) { return; }
+    chrome.tabs.update(tab.id, { url: `chrome-extension://${chrome.runtime.id}/html/suspended.html#ttl=${tab.title}&uri=${tab.url}` });
   }
   else {
-    chrome.tabs.discard(tab.id, function (discardedTab) {
+    // make sure tab already discarded
+    if (isDiscarded(tab)) { return; }
+    chrome.tabs.discard(tab.id, (discardedTab) => {
       if (chrome.runtime.lastError) {
         log(chrome.runtime.lastError.message);
       }
@@ -423,7 +424,6 @@ function unwhitelistHighlightedTab() {
   });
 }
 
-// @TODO Maybe use a Set instead of object
 function temporarilyWhitelistHighlightedTab() {
   chrome.tabs.query({active: true, currentWindow: true}, async function (tabs) {
     if (tabs.length > 0) {
@@ -456,7 +456,7 @@ function discardHighlightedTab(fSuspend) {
       var tabToDiscard = tabs[0];
 
       if (fSuspend) {
-        discardTab(tabToDiscard, true);
+        discardOrSuspendTab(tabToDiscard, true);
         return;
       }
 
@@ -468,12 +468,12 @@ function discardHighlightedTab(fSuspend) {
         }
         if (prevTab) {
           chrome.tabs.update(previousTabId, { active: true, highlighted: true }, (tab) => {
-            discardTab(tabToDiscard);
+            discardOrSuspendTab(tabToDiscard, false);
           });
         }
         else {
           chrome.tabs.create({}, (tab) => {
-            discardTab(tabToDiscard);
+            discardOrSuspendTab(tabToDiscard, false);
           });
         }
       })
