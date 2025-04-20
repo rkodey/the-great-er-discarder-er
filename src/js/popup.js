@@ -52,19 +52,24 @@
       statusIconClass = 'fa fa-pause-circle';
     }
 
-    if (document.getElementsByTagName('a')[0]) {
-      document.getElementsByTagName('a')[0].removeEventListener('click');
+
+    setVisibility('header', true);
+    const detailElem = document.getElementById('statusDetail');
+    if (detailElem) {
+      detailElem.innerHTML = statusDetail;
+    }
+    const iconElem = document.getElementById('statusIcon');
+    if (iconElem) {
+      iconElem.className = statusIconClass;
     }
 
-    document.getElementById('header').style.display = 'block';
-    document.getElementById('statusDetail').innerHTML = statusDetail;
-    document.getElementById('statusIcon').className = statusIconClass;
 
+    const linkElem = document.getElementsByTagName('a')[0];
     if (message) {
-      document.getElementsByTagName('a')[0].addEventListener('click', function (e) {
+      linkElem.onclick = () => {
         chrome.runtime.sendMessage({ action: message });
         window.close();
-      });
+      };
     }
   }
 
@@ -73,7 +78,10 @@
    * @param {boolean} visible
    */
   function setVisibility(id, visible) {
-    document.getElementById(id).style.display = visible ? 'block' : 'none';
+    const elem = document.getElementById(id);
+    if (elem) {
+      elem.style.display = visible ? 'block' : 'none';
+    }
   }
 
   function setVisibilityForSelectedGroup() {
@@ -131,6 +139,7 @@
     addClickListener('discardAllEligible');
     addClickListener('reloadAll');
     addClickListener('discardSelected');
+    addClickListener('suspendSelected');
     addClickListener('reloadSelected');
     addClickListener('whitelist');
     addClickListener('tempWhitelist');

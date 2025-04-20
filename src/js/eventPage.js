@@ -335,7 +335,6 @@ function requestTabDiscard(tab, force = false, options = null, tempWhitelist = n
   //if forcing tab discard then skip other checks
   if (force) {
     discardOrSuspendTab(tab);
-
   }
   else {
     // otherwise perform soft checks before discarding
@@ -551,16 +550,29 @@ function reloadAllTabsInAllWindows() {
   });
 }
 
-function discardSelectedTabs() {
-  chrome.tabs.query({highlighted: true, lastFocusedWindow: true}, function (selectedTabs) {
-    selectedTabs.forEach(function (tab) {
-      requestTabDiscard(tab, true);
+/**
+ * @param {'suspend'|undefined} fSuspend
+ */
+function discardSelectedTabs(fSuspend) {
+
+  chrome.tabs.query({highlighted: true, lastFocusedWindow: true}, (selectedTabs) => {
+    if (fSuspend) {
+      selectedTabs.forEach((tab) => {
+        discardOrSuspendTab(tab, true);
+      });
+      return;
+    }
+    chrome.tabs.create({}, () => {
+      selectedTabs.forEach((tab) => {
+        discardOrSuspendTab(tab, false);
+      });
     });
   });
+
 }
 
 function reloadSelectedTabs() {
-  chrome.tabs.query({highlighted: true, lastFocusedWindow: true}, function (selectedTabs) {
+  chrome.tabs.query({highlighted: true, lastFocusedWindow: true}, (selectedTabs) => {
     selectedTabs.forEach(function (tab) {
       if (isDiscarded(tab)) {
         reloadTab(tab);
@@ -610,13 +622,7 @@ function requestTabInfo(tab, callback) {
     info.groupId = tab.groupId;
     info.pinned = tab.pinned;
 
-    //check if it is a special tab
-    if (isSpecialTab(tab)) {
-      info.status = 'special';
-      callback(info);
-
-    //check if it has already been discarded
-    } else if (isDiscarded(tab)) {
+    if (isDiscarded(tab)) {
       info.status = 'discarded';
       tabStates.getTabState(tab.id, function (tab) {
         if (tab) {
@@ -625,13 +631,16 @@ function requestTabInfo(tab, callback) {
         }
         callback(info);
       });
-
-    // Check if it's been unloaded.
-    } else if (tab.status === 'unloaded') {
+    }
+    else if (isSpecialTab(tab)) {
+      info.status = 'special';
+      callback(info);
+    }
+    else if (tab.status === 'unloaded') {
       info.status = 'unloaded';
       callback(info);
-
-    } else {
+    }
+    else {
       processActiveTabStatus(tab, function (status) {
         info.status = status;
         callback(info);
@@ -783,6 +792,10 @@ function messageRequestListener(request, sender, sendResponse) {
 
   case 'discardSelected':
     discardSelectedTabs();
+    break;
+
+  case 'suspendSelected':
+    discardSelectedTabs('suspend');
     break;
 
   case 'reloadSelected':
