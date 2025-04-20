@@ -1,19 +1,24 @@
+// @ts-check
 
 (function () {
 
   'use strict';
 
-  function setStatus(status) {
+  /**
+   * @param {string} status
+   * @param {string} modeLabel
+   */
+  function setStatus(status, modeLabel) {
     var statusDetail = '',
       statusIconClass = '',
       message;
 
     if (status === 'normal') {
-      statusDetail = 'This tab can be discarded automatically.';
+      statusDetail = `This tab can be ${modeLabel}ed automatically.`;
       statusIconClass = 'fa fa-clock-o';
 
     } else if (status === 'special') {
-      statusDetail = 'This tab cannot be discarded.';
+      statusDetail = `This tab cannot be ${modeLabel}ed.`;
       statusIconClass = 'fa fa-remove';
 
     } else if (status === 'whitelisted') {
@@ -30,12 +35,12 @@
       statusIconClass = 'fa fa-thumb-tack';
 
     } else if (status === 'tempWhitelist') {
-      statusDetail = 'Tab discarding paused. <a href="#">Unpause</a>';
+      statusDetail = `Tab ${modeLabel}ing paused. <a href="#">Unpause</a>`;
       statusIconClass = 'fa fa-pause-circle';
       message = 'undoTempWhitelist';
 
     } else if (status === 'never') {
-      statusDetail = 'Automatic tab discarding disabled.';
+      statusDetail = `Automatic tab ${modeLabel}ing disabled.`;
       statusIconClass = 'fa fa-ban';
 
     } else if (status === 'noConnectivity') {
@@ -47,24 +52,36 @@
       statusIconClass = 'fa fa-pause-circle';
     }
 
-    if (document.getElementsByTagName('a')[0]) {
-      document.getElementsByTagName('a')[0].removeEventListener('click');
+
+    setVisibility('header', true);
+    const detailElem = document.getElementById('statusDetail');
+    if (detailElem) {
+      detailElem.innerHTML = statusDetail;
+    }
+    const iconElem = document.getElementById('statusIcon');
+    if (iconElem) {
+      iconElem.className = statusIconClass;
     }
 
-    document.getElementById('header').style.display = 'block';
-    document.getElementById('statusDetail').innerHTML = statusDetail;
-    document.getElementById('statusIcon').className = statusIconClass;
 
+    const linkElem = document.getElementsByTagName('a')[0];
     if (message) {
-      document.getElementsByTagName('a')[0].addEventListener('click', function (e) {
+      linkElem.onclick = () => {
         chrome.runtime.sendMessage({ action: message });
         window.close();
-      });
+      };
     }
   }
 
+  /**
+   * @param {string} id
+   * @param {boolean} visible
+   */
   function setVisibility(id, visible) {
-    document.getElementById(id).style.display = visible ? 'block' : 'none';
+    const elem = document.getElementById(id);
+    if (elem) {
+      elem.style.display = visible ? 'block' : 'none';
+    }
   }
 
   function setVisibilityForSelectedGroup() {
@@ -73,6 +90,9 @@
     });
   }
 
+  /**
+   * @param {object} options
+   */
   function setEligibleOptions(options) {
     var menu  = document.getElementById('discardAllEligible');
     var div   = document.getElementById('eligibleText');
@@ -90,9 +110,22 @@
     }
   }
 
+  /**
+   * @param {boolean} value
+   */
+  function setModeLabels(value) {
+    // console.log('setModeLabels');
+    document.querySelectorAll('span.modeLabel').forEach((element) => {
+      element.innerHTML = value ? 'Suspend' : 'Discard';
+    });
+  }
+
+  /**
+   * @param {string} idMessage
+   */
   function addClickListener(idMessage) {
-    document.getElementById(idMessage).addEventListener('click', function (e) {
-      console.log(`click ${idMessage}`);
+    document.getElementById(idMessage)?.addEventListener('click', function (e) {
+      // console.log(`click ${idMessage}`);
       chrome.runtime.sendMessage({ action: idMessage });
       window.close();
     });
@@ -101,10 +134,12 @@
   document.addEventListener('DOMContentLoaded', function () {
 
     addClickListener('discardOne');
+    addClickListener('suspendOne');
     addClickListener('discardAll');
     addClickListener('discardAllEligible');
     addClickListener('reloadAll');
     addClickListener('discardSelected');
+    addClickListener('suspendSelected');
     addClickListener('reloadSelected');
     addClickListener('whitelist');
     addClickListener('tempWhitelist');
@@ -113,27 +148,32 @@
     addClickListener('openProfilerTab');
     addClickListener('debugReload');
 
-    chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, function (options) {
-      setVisibility('showDiscardsLinkGroup', options.addDiscardsMenu);
-      setEligibleOptions(options);
-    });
-
     chrome.runtime.sendMessage({ action: 'requestCurrentTabInfo' }, function (info) {
+      // console.log('requestCurrentTabInfo', info);
 
-      var status = info.status,
-        //timeLeft = info.timerUp, // unused
-        discardOneVisible = (status === 'discarded' || status === 'special' || status === 'unknown') ? false : true,
-        whitelistVisible = (status !== 'whitelisted' && status !== 'special') ? true : false,
-        pauseVisible = (status === 'normal') ? true : false;
+      chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, function (options) {
+        // console.log('requestCurrentOptions', options);
+        setModeLabels(options.suspendMode);
+        setVisibility('showDiscardsLinkGroup', options.addDiscardsMenu);
+        setEligibleOptions(options);
 
-      setVisibilityForSelectedGroup();
-      setVisibility('currentGroup', discardOneVisible || whitelistVisible || pauseVisible);
-      setVisibility('discardOne', discardOneVisible);
-      setVisibility('whitelist', whitelistVisible);
-      setVisibility('tempWhitelist', pauseVisible);
-      setVisibility('debugReload', !(chrome.runtime.getManifest().update_url));
-      setStatus(status);
+        var status = info.status,
+          //timeLeft = info.timerUp, // unused
+          discardOneVisible = (status === 'discarded' || status === 'special' || status === 'unknown') ? false : true,
+          whitelistVisible = (status !== 'whitelisted' && status !== 'special') ? true : false,
+          pauseVisible = (status === 'normal') ? true : false;
+
+        setVisibilityForSelectedGroup();
+        setVisibility('currentGroup', discardOneVisible || whitelistVisible || pauseVisible);
+        setVisibility('discardOne', discardOneVisible);
+        setVisibility('suspendOne', discardOneVisible);  // set suspendOne visibility same as discardOne
+        setVisibility('whitelist', whitelistVisible);
+        setVisibility('tempWhitelist', pauseVisible);
+        setVisibility('debugReload', !(chrome.runtime.getManifest().update_url));
+        setStatus(status, options.suspendMode ? 'Suspend' : 'Discard');
+      });
 
     });
   });
+
 }());

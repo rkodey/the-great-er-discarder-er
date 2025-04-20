@@ -13,16 +13,31 @@
   <div class="group optsCurrent" id="currentGroup">
     <div id="header">
       <i id="statusIcon" class="fa fa-clock-o"></i>
-      <span id="statusDetail">Tab will be discarded</span>
+      <span id="statusDetail">[current status]</span>
     </div>
     <div class="menuOption" id="discardOne">
-      <i class="fa fa-stop"></i> <span class="optionText">Discard this tab</span>
+      <i class="fa fa-square"></i> <span class="optionText">Discard this tab</span>
+    </div>
+    <div class="menuOption" id="suspendOne">
+      <i class="fa fa-square-o"></i> <span class="optionText">Suspend this tab</span>
     </div>
     <div class="menuOption hidden" id="tempWhitelist">
-      <i class="fa fa-pause-circle"></i> <span class="optionText">Pause discarding this tab</span>
+      <i class="fa fa-pause-circle"></i> <span class="optionText">Pause <span class="modeLabel">Discard</span>ing this tab</span>
     </div>
     <div class="menuOption hidden" id="whitelist">
-      <i class="fa fa-ban"></i> <span class="optionText">Never discard this site</span>
+      <i class="fa fa-ban"></i> <span class="optionText">Never <span class="modeLabel">Discard</span> this site</span>
+    </div>
+  </div>
+
+  <div class="group optsSelected hidden" id="discardSelectedGroup">
+    <div class="menuOption" id="discardSelected">
+      <i class="fa fa-square"></i> <span class="optionText">Discard selected tabs</span>
+    </div>
+    <div class="menuOption" id="suspendSelected">
+      <i class="fa fa-square"></i> <span class="optionText">Suspend selected tabs</span>
+    </div>
+    <div class="menuOption" href="#" id="reloadSelected">
+      <i class="fa fa-play"></i> <span class="optionText">Reload selected tabs</span>
     </div>
   </div>
 
@@ -33,19 +48,10 @@
       <div id="eligibleText" class="subtext"></div>
     </div>
     <div class="menuOption" id="discardAll">
-      <i class="fa fa-stop"></i> <span class="optionText">Discard all other tabs</span>
+      <i class="fa fa-square"></i> <span class="optionText">Discard all other tabs</span>
     </div>
     <div class="menuOption" href="#" id="reloadAll">
-      <i class="fa fa-play"></i> <span class="optionText">Restore all discarded tabs</span>
-    </div>
-  </div>
-
-  <div class="group optsSelected hidden" id="discardSelectedGroup">
-    <div class="menuOption" id="discardSelected">
-      <i class="fa fa-stop"></i> <span class="optionText">Discard selected tabs</span>
-    </div>
-    <div class="menuOption" href="#" id="reloadSelected">
-      <i class="fa fa-play"></i> <span class="optionText">Restore selected tabs</span>
+      <i class="fa fa-play"></i> <span class="optionText">Reload all discarded tabs</span>
     </div>
   </div>
 
