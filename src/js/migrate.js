@@ -183,26 +183,29 @@
           document.documentElement.style.cursor = 'progress';
           // updatePage will reset the cursor once it's done
 
-          selectedMap.forEach((/** @type { { url:URL, tab:chrome.tabs.Tab } } */ obj) => {
-            nProcessed += 1;
-            // if (obj.url.host   != chrome.runtime.id) {
-              // replace the host with our extension ID to migrate
-              obj.url.host      = chrome.runtime.id;
-              obj.url.pathname  = '/html/suspended.html'
-              const fLast       = nProcessed == selectedMap.size;         // compare outside the closure to prevent re-evaluation after async
-              if (!obj.tab.id) return;
-              chrome.tabs.update(obj.tab.id, { url: obj.url.href }, (tab) => {
-                // On the last processed tab, wait for it to finish loading then update the page
-                if (fLast) {
-                  waitForTab(tab?.id, (/* id */) => {
-                    updatePage();
-                  });
-                }
-              });
+          // Wait 100ms to let the cursor change before we jump into a potentially really large loop.  600 tabs takes around 30 seconds.
+          setTimeout(() => {
+            selectedMap.forEach((/** @type { { url:URL, tab:chrome.tabs.Tab } } */ obj) => {
+              nProcessed += 1;
+              // if (obj.url.host   != chrome.runtime.id) {
+                // replace the host with our extension ID to migrate
+                obj.url.host      = chrome.runtime.id;
+                obj.url.pathname  = '/html/suspended.html'
+                const fLast       = nProcessed == selectedMap.size;         // compare outside the closure to prevent re-evaluation after async
+                if (!obj.tab.id) return;
+                chrome.tabs.update(obj.tab.id, { url: obj.url.href }, (tab) => {
+                  // On the last processed tab, wait for it to finish loading then update the page
+                  if (fLast) {
+                    waitForTab(tab?.id, (/* id */) => {
+                      updatePage();
+                    });
+                  }
+                });
 
-            // }
-          });
-          return false;
+              // }
+            });
+            return false;
+          }, 100);
         };
 
       }
@@ -217,26 +220,29 @@
           document.documentElement.style.cursor = 'progress';
           // updatePage will reset the cursor once it's done
 
-          selectedMap.forEach((/** @type { { url:URL, tab:chrome.tabs.Tab } } */ obj) => {
-            nProcessed += 1;
-            const [hash_query, hash_uri]  = obj.url.hash.split(/&uri=/i);
-            const vars          = new URLSearchParams((hash_query || obj.url.search).substring(1));
-            const str_uri       = hash_uri || vars.get('url') || vars.get('uri'); // Get the url from both formats
-            const fLast         = nProcessed == selectedMap.size;         // compare outside the closure to prevent re-evaluation after async
-            if (!obj.tab.id || !str_uri) return;
-            chrome.tabs.update(obj.tab.id, { url: str_uri }, (tab) => {
-              // On the last processed tab, wait for it to finish loading then update the page
-              // @TODO maybe a promise ALL would be better to make sure all tabs reload even if out of order
-              waitForTab(tab?.id, (id) => {
-                chrome.tabs.discard(id, () => {
-                  if (fLast) {
-                    updatePage();
-                  }
+          // Wait 100ms to let the cursor change before we jump into a potentially really large loop.  600 tabs takes around 30 seconds.
+          setTimeout(() => {
+            selectedMap.forEach((/** @type { { url:URL, tab:chrome.tabs.Tab } } */ obj) => {
+              nProcessed += 1;
+              const [hash_query, hash_uri]  = obj.url.hash.split(/&uri=/i);
+              const vars          = new URLSearchParams((hash_query || obj.url.search).substring(1));
+              const str_uri       = hash_uri || vars.get('url') || vars.get('uri'); // Get the url from both formats
+              const fLast         = nProcessed == selectedMap.size;         // compare outside the closure to prevent re-evaluation after async
+              if (!obj.tab.id || !str_uri) return;
+              chrome.tabs.update(obj.tab.id, { url: str_uri }, (tab) => {
+                // On the last processed tab, wait for it to finish loading then update the page
+                // @TODO maybe a promise ALL would be better to make sure all tabs reload even if out of order
+                waitForTab(tab?.id, (id) => {
+                  chrome.tabs.discard(id, () => {
+                    if (fLast) {
+                      updatePage();
+                    }
+                  });
                 });
               });
             });
-          });
-          return false;
+            return false;
+          }, 100);
         }
       }
 

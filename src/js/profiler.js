@@ -62,38 +62,43 @@
     row.insertCell().innerHTML = pinned;
   }
 
-  async function generateRows(groupMap) {
+  function generateRows(groupMap) {
     document.documentElement.style.cursor = 'progress';
     // console.log('4 main loop', groupMap);
-    const windows = new Map();
-    const tabs = await chrome.tabs.query({});
-    for (let i = 0; i < tabs.length; ++i) {
-      const curTab = tabs[i];
-      if (!windows.has(curTab.windowId)) {
-        windows.set(curTab.windowId, []);
-      }
-      const win = windows.get(curTab.windowId);
-
-      const discardInfo = await chrome.runtime.sendMessage({ action: 'requestTabInfo', tab: curTab });
-      discardInfo.tab = curTab;
-      if (groupMap) {
-        discardInfo.group = groupMap[discardInfo.groupId];
-      }
-      win.push(discardInfo);
-    }
 
     const tableEl = document.getElementById('profileTabTableBody');
     tableEl.innerHTML = '';
 
-    for (const winId of Array.from(windows.keys()).sort()) {
-      const infos = windows.get(winId);
-      let first = true;
-      for (const discardInfo of infos) {
-        generateTabInfo(tableEl, discardInfo, first);
-        first = false;
+    // Wait 100ms to allow the table to visually clear and the cursor to update
+    setTimeout(async () => {
+      const windows = new Map();
+      const tabs = await chrome.tabs.query({});
+
+      for (let i = 0; i < tabs.length; ++i) {
+        const curTab = tabs[i];
+        if (!windows.has(curTab.windowId)) {
+          windows.set(curTab.windowId, []);
+        }
+        const win = windows.get(curTab.windowId);
+
+        const discardInfo = await chrome.runtime.sendMessage({ action: 'requestTabInfo', tab: curTab });
+        discardInfo.tab = curTab;
+        if (groupMap) {
+          discardInfo.group = groupMap[discardInfo.groupId];
+        }
+        win.push(discardInfo);
       }
-    }
-    document.documentElement.style.cursor = 'default';
+
+      for (const winId of Array.from(windows.keys()).sort()) {
+        const infos = windows.get(winId);
+        let first = true;
+        for (const discardInfo of infos) {
+          generateTabInfo(tableEl, discardInfo, first);
+          first = false;
+        }
+      }
+      document.documentElement.style.cursor = 'default';
+    }, 100);
   }
 
   function generateTable() {
