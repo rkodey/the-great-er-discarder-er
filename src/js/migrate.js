@@ -42,6 +42,7 @@
       'klbibkeccnjlkjkiokjodocebajanakg'  : 'The Great Suspender',
       'ahkbmjhfoplmfkpncgoedjgkajkehcgo'  : 'The Great Suspender (notrack)',
       'fiabciakcmgepblmdkmemdbbkilneeeh'  : 'Tab Suspender',
+      'bbomjaikkcabgmfaomdichgcodnaeecf'  : 'Tiny Suspender',
     }
     knownExtensions[chrome.runtime.id]    = 'The Great-<span class="italic">er</span> Tab Discarder ( this extension! )';
 
@@ -127,7 +128,7 @@
         const tab = tabs[i];
         const url = new URL(tab.url || '');
         if (url.protocol.match(/extension:$/i)
-          && url.pathname.match(/\/(suspended|park).html$/i)
+          && url.pathname.match(/\/(suspend(ed)?|park).html$/i)
           // && url.host.toLowerCase() !== chrome.runtime.id
           ) {
           foundExts[knownExtensions[url.host] ?? url.host]++;
