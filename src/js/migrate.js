@@ -36,6 +36,7 @@
 
   function updatePage() {
     // console.log('updatePage');
+    document.documentElement.style.cursor = 'progress';
 
     const knownExtensions  = {
       'noogafoofpebimajpfpamcfhoaifemoa'  : 'The Marvellous Suspender',
@@ -47,7 +48,7 @@
     knownExtensions[chrome.runtime.id]    = 'The Great-<span class="italic">er</span> Tab Discarder ( this extension! )';
 
     let   foundExts   = {};
-    const tabTable    = document.getElementById('tabTable');
+    const tabTable    = document.getElementById('migrateTabTable');
     const migrateBtn  = document.getElementById('migrateBtn');
     const discardBtn  = document.getElementById('discardBtn');
     const selectedMap = new Map();
@@ -114,7 +115,7 @@
       checkCell.appendChild(check);
       const label     = document.createElement('label');
       label.setAttribute('for', check.id);
-      label.innerText = tabTitle;
+      label.innerHTML = `<span class="overlay"></span>${tabTitle}`;
       checkCell.appendChild(label);
       const pin       = row.insertCell();
       pin.innerHTML   = pinned
@@ -158,7 +159,7 @@
         const strTabs           = `<H2>Found ${nRows} suspended tab${plural(nRows)}`;
         const strExtensions     = nHosts > 0 ? `from ${nHosts} extension${plural(nHosts)}</H2>` : '';
         suspendedDiv.innerHTML  = `${strTabs} ${strExtensions}`;
-        extensionDiv.innerHTML  = `${Object.keys(foundExts).join('<br>')}`;
+        extensionDiv.innerHTML  = nHosts > 0 ? `<ul class="unorderedList"><li>${Object.keys(foundExts).join('</li><li>')}</li></ul>` : '';
       }
 
       const migrateDiv = document.getElementById('migrateDiv');
@@ -178,6 +179,9 @@
         // To migrate a tab, simply drop in this extension's ID into the host, and update the pathname.  QueryString is maintained.
         migrateBtn.onclick = () => {
           let nProcessed = 0;
+
+          document.documentElement.style.cursor = 'progress';
+          // updatePage will reset the cursor once it's done
 
           selectedMap.forEach((/** @type { { url:URL, tab:chrome.tabs.Tab } } */ obj) => {
             nProcessed += 1;
@@ -210,6 +214,9 @@
         discardBtn.onclick = () => {
           let nProcessed = 0;
 
+          document.documentElement.style.cursor = 'progress';
+          // updatePage will reset the cursor once it's done
+
           selectedMap.forEach((/** @type { { url:URL, tab:chrome.tabs.Tab } } */ obj) => {
             nProcessed += 1;
             const [hash_query, hash_uri]  = obj.url.hash.split(/&uri=/i);
@@ -220,8 +227,8 @@
             chrome.tabs.update(obj.tab.id, { url: str_uri }, (tab) => {
               // On the last processed tab, wait for it to finish loading then update the page
               // @TODO maybe a promise ALL would be better to make sure all tabs reload even if out of order
-                waitForTab(tab?.id, (id) => {
-                  chrome.tabs.discard(id, () => {
+              waitForTab(tab?.id, (id) => {
+                chrome.tabs.discard(id, () => {
                   if (fLast) {
                     updatePage();
                   }
@@ -235,12 +242,19 @@
 
     });
 
+    document.documentElement.style.cursor = 'default';
   }
 
   window.onload = () => {
+
+    window.onfocus = () => {
+      updatePage();
+    }
+
     window.setTimeout(() => {
       updatePage();
     }, 100);
+
   };
 
 }());
