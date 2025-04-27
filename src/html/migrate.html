@@ -36,10 +36,15 @@
       <div class="formRow"></div>
       <hr />
 
-      <div id="suspendedDiv" class="formRow"></div>
-      <div id="extensionDiv" class="formRow"></div>
-      <div id="nextTab" class="formRow"></div>
-      <div id="notFoundDiv" class="formRow none">
+      <div id="suspendedDiv"  class="formRow"></div>
+      <div id="extensionDiv"  class="formRow"></div>
+      <div id="nextTab"       class="formRow"></div>
+
+      <div id="tabList"       class="formRow">
+        <table id="tabTable"></table>
+      </div>
+
+      <div id="notFoundDiv"   class="formRow none">
         <br>
         If you're using a tab Suspending browser extension, I don't recognizing it.
         Please <a href="https://github.com/rkodey/the-great-er-discarder-er/issues" target="_blank">submit a new issue</a> and include:
@@ -70,13 +75,13 @@
                 <div>to native Discard</div>
               </td>
             </tr>
-            <tr><td class="center" colspan="3">
+            <!-- <tr><td class="center" colspan="3">
               <br>
               <div>
                 <input type="checkbox" id="processAll" class="option" />
                 <label for="processAll" class="cbLabel">Process all tabs</label>
               </div>
-            </td></tr>
+            </td></tr> -->
           </table>
         </div>
         <hr />
