@@ -15,7 +15,6 @@
     WHITELIST           : 'whitelist',
     SYNC_OPTIONS        : 'syncOptions',
     DISCARD_STARTUP     : 'discardAtStartup',
-    SUSPEND_MODE        : 'suspendMode',
     ADD_DISCARDS        : 'addDiscardsMenu',
 
     getOption           : getOption,
@@ -42,7 +41,6 @@
     defaults[self.WHITELIST]        = '';
     defaults[self.SYNC_OPTIONS]     = true;
     defaults[self.DISCARD_STARTUP]  = false;
-    defaults[self.SUSPEND_MODE]     = false;
     defaults[self.ADD_DISCARDS]     = false;
     return defaults;
   }

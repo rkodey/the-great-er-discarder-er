@@ -6,22 +6,6 @@
 
 # Change Log
 
-## 1.3.0 - Apr 2025
-- New: **Suspending Tabs** has been added
-  ( [Closes #42](https://github.com/rkodey/the-great-er-discarder-er/issues/42) )
-  - You can Suspend individual tabs in addition to Discarding them, using the extension popup or keyboard shortcuts
-  - You can switch between automatic Suspending and Discarding tabs in the Settings
-- New: **Suspended Tabs** can have their tab titles customized with a prefix for setting visual distinction
-  ( [Partial #41](https://github.com/rkodey/the-great-er-discarder-er/issues/41) )
-  ( [Partial #5](https://github.com/rkodey/the-great-er-discarder-er/issues/5) )
-  - Example prefixes: 💤 🔴 🟡 ( ... and more colors )
-  - I'm considering favicon customization as well, if there's positive feedback for that
-- Update: **Migrating** tabs is awesome-*er* now that you can view and select which eligible tabs you'd like to Migrate or Convert
-- New: **Tiny Suspender** `suspend.html` tabs can be migrated!
-  ( [Closes #51](https://github.com/rkodey/the-great-er-discarder-er/issues/51) )
-- Fix: Tab migration to handle the different formats better, which should prevent looping
-  ( [Might help #45](https://github.com/rkodey/the-great-er-discarder-er/issues/45) )
-
 ## 1.2.2 - Mar 2025
 - Fix: "Discard at startup" (again) to prevent discarding tabs when the browser restarts idle workers
   ( [Closes #43](https://github.com/rkodey/the-great-er-discarder-er/issues/43) )

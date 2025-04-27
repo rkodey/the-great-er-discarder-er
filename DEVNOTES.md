@@ -6,45 +6,16 @@
 
 # Developer Notes
 
-<br>
-
 ## Tab migration
 
-
-### `suspended.html` type URL format
-- uri is NOT encoded at the end -- their source code explicitly notes this
+### "Suspender" type URL format
+- uri is NOT encoded at the end -- their code explicitly notes this
   > chrome-extension://`EXTID`/suspended.html#ttl=`TITLE`&pos=0&uri=`URI`
 
 
-### "Tab Suspender" `park.html` URL format
-- fiabciakcmgepblmdkmemdbbkilneeeh
+### "Tab Profiler" URL format
 - The querystring looks correctly coded here, and using URL.searchParams produces good results so far
   > chrome-extension://`EXTID`/park.html?title=`TITLE`&url=`URI`&tabId=`INT`&sessionId=`INT`&icon=data%3Aimage%2Fpng%3Bbase64%2C`data`
-
-
-### "Tiny Suspender" `suspend.html` URL format
-- bbomjaikkcabgmfaomdichgcodnaeecf
-  > chrome-extension://`EXTID`/suspend.html?url=`URI`&title=`TITLE`&favIconUrl=https%3A%2F%2Fkodey.com%2Fassets%2Fimg%2Ffavicons%2Ffavicon.ico&scroll_x=0&scroll_y=0&dark_mode=true
-
-<br>
-
-## Building the extension from source
-
-You must have nodejs installed
-
-Clone the repository and run these commands:
-```
-npm install
-npm run generate-key
-npm run build
-```
-
-It should say:
-```
-Done, without errors.
-```
-
-The extension in crx format will be inside the build/crx/ directory. You can drag it into chrome://extensions to install locally.
 
 <br>
 

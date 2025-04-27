@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "The Great-er Tab Discarder",
-  "description": "Compatible with latest Chrome! Helps your browser load and run faster by freeing up memory and resources used by old inactive tabs.",
-  "version": "1.3.0",
+  "description": "Helps your browser load and run faster by freeing up memory and resources used by inactive or old tabs. No tracking. No drama.",
+  "version": "1.2.2",
 
   "permissions": [ "tabs", "storage", "contextMenus", "alarms", "favicon" ],
   "optional_permissions": ["tabGroups"],
@@ -27,10 +27,6 @@
   "commands": {
     "1-discard-tab": {
       "description": "Discard active tab",
-      "suggested_key": { "default": "Ctrl+Shift+D" }
-    },
-    "2-suspend-tab": {
-      "description": "Suspend active tab",
       "suggested_key": { "default": "Ctrl+Shift+S" }
     },
     "3-discard-active-window": {

@@ -25,25 +25,8 @@
       <h2>General Settings</h2>
       <hr />
 
-      <h2>
-        Automatic tab
-        <div class="toggle" id="modeToggle">
-          <input type="checkbox" id="suspendMode" class="checkbox option" />
-          <div class="slider"></div>
-          <div class="slider-bg"></div>
-        </div>
-        <i class="icon-help fa fa-question-circle" title="
-Choose to automatically Discard or Suspend your tabs.
-
-- Discard: The modern approach that frees up more memory.  Uses native browser resource savings.
-- Suspend: Classic suspended tabs free less memory, but allow for visual customization.
-
-( Example screenshots coming soon... )
-"></i>
-      </h2>
-
       <div class="formRow">
-        <label id="timeToDiscardLbl" for="timeToDiscard"><span class="modeLabel">Discard</span> tabs after:</label>
+        <label id="timeToDiscardLbl" for="timeToDiscard" class="bold">Automatically discard tabs after:</label>
         <br />
         <select id="timeToDiscard" class="option" style="margin-top: 8px">
           <option value="0">Never</option>
@@ -67,32 +50,30 @@ Choose to automatically Discard or Suspend your tabs.
 
       <div class="formRow autoDiscardOption">
         <input type="checkbox" id="dontDiscardPinned" class="option" />
-        <label for="dontDiscardPinned" class="cbLabel"><span class="overlay"></span>Do not <span class="modeLabel">Discard</span> pinned tabs</label>
+        <label for="dontDiscardPinned" class="cbLabel">Do not discard pinned tabs</label>
       </div>
 
       <div class="formRow autoDiscardOption">
         <input type="checkbox" id="dontDiscardAudio" class="option" />
-        <label for="dontDiscardAudio" class="cbLabel"><span class="overlay"></span>Do not <span class="modeLabel">Discard</span> tabs that are playing audio</label>
+        <label for="dontDiscardAudio" class="cbLabel">Do not discard tabs that are playing audio</label>
       </div>
 
       <div class="formRow autoDiscardOption">
         <input type="checkbox" id="onlineCheck" class="option" />
-        <label for="onlineCheck" class="cbLabel"><span class="overlay"></span>Only auto-<span class="modeLabel">Discard</span> if connected to the internet</label>
+        <label for="onlineCheck" class="cbLabel">Only auto-discard if connected to the internet</label>
       </div>
 
       <div class="formRow autoDiscardOption">
         <input type="checkbox" id="batteryCheck" class="option" />
-        <label for="batteryCheck" class="cbLabel"><span class="overlay"></span>Only auto-<span class="modeLabel">Discard</span> if running on battery</label>
+        <label for="batteryCheck" class="cbLabel">Only auto-discard if running on battery</label>
       </div>
 
       <h2>Startup</h2>
       <div class="formRow">
         <input type="checkbox" id="discardAtStartup" class="option" />
-        <label for="discardAtStartup" class="cbLabel"><span class="overlay"></span>Discard all tabs at startup
-          <i class="icon-help fa fa-question-circle" title="
-Prevents loading all tabs at startup for a faster launch.
-Great for Suspended tabs too!
-"></i>
+        <label for="discardAtStartup" class="cbLabel">
+          Discard all tabs at startup
+          <i class="icon-help fa fa-question-circle" title="This prevents loading all your tabs at startup"></i>
         </label>
       </div>
 
@@ -118,16 +99,16 @@ You can also specify regular expressions by enclosing the text in forward slashe
       <h2>Other</h2>
       <div class="formRow">
         <input type="checkbox" id="addContextMenu" class="option" />
-        <label for="addContextMenu" class="cbLabel"><span class="overlay"></span>Add The Great-<span class="italic">er</span> Tab Discarder to right-click context menu</label>
+        <label for="addContextMenu" class="cbLabel">Add The Great-<span class="italic">er</span> Tab Discarder to right-click context menu</label>
       </div>
       <div class="formRow">
         <input type="checkbox" id="syncOptions" class="option" />
-        <label for="syncOptions" class="cbLabel"><span class="overlay"></span>Sync settings between different systems</label>
+        <label for="syncOptions" class="cbLabel">Sync settings between different systems</label>
         <div id="syncNote" class="note">Turning this on will overwrite settings on all synced systems</div>
       </div>
       <div class="formRow">
         <input type="checkbox" id="addDiscardsMenu" class="option" />
-        <label for="addDiscardsMenu" class="cbLabel"><span class="overlay"></span>Enable debug links on context and popup menus</label>
+        <label for="addDiscardsMenu" class="cbLabel">Enable debug links on context and popup menus</label>
       </div>
 
       <hr />
