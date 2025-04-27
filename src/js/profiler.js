@@ -4,7 +4,7 @@
   'use strict';
 
   const browser   = navigator.userAgent.match(/Chrome\/.*Edg\//i) ? 'edge' : 'chrome';
-  const windows   = {};
+  let windows     = {};
 
 
   function generateTabInfo(table, info, first) {
@@ -30,7 +30,6 @@
     // let win       = '';
     if (!windows[windowId]) {
       windows[windowId] = 1;
-      console.log(windows[windowId]);
       const link  = document.createElement('a');
       link.href   = '#';
       link.innerText = `Window ${Object.keys(windows).length}`;
@@ -64,6 +63,7 @@
   }
 
   async function generateRows(groupMap) {
+    document.documentElement.style.cursor = 'progress';
     // console.log('4 main loop', groupMap);
     const windows = new Map();
     const tabs = await chrome.tabs.query({});
@@ -82,7 +82,7 @@
       win.push(discardInfo);
     }
 
-    const tableEl = document.getElementById('gsProfilerBody');
+    const tableEl = document.getElementById('profileTabTableBody');
     tableEl.innerHTML = '';
 
     for (const winId of Array.from(windows.keys()).sort()) {
@@ -93,14 +93,17 @@
         first = false;
       }
     }
+    document.documentElement.style.cursor = 'default';
   }
 
   function generateTable() {
 
-    // console.log('1 perms');
-    chrome.permissions.contains({ permissions: ['tabGroups'] }, async (fShopGroups) => {
+    windows = {};
 
-      if (fShopGroups) {
+    // console.log('1 perms');
+    chrome.permissions.contains({ permissions: ['tabGroups'] }, async (fShowGroups) => {
+
+      if (fShowGroups) {
 
         document.getElementById('enableTabGroups').style.display = 'none';
         // console.log('2 tabGroups', chrome.tabGroups);
@@ -126,12 +129,14 @@
 
     document.getElementById('refreshProfiler').onclick = function (e) {
       generateTable();
+      return false;
     };
 
     document.getElementById('enableTabGroups').onclick = function (e) {
       chrome.permissions.request({ permissions: ['tabGroups'] }, (fAccepted) => {
         generateTable();
       });
+      return false;
     };
 
     generateTable();
@@ -143,7 +148,7 @@
         html += generateMemStats(processes);
         html += '<br />';
         html += generateTabStats(tabs);
-        document.getElementById('gsProfiler').innerHTML = html;
+        document.getElementById('profileTabTable').innerHTML = html;
       });
     });
     */
