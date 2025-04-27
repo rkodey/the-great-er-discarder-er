@@ -16,6 +16,9 @@
   });
 
 
+  /**
+   * @param {object} options
+   */
   function initialize(options) {
 
     // console.log('options initialize', storage, options);
@@ -31,6 +34,7 @@
       'addContextMenu'    : storage.ADD_CONTEXT,
       'syncOptions'       : storage.SYNC_OPTIONS,
       'discardAtStartup'  : storage.DISCARD_STARTUP,
+      'suspendMode'       : storage.SUSPEND_MODE,
       'addDiscardsMenu'   : storage.ADD_DISCARDS
     };
     // const elementIdMap = invert(elementPrefMap);
@@ -43,6 +47,8 @@
     var i;
 
     if (!optionEls || !saveEl || !cancelEl) return;
+
+    setModeLabels();
 
     saveEl.onclick = () => {
       saveChanges(optionEls)
@@ -62,6 +68,7 @@
 
     for (i = 0; i < optionEls.length; i++) {
       element = optionEls[i];
+      // console.log('initialize', element);
       if (element instanceof HTMLElement) {
         //add change listeners for all 'option' elements
         element.onchange = handleChange(element);
@@ -75,64 +82,85 @@
     setSyncNoteVisibility(!options[storage.SYNC_OPTIONS]);
   }
 
-  function invert(obj) {
+  // function invert(obj) {
+  //   var new_obj = {},
+  //     prop;
+  //   for (prop in obj) {
+  //     if (obj.hasOwnProperty(prop)) {
+  //       new_obj[obj[prop]] = prop;
+  //     }
+  //   }
+  //   return new_obj;
+  // }
 
-    var new_obj = {},
-      prop;
+  // function selectComboBox(element, key) {
+  //   var i, child;
+  //   for (i = 0; i < element.children.length; i += 1) {
+  //     child = element.children[i];
+  //     if (child.value === key) {
+  //       child.selected = 'true';
+  //       break;
+  //     }
+  //   }
+  // }
 
-    for (prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
-        new_obj[obj[prop]] = prop;
-      }
-    }
-    return new_obj;
+  /**
+   * @param {boolean} [value]
+   */
+  function setModeLabels(value) {
+    // console.log('setModeLabels', currentOptions);
+    document.querySelectorAll('span.modeLabel').forEach((element) => {
+      const current = value === undefined ? currentOptions[storage.SUSPEND_MODE] : value;
+      element.innerHTML = current ? 'Suspend' : 'Discard';
+    });
   }
 
-  function selectComboBox(element, key) {
-    var i,
-      child;
-
-    for (i = 0; i < element.children.length; i += 1) {
-      child = element.children[i];
-      if (child.value === key) {
-        child.selected = 'true';
-        break;
-      }
-    }
-  }
-
+  /**
+   * @param {Element} element
+   */
   function populateOption(element, value) {
 
-    if (element.tagName === 'INPUT' && element.hasAttribute('type') && element.getAttribute('type') === 'checkbox') {
+    if (element instanceof HTMLInputElement) {
       element.checked = value;
 
-    } else if (element.tagName === 'SELECT') {
-      selectComboBox(element, value);
+    }
+    else if (element instanceof HTMLSelectElement) {
+      element.value = value;
 
-    } else if (element.tagName === 'TEXTAREA') {
+    }
+    else if (element instanceof HTMLTextAreaElement) {
       element.value = value;
     }
   }
 
+  /**
+   * @param {Element} element
+   */
   function getOptionValue(element) {
     // TODO switch statement?
-    if (element.tagName === 'INPUT' && element.hasAttribute('type') && element.getAttribute('type') === 'checkbox') {
+    if (element instanceof HTMLInputElement) {
       return element.checked;
     }
-    if (element.tagName === 'SELECT') {
-      return element.children[element.selectedIndex].value;
+    else if (element instanceof HTMLSelectElement) {
+      return element.value;
     }
-    if (element.tagName === 'TEXTAREA') {
+    else if (element instanceof HTMLTextAreaElement) {
       return element.value;
     }
   }
 
+  /**
+   * @param {boolean} visible
+   */
   function setAutoDiscardOptionsVisibility(visible) {
     Array.prototype.forEach.call(document.getElementsByClassName('autoDiscardOption'), (el) => {
       el.style.display = visible ? 'block' : 'none';
     });
   }
 
+  /**
+   * @param {boolean} visible
+   */
   function setSyncNoteVisibility(visible) {
     const syncNote = document.getElementById('syncNote');
     if (syncNote) {
@@ -147,15 +175,22 @@
 
       //add specific screen element listeners
       if (pref === storage.DISCARD_TIME) {
-        interval = getOptionValue(element);
+        interval = element.value; // element is a select
         setAutoDiscardOptionsVisibility(interval > 0);
 
-      } else if (pref === storage.SYNC_OPTIONS) {
+      }
+      else if (pref === storage.SYNC_OPTIONS) {
         setSyncNoteVisibility(!getOptionValue(element));
+      }
+      else if (pref === storage.SUSPEND_MODE) {
+        setModeLabels(element.checked);
       }
     };
   }
 
+  /**
+   * @param {HTMLCollectionOf<Element>} elements
+   */
   async function saveChanges(elements) {
     // console.log(['saveChanges',elements]);
     var options = {};
@@ -166,6 +201,7 @@
       var pref = elementPrefMap[element.id],
         oldValue = currentOptions[pref],
         newValue = getOptionValue(element);
+      // console.log('saveChanges', element.id, pref, newValue);
 
       //clean up whitelist before saving
       if (pref === storage.WHITELIST) {
@@ -181,7 +217,6 @@
     }
 
     // Update the context menu
-    // console.log(['saveChanges context',options[storage.ADD_CONTEXT], options[storage.ADD_DISCARDS]]);
     chrome.runtime.sendMessage({ action: 'updateContextMenuItems', visible: options[storage.ADD_CONTEXT], discards: options[storage.ADD_DISCARDS] });
 
     await chrome.runtime.sendMessage({ action: 'setOptions', options });
