@@ -4,7 +4,7 @@
   'use strict';
 
   const browser   = navigator.userAgent.match(/Chrome\/.*Edg\//i) ? 'edge' : 'chrome';
-  const windows   = {};
+  let windows     = {};
 
 
   function generateTabInfo(table, info, first) {
@@ -30,7 +30,6 @@
     // let win       = '';
     if (!windows[windowId]) {
       windows[windowId] = 1;
-      console.log(windows[windowId]);
       const link  = document.createElement('a');
       link.href   = '#';
       link.innerText = `Window ${Object.keys(windows).length}`;
@@ -63,44 +62,53 @@
     row.insertCell().innerHTML = pinned;
   }
 
-  async function generateRows(groupMap) {
+  function generateRows(groupMap) {
+    document.documentElement.style.cursor = 'progress';
     // console.log('4 main loop', groupMap);
-    const windows = new Map();
-    const tabs = await chrome.tabs.query({});
-    for (let i = 0; i < tabs.length; ++i) {
-      const curTab = tabs[i];
-      if (!windows.has(curTab.windowId)) {
-        windows.set(curTab.windowId, []);
-      }
-      const win = windows.get(curTab.windowId);
 
-      const discardInfo = await chrome.runtime.sendMessage({ action: 'requestTabInfo', tab: curTab });
-      discardInfo.tab = curTab;
-      if (groupMap) {
-        discardInfo.group = groupMap[discardInfo.groupId];
-      }
-      win.push(discardInfo);
-    }
-
-    const tableEl = document.getElementById('gsProfilerBody');
+    const tableEl = document.getElementById('profileTabTableBody');
     tableEl.innerHTML = '';
 
-    for (const winId of Array.from(windows.keys()).sort()) {
-      const infos = windows.get(winId);
-      let first = true;
-      for (const discardInfo of infos) {
-        generateTabInfo(tableEl, discardInfo, first);
-        first = false;
+    // Wait 100ms to allow the table to visually clear and the cursor to update
+    setTimeout(async () => {
+      const windows = new Map();
+      const tabs = await chrome.tabs.query({});
+
+      for (let i = 0; i < tabs.length; ++i) {
+        const curTab = tabs[i];
+        if (!windows.has(curTab.windowId)) {
+          windows.set(curTab.windowId, []);
+        }
+        const win = windows.get(curTab.windowId);
+
+        const discardInfo = await chrome.runtime.sendMessage({ action: 'requestTabInfo', tab: curTab });
+        discardInfo.tab = curTab;
+        if (groupMap) {
+          discardInfo.group = groupMap[discardInfo.groupId];
+        }
+        win.push(discardInfo);
       }
-    }
+
+      for (const winId of Array.from(windows.keys()).sort()) {
+        const infos = windows.get(winId);
+        let first = true;
+        for (const discardInfo of infos) {
+          generateTabInfo(tableEl, discardInfo, first);
+          first = false;
+        }
+      }
+      document.documentElement.style.cursor = 'default';
+    }, 100);
   }
 
   function generateTable() {
 
-    // console.log('1 perms');
-    chrome.permissions.contains({ permissions: ['tabGroups'] }, async (fShopGroups) => {
+    windows = {};
 
-      if (fShopGroups) {
+    // console.log('1 perms');
+    chrome.permissions.contains({ permissions: ['tabGroups'] }, async (fShowGroups) => {
+
+      if (fShowGroups) {
 
         document.getElementById('enableTabGroups').style.display = 'none';
         // console.log('2 tabGroups', chrome.tabGroups);
@@ -126,12 +134,14 @@
 
     document.getElementById('refreshProfiler').onclick = function (e) {
       generateTable();
+      return false;
     };
 
     document.getElementById('enableTabGroups').onclick = function (e) {
       chrome.permissions.request({ permissions: ['tabGroups'] }, (fAccepted) => {
         generateTable();
       });
+      return false;
     };
 
     generateTable();
@@ -143,7 +153,7 @@
         html += generateMemStats(processes);
         html += '<br />';
         html += generateTabStats(tabs);
-        document.getElementById('gsProfiler').innerHTML = html;
+        document.getElementById('profileTabTable').innerHTML = html;
       });
     });
     */

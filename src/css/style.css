@@ -61,7 +61,7 @@ p {
   margin: 0 0 15px;
 }
 a {
-  color: #4994b3;
+  color: #49B;
   text-decoration: none;
   font-weight: 600;
 }
@@ -122,7 +122,7 @@ img.headerIcon {
 }
 img.favicon {
   margin: 0 0 -2px 0;
-  padding: 0 6px;
+  padding: 0 8px 0 0;
   height: 16px;
   width: 16px;
 }
@@ -137,7 +137,7 @@ select {
   font-size: 14px;
   border-color: #ccc;
 }
-input, select, button {
+input, select, button, .btn {
   margin-bottom: 8px;
   border-radius: 5px;
   cursor: pointer;
@@ -171,19 +171,17 @@ a.btn {
   text-decoration: none;
 }
 .btn {
-  background: #52a6c8;
+  background: #49B;
   color: #fff;
-  border-radius: 5px;
   height: 40px;
   line-height: 40px;
   padding: 0 20px;
   display: inline-block;
   border: 0;
   font-size: 14px;
-  cursor: pointer;
 }
 .btn:hover {
-  background: #4994b3;
+  background: #379;
 }
 .btn.btnNeg {
   background: #ccc;
@@ -261,7 +259,7 @@ a.btn {
 .content h2 {
   /* padding: 0 0 10px 0; */
   margin: 32px 0 16px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -336,21 +334,47 @@ table, tr, td {
   padding-left: 10px;
   vertical-align: top;
 }
+
+
 input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
+  position: absolute;
+}
+input[type="checkbox"], input[type="checkbox"] + label .overlay {
+  /* line-height: 20px; */
   display: inline-block;
   margin: 0;
   padding: 0;
-  position: absolute;
-  accent-color:  #4994b3;
+  border-radius: 3px;
+  accent-color:  #49B;
+  vertical-align: bottom;
+}
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+input[type="checkbox"] + label .overlay {
+  width: 18px;
+  height: 18px;
+  margin: 0 12px 0 0;
+  border: 1px solid #CCC;
+  background: #FFF;
+}
+input[type="checkbox"]:checked + label .overlay {
+  border-color: transparent;
+  background: transparent;
 }
 input[type="checkbox"] + label {
   position: relative;
-  padding-left: 30px;
+  padding: 0;
   cursor: pointer;
 }
+input[type="checkbox"] + label:hover .overlay {
+  border-color: #49B;
+}
+input[type="checkbox"]:checked + label:hover .overlay {
+  background: #0000;
+}
+
 
 i.icon-help {
   margin-left: 0.5rem;
@@ -358,42 +382,154 @@ i.icon-help {
 select {
   outline: 0;
 }
-select:focus, select:hover {
-  border-color: #4994b3;
+select:focus, select:hover, textarea:hover, textarea:focus {
+  border-color: #49B;
 }
 textarea {
   outline: 0;
 }
-textarea:hover, textarea:focus {
-  border-color: #4994b3;
-}
 
-/* Profiling page */
-table#gsProfiler {
+
+table.tabs {
+
   table-layout: fixed;
   border-collapse: collapse;
   padding: 0;
-  margin-top: 1em
+  margin-top: 1em;
+
+  th {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-weight: bolder;
+    vertical-align: middle;
+  }
+
+  tr.newrow {
+    border-top: 1px dotted;
+  }
+
+  td {
+    padding-left: 8px;
+    padding-right: 8px;
+    white-space: nowrap;
+  }
+
+  td.title {
+    max-width: 800px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
-table#gsProfiler th {
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-  font-weight: bolder;
-  vertical-align: middle;
+
+
+#migrateTabTable {
+
+  tr {
+    line-height: 24px;
+  }
+  th.check {
+    text-align: left;
+    padding-left: 10px;
+  }
+  td {
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 5px 0 0 0;
+  }
+  input[type="checkbox"] + label .overlay {
+    width: 14px;
+    height: 14px;
+    margin: 0 14px 3px 0;
+  }
+  a#checkAll + label {
+    padding-left: 10px;
+  }
+
 }
-table#gsProfiler tr.newrow {
-  border-top: 1px dotted;
+
+/* toggle slider */
+div#modeToggle.toggle {
+  margin: 0 0 0 .5em;
+  /* top: 1px; */
 }
-table#gsProfiler td {
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-  white-space: nowrap;
+
+div.toggle {
+
+  display: inline-block;
+  position: relative;
+  top: 50%;
+  width: 99px;
+  height: 26px;
+  margin: 0;
+
+  .slider, .slider-bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .checkbox {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  .slider {
+    z-index: 2;
+    border-radius: 20px;
+    border: 1px solid #CCC;
+    transition: 0.3s ease all;
+    transition: 0s linear border;
+  }
+  .checkbox:hover + .slider {
+    border: 1px solid #49B;
+    transition: 0s linear border;
+  }
+
+  .slider-bg {
+    border-radius: 20px;
+    /* background-color: #EEE; */
+    z-index: 1;
+  }
+
+  .slider:before {
+    content: "Discard";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 52px;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    line-height: 1;
+    padding: 4px 6px;
+    background-color: #49B;
+    border-radius: 20px;
+    transition: 0.3s ease all;
+  }
+
+  .checkbox:checked + .slider:before {
+    content: "Suspend";
+    left: 32px;
+    background-color: #49B;
+  }
+
 }
-table#gsProfiler td.title {
-  max-width: 800px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+
 
 /* tab groups */
 span.group {
@@ -486,7 +622,36 @@ a.active {
 input[type="checkbox"] {
   accent-color:  #159;
 }
-input[type="checkbox"] + label {
+
+input[type="checkbox"] + label .overlay {
+  background-color: #000C;
+}
+input[type="checkbox"] + label:hover .overlay {
+  border-color: #07d;
+}
+input[type="checkbox"]:checked + label:hover .overlay {
+  border-color: transparent;
+}
+
+div.toggle {
+
+  .slider {
+    border: 1px solid #666;
+  }
+  .checkbox:hover + .slider {
+    border: 1px solid #07d;
+  }
+
+  .slider:before {
+    background-color: #159;
+  }
+  .checkbox:checked + .slider:before {
+    background-color: #159;
+  }
+
+}
+
+/* input[type="checkbox"] + label {
   background: #222c;
 }
 input[type="checkbox"] + label:hover {
@@ -497,14 +662,14 @@ input[type="checkbox"]:checked + label {
 }
 input[type="checkbox"]:checked + label:hover {
   background: #2220;
-}
+} */
 textarea {
   color:#ccc;
   background: #313131;
   border-color: #666;
 }
 textarea:hover, textarea:focus, select:hover, select:focus, input:hover, input:focus {
-  border-color: #0078d4;
+  border-color: #07d;
 }
 select {
   color:#ccc;
