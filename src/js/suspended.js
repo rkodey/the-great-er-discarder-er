@@ -62,13 +62,12 @@
 
   function updatePage() {
     const url     = parseURL();
-    console.log(url, url.hash_vars.toString());
+    // console.log(url, url.hash_vars.toString());
     if (url.target && url.clean_title) {
       setInnerHTML('suspended_title', `<img src="${faviconURL(url.target)}" class="favicon" />${url.clean_title ?? ''}`);
       setInnerHTML('suspended_uri', `<a href="${url.target}">${url.target}</a>`);
       setAttribute('suspended_ico', 'href', faviconURL(url.target));
       setHeadTitle(url.full_title);
-      // console.log(`[${url.emoji}]`);
       const sel   = document.getElementById('customTitle');
       if (sel instanceof HTMLSelectElement && url.emoji) {
         sel.value = url.emoji;
@@ -82,7 +81,7 @@
    */
   function customTitle(value) {
     const url     = parseURL();
-    console.log(url, url.hash_vars.toString());
+    // console.log(url, url.hash_vars.toString());
     let str_title = '';
     if (!value) {
       str_title   = url.clean_title;
@@ -106,7 +105,7 @@
     let hash      = `#${url.hash_vars.toString()}`;
     // if (url.hash_uri) hash += `&uri=${url.hash_uri}`;
     document.location.hash = hash;
-    console.log(hash);
+    // console.log(hash);
     updatePage();
   }
 

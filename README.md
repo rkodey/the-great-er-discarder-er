@@ -4,127 +4,115 @@
 + The Great-er Tab Discarder
 ```
 
-This is a fork of the dormant "The Great Discarder" project, now updated with new features.<br>
-No tracking.  No drama.  Only fast-*er* browsing!<br>
+Helps your browser load and run faster by freeing up memory and resources used by inactive or old tabs.
+
+No tracking.  No drama.  Only fast-*er* browsing!
+
 Full Manifest V3 support in Chrome and Edge.
 
 <br>
 
-**Welcome** to all users coming from "**The Marvellous Suspender**", "**The Great Suspender (notrack)**", "**Tab Suspender**", or other similar extensions!
+## Welcome
+...to all users coming from
+- **The Marvellous Suspender**
+- **The Great Suspender (notrack)**
+- **Tab Suspender**
+- **Tiny Suspender**
+- This extension can migrate your suspended tabs!
 
 > Is your tab "Suspender" extension showing a warning "This extension may soon no longer be supported" ?<br>
 
-Don't risk losing your suspended tabs!<br>
+Don't risk losing your suspended tabs!
+
 This extension can migrate your existing suspended tabs,
 so you won't lose them if/when Chrome removes your old unsupported extensions.
 
 <br>
 
+## Get the extension
+
+- [Chrome Web Store](https://chromewebstore.google.com/detail/the-great-er-tab-discarder/plpkmjcnhhnpkblimgenmdhghfgghdpp)
+- [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/the-greater-tab-discarder/lieejiddoadedggjdkgeellgeeibbnai)
+
+Help others find the extension -- submit a ⭐⭐⭐⭐⭐ rating in the App Store(s) if you like the extension!
+
+<br>
+
 ## What does "Discarding" a tab mean?
 > A discarded tab is one whose content has been unloaded from memory, but is still visible in the tab strip.
-> Its content is reloaded the next time it is activated.
+> Its content is automatically reloaded the next time it is activated.
 
 Discarding a tab does NOT close or remove or delete the tab.
 It natively tells your browser it can frees up memory and resources, and is the preferred way to keep your browser running fast and efficient.
 
 ## What about "Suspending" tabs?
-Tab suspending is the old-school approach at saving memory.
-Problem is, the browsers still assign resources to the suspended mini-pages.
-Tab discarding was added for a reason, as it allows the browser to natively free up memory.
+Tab suspending is the old-school approach at saving memory, **but allows for customization**.
+Your browser will still assign some resources to the suspended "mini-pages" to allow for the customization.
+You can also Discard a Suspended tab...  perhaps getting the best of both worlds.
+
+<br>
+
+## Screenshots
+<img src="./screenshots/Popup Light.png" height="200" /> &nbsp;
+<img src="./screenshots/Options Light.png" height="200" /> &nbsp;
+
+<img src="./screenshots/Popup Dark.png" height="200" /> &nbsp;
+<img src="./screenshots/Options Dark.png" height="200" /> &nbsp;
 
 <br>
 
 ## What's New
-see [CHANGELOG.md](./CHANGELOG.md) for full details.
 
-### Mar 2025
-- Migrate `park.html` tabs from "**Tab Suspender**"
+### April 2025
+- **Suspending Tabs** has been added
+  - You can Suspend individual tabs in addition to Discarding them, using the extension popup or keyboard shortcuts
+  - You can switch between automatic Suspending and Discarding tabs in the Settings
+- **Suspended Tabs** can have their tab titles customized with a prefix for setting visual distinction
+  - Example prefixes: 💤 🔴 🟡 ( ... and more colors )
+  - I'm considering favicon customization as well, if there's positive feedback for that
+- **Migrating** tabs is awesome-*er* now that you can view and select which eligible tabs you'd like to Migrate or Convert
+- **Tiny Suspender** `suspend.html` tabs can be migrated!
+- Fixed tab migration to handle the different formats better, which should prevent looping
+
+### March 2025
+- **Tab Suspender** `park.html` tabs can be migrated!
 - Fixed several issues ( introduced by Manifest V3 ) affecting popup and context menu actions
-- Fixed "Discard at startup" to handle occasional browser startup quirks
+- **Discard at startup** was fixed to handle occasional browser startup quirks
 - Rearrange the tab migration page to simplify it a bit
 - Tab Groups are now ( optionally ) displayed on the Profiler page
 
-### Feb 2025
-- Updated to "Manifest V3" so no more warning messages from Chrome!
-- Migrate `suspended.html` tabs from several other extensions, like "**The Marvellous Suspender**" and "**The Great Suspender (notrack)**"
-- Automatic dark mode
-- New name!  ( Sort-of. )  Small change for now, to see if visibility changes
+see [CHANGELOG.md](./CHANGELOG.md) for full details.
 
 <br>
 
-## Installation
-
-Help others find this extension -- **submit a rating** on the App Store(s)!
-
-- [Chrome Web Store](https://chromewebstore.google.com/detail/the-great-er-tab-discarder/plpkmjcnhhnpkblimgenmdhghfgghdpp)
-- [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/the-greater-tab-discarder/lieejiddoadedggjdkgeellgeeibbnai)
-
-<br>
-
-## Added Features ( beyond the original )
+## Feature Highlights
 - **Migrate Tabs** - Migrate your suspended tabs from another extension - OR, you can convert them to proper Discarded tabs!
-- **Discard all tabs at startup** - Prevents loading all your tabs at startup, while preserving the tabs in your last session.
-- **Discard other eligible tabs** - Same as "Discard all other tabs" but observes the current auto-discard settings, like skipping Pinned and Audio tabs.
-- **Optional link to Discards debug page** - Adds a link on the context and popup menus to launch the built-in chrome://discards/ page.
-- **Options / Settings** - Will switch to an existing tab if one exists, instead of always launching a new tab.
-- **Removed Google Analytics** - No tracking. No drama.
+- **Automatic Dark Mode** - The extension follows your browser's Appearance settings.
+- **Discard all tabs at startup** - Prevents your browser from reloading all your tabs at startup, which can greatly speed up startup time.
+- **Discard all eligible tabs** - Same as "Discard all other tabs" but observes the current auto-discard settings, like skipping Pinned and Audio tabs.
+- **Display tab details** - Adds a link to the popup menus to show details useful for seeing how the extension sees things.
+- **Settings** - Will re-use an existing settings tab if one exists.
+- **Removed Google Analytics** - No tracking. No drama. Only fast-*er* browsing!
 
 <br>
 
-If you have suggestions or problems using the extension, please [submit a bug or a feature request on github](https://github.com/rkodey/the-great-er-discarder-er/issues).
+## Help & Support
 
-see [DEVNOTES.md](./DEVNOTES.md) for additional Developer Notes
+If you have suggestions or problems using the extension, please
+- [Start a discussion if you have a question](https://github.com/rkodey/the-great-er-discarder-er/discussions).
+- [Submit a bug or feature request](https://github.com/rkodey/the-great-er-discarder-er/issues).
 
 <br>
 
 ## Contributors
 - Huge thanks to **Mike Frysinger** ([vapier](https://github.com/vapier)) for updating to Manifest V3!
 - [LordXerus](https://github.com/LordXerus)
-
-
-<br><br>
-----------
-<br><br>
-
-
-# Notes from the original author...
-
-"The Great Discarder" started as a clone of another (former) open source extension "The Great Suspender".
-It was built to take advantage of Chromium's 'tab discarding' functionality which is essentially a native implementation of tab suspension.
-This extension is more robust and performant, both in the resources consumed by the extension, and the memory savings of the tab suspension.
-It is also compatible with tab history syncing.
-
-
-## Install as a local extension from source
-
-1. Download the **[latest release](https://github.com/rkodey/the-great-er-discarder-er/releases)** and unarchive to your preferred location (whichever suits you).
-2. Navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
-3. Click on the `Load unpacked extension...` button.
-4. Browse to the src directory of the downloaded, un-archived release and confirm.
-
-
-## Build from github
-
-Dependencies: openssl, nodejs / npm.
-
-Clone the repository and run these commands:
-```
-npm install
-npm run generate-key
-npm run build
-```
-
-It should say:
-```
-Done, without errors.
-```
-
-The extension in crx format will be inside the build/crx/ directory. You can drag it into chrome://extensions to install locally.
-
-## License
-
-This work is licensed under a GNU GENERAL PUBLIC LICENSE (v2)
+  <br><br>see [DEVNOTES.md](./DEVNOTES.md) for additional Developer Notes
 
 ## Shout-outs
 - deanoemcke for original extension (before selling it) [thegreatdiscarder](https://github.com/deanoemcke/).
 - This package uses the indexedDb wrapper [db.js](https://github.com/aaronpowell/db.js) written by Aaron Powell.
+
+## License
+
+This work is licensed under a GNU GENERAL PUBLIC LICENSE (v2)
