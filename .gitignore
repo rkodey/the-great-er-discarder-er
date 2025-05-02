@@ -4,5 +4,4 @@
 node_modules
 build/crx/*.crx
 build/zip/*.zip
-src/js/background.js
 tmp
