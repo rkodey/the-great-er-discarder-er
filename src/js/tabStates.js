@@ -1,4 +1,9 @@
-(function (window) {
+// @ts-check
+
+import                      './db.js';
+import  { log, warn } from  './log.js';
+
+export const tabStates = (function () {
 
   'use strict';
 
@@ -6,23 +11,22 @@
 
     DB_SERVER: 'tgd',
     DB_VERSION: '1',
-
     TAB_STATES: 'tabStates',
 
-    getTabState: getTabState,
-    setTabState: setTabState,
-    removeTabState: removeTabState,
+    // getTabState: getTabState,
+    // setTabState: setTabState,
+    // removeTabState: removeTabState,
     clearTabStates: clearTabStates
 
   };
 
-  window.tabStates = self;
+  const DB = globalThis.db;
 
   const noop = function() {};
 
   function getTabState(tabId, callback) {
+    // log('getTabState', tabId);
 
-    // console.log('Getting tabState for id: ' + tabId);
     var server;
 
     getDb()
@@ -39,8 +43,8 @@
   }
 
   function setTabState(tabState) {
+    // log('setTabState', tab.id);
 
-    // console.log('Setting tabState for id: ' + tabState.id);
     var server;
 
     //first check to see if session id already exists
@@ -64,11 +68,10 @@
       });
   }
 
-  function removeTabState(tabState, callback) {
+  function removeTabState(tabState, callback = noop) {
+    warn('removeTabState', tabState.id);
 
-    // console.log('Removing tabState with id: ' + tabState.id);
     var server;
-    callback = callback || noop;
 
     getDb()
       .then(function (s) {
@@ -81,16 +84,16 @@
           server.remove(self.TAB_STATES, tabState.id);
         }
       })
-      .then(callback)
+      .then(function () {
+        callback();
+      })
       .catch(function (e) {
         console.error(e);
       });
   }
 
-  function clearTabStates(callback) {
-
-    // console.log('Removing all tabStates');
-    callback = callback || noop;
+  function clearTabStates(callback = noop) {
+    warn('clearTabStates');
 
     getDb()
       .then(function (server) {
@@ -118,11 +121,13 @@
   }
 
   function getDb () {
-    return db.open({
+    return DB.open({
       server: self.DB_SERVER,
       version: self.DB_VERSION,
       schema: getSchema
     });
   }
 
-}(globalThis));
+  return self;
+
+}());

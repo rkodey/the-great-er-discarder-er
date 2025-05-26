@@ -1,9 +1,12 @@
+// @ts-check
 
-(function (window) {
+import  { log, warn } from './log.js';
+
+export const storage = (function () {
 
   'use strict';
 
-  var self = {
+  const self = {
     ONLINE_CHECK        : 'onlineCheck',
     BATTERY_CHECK       : 'batteryCheck',
     DISCARD_TIME        : 'timeToDiscard',
@@ -22,12 +25,12 @@
     getOptions          : getOptions,
     setOption           : setOption,
     setOptions          : setOptions,
-    // sync_Options         : sync_Options,
-    addToWhitelist      : addToWhitelist,
-    removeFromWhitelist : removeFromWhitelist,
-    cleanWhitelist      : cleanWhitelist
+    // addToWhitelist      : addToWhitelist,
+    // removeFromWhitelist : removeFromWhitelist,
+    // cleanWhitelist      : cleanWhitelist,
+    // checkWhiteList      : checkWhiteList
   };
-  window.storage = self;
+  // window.storage = self;
 
   function getSettingsDefaults() {
     var defaults = {};
@@ -63,7 +66,7 @@
   }
 
   function getOptions(callback) {
-    log('getOptions');
+    // log('getOptions');
     chrome.storage.local.get(null, function (localOptions) {
       // log('getOptions local', ...logOpt(localOptions));
 
@@ -128,57 +131,6 @@
     });
   }
 
+  return self;
 
-  // WHITELIST HELPERS
-
-  function addToWhitelist (entry, callback) {
-    log('addToWhitelist', entry);
-    self.getOption(self.WHITELIST, function (whitelist) {
-      whitelist = whitelist ? whitelist + '\n' + entry : entry;
-      whitelist = cleanWhitelist(whitelist);
-      self.setOption(self.WHITELIST, whitelist, callback || noop);
-    });
-  }
-
-  function removeFromWhitelist (entry, callback) {
-    log('removeFromWhitelist', entry);
-    self.getOption(self.WHITELIST, function (whitelist) {
-
-      var whitelistItems = whitelist ? whitelist.split(/[\s\n]+/).sort() : '';
-      for (var i = whitelistItems.length - 1; i >= 0; i--) {
-        if (testForMatch(whitelistItems[i], entry)) {
-          whitelistItems.splice(i, 1);
-        }
-      }
-      self.setOption(self.WHITELIST, whitelistItems.join('\n'), callback || noop);
-
-    });
-  }
-
-  function cleanWhitelist (whitelist) {
-    // var log = warn;
-    // log('cleanWhitelist', whitelist);
-
-    // We can skip the array sort that was here
-    const whitelistItems = String(whitelist).toLowerCase().split(/[\s\n]+/);
-    // log('cleanWhitelist before', whitelistItems);
-
-    // Yikes...  looks like this original code is simply deduping.  Let's try something modern...
-    // for (var i = whitelistItems.length - 1; i >= 0; i--) {
-    //   var j = whitelistItems.lastIndexOf(whitelistItems[i]);
-    //   log('cleanWhitelist loop', i, j, whitelistItems[i], whitelistItems[j]);
-    //   if (j !== i) {
-    //     whitelistItems.splice(i + 1, j - i);
-    //   }
-    // }
-
-    const unique = new Set(whitelistItems);
-    unique.delete('');
-    const newList = [...unique];
-
-    log('cleanWhitelist after', newList);
-
-    return newList.join('\n');
-  }
-
-}(globalThis));
+}());
