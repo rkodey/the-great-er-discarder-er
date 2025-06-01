@@ -48,12 +48,15 @@ chrome.runtime.onInstalled.addListener(function() {
   });
 
   if (DEBUG) {
+    setTimeout(() => {
     chrome.tabs.create({ url: `${getSuspendURL()}#ttl=Google+1&uri=https://www.google.com` });
     chrome.tabs.create({ url: `${getSuspendURL()}#ttl=Google+2&uri=https://www.google.com` });
     chrome.tabs.create({ url: `${getSuspendURL()}#ttl=Google+3&uri=https://www.google.com` });
     chrome.tabs.create({ url: `${getSuspendURL()}#ttl=GitHub+1&uri=https://www.github.com` });
     chrome.tabs.create({ url: `${getSuspendURL()}#ttl=GitHub+2&uri=https://www.github.com` });
     chrome.tabs.create({ url: `${getSuspendURL()}#ttl=GitHub+3&uri=https://www.github.com` });
+      createTab('profiler');
+    }, 200);
   }
 
 });
@@ -463,6 +466,19 @@ function resetTabTimer(tab) {
   });
 }
 
+
+function getSuspendURL() {
+  return `chrome-extension://${chrome.runtime.id}/html/suspended.html`;
+}
+
+/**
+ * @param {chrome.tabs.Tab}     tab
+ */
+function isSuspended(tab) {
+  // log('isSuspended', tab.url)
+  return Boolean(tab.url?.match(new RegExp(getSuspendURL(), 'i')));
+}
+
 /**
  * @param {chrome.tabs.Tab}     tab
  * @param {'suspend'|undefined} fSuspend
@@ -473,7 +489,7 @@ function discardOrSuspendTab(tab, fSuspend) {
   if (fSuspend) {
     // make sure tab is not special
     if (isSpecialTab(tab)) { return; }
-    chrome.tabs.update(tab.id, { url: `chrome-extension://${chrome.runtime.id}/html/suspended.html#ttl=${tab.title}&uri=${tab.url}` });
+    chrome.tabs.update(tab.id, { url: `${getSuspendURL()}#ttl=${tab.title}&uri=${tab.url}` });
   }
   else {
     // make sure tab already discarded
@@ -757,6 +773,23 @@ function requestTabInfo(tab, callback) {
 }
 
 /**
+ * @param { (stats: { discarded: number, suspended: number }) => void } callback
+ */
+function requestDiscardStats(callback) {
+  // log('requestDiscardStats');
+  const stats = { discarded: 0, suspended: 0 };
+  chrome.tabs.query({}, (tabs) => {
+    for (const tab of tabs) {
+      if (isDiscarded(tab)) stats.discarded += 1;
+      if (isSuspended(tab)) stats.suspended += 1;
+    }
+    callback(stats);
+  });
+
+
+}
+
+/**
  * @param {chrome.tabs.Tab}     tab
  */
 function processActiveTabStatus(tab, callback) {
@@ -849,6 +882,13 @@ function messageRequestListener(request, sender, sendResponse) {
   case 'requestTabInfo':
     requestTabInfo(request.tab, function(info) {
       sendResponse(info);
+    });
+    break;
+
+  case 'requestDiscardStats':
+    log('requestDiscardStats');
+    requestDiscardStats((stats) => {
+      sendResponse(stats);
     });
     break;
 

@@ -171,6 +171,22 @@
         setVisibility('tempWhitelist', pauseVisible);
         setVisibility('debugReload', !(chrome.runtime.getManifest().update_url));
         setStatus(status, options.suspendMode ? 'Suspend' : 'Discard');
+
+        setTimeout(() => {
+          chrome.runtime.sendMessage({ action: 'requestDiscardStats' }, function (stats) {
+            // console.log('requestDiscardStats', stats);
+            const spanStats = document.getElementById('discardStats');
+            if (spanStats) {
+              const out = [];
+              if (stats.discarded) out.push(`${stats.discarded} discarded`);
+              if (stats.suspended) out.push(`${stats.suspended} suspended`);
+              if (out.length) {
+                spanStats.innerHTML = ` &nbsp; ( ${out.join(', ')} )`
+              }
+            }
+          });
+        }, 200);
+
       });
 
     });
