@@ -3,6 +3,7 @@
 
 <head>
   <title>The Great-er Tab Discarder | General Settings</title>
+  <link rel='icon' href='/img/icon19.png' id="suspended_icon" />
   <link rel="stylesheet" href="/css/font-awesome.min.css" />
   <link type="text/css" href="/css/style.css" rel="stylesheet" />
   <script type="text/javascript" src="/js/options.js"></script>
@@ -26,12 +27,12 @@
       <hr />
 
       <h2>
-        Automatic tab
         <div class="toggle" id="modeToggle">
           <input type="checkbox" id="suspendMode" class="checkbox option" />
           <div class="slider"></div>
           <div class="slider-bg"></div>
         </div>
+        tabs automatically
         <i class="icon-help fa fa-question-circle" title="
 Choose to automatically Discard or Suspend your tabs.
 
@@ -85,15 +86,17 @@ Choose to automatically Discard or Suspend your tabs.
         <label for="batteryCheck" class="cbLabel"><span class="overlay"></span>Only auto-<span class="modeLabel">Discard</span> if running on battery</label>
       </div>
 
-      <h2>Startup</h2>
+      <h2>Browser Startup</h2>
       <div class="formRow">
         <input type="checkbox" id="discardAtStartup" class="option" />
-        <label for="discardAtStartup" class="cbLabel"><span class="overlay"></span>Discard all tabs at startup
+        <label for="discardAtStartup" class="cbLabel"><span class="overlay"></span>Prevent reloading all tabs
+        </label>
           <i class="icon-help fa fa-question-circle" title="
-Prevents loading all tabs at startup for a faster launch.
+By default Chrome lazy reloads all tabs after startup.
+This option prevents the reload while keeping your tabs visible.
 Great for Suspended tabs too!
 "></i>
-        </label>
+        <span class="small" style="margin:0 32px;">( Discards all tabs at startup )</span>
       </div>
 
       <h2>
