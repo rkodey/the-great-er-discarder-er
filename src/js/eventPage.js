@@ -858,11 +858,6 @@ function messageRequestListener(request, sender, sendResponse) {
     });
     break;
 
-  case 'getStorageObject':
-    log('getStorageObject', storage);
-    sendResponse(storage);
-    break;
-
   case 'cleanWhitelist':
     log('cleanWhitelist')
     sendResponse({value: cleanWhitelist(request.value)});

@@ -1,34 +1,28 @@
 // @ts-check
 
+import { storage } from  './storage.js';
+
 (function () {
 
   'use strict';
 
   let currentOptions;
-  let storage;
 
 
-  /**
-   * @param {object} optionsObj
-   * @param {object} storageObj
-   */
-  function initialize(optionsObj, storageObj) {
+  function initialize() {
     // console.log('options initialize', storage, options);
-
-    currentOptions        = optionsObj;
-    storage               = storageObj
 
     for (const element of document.getElementsByClassName('option')) {
       // console.log('initialize', element);
       if (element instanceof HTMLElement) {
         //add change listeners for all 'option' elements
         element.onchange = handleChange(element);
-        populateOption(element, optionsObj[element.id]);
+        populateOption(element, currentOptions[element.id]);
       }
     }
 
-    setAutoDiscardOptionsVisibility(optionsObj[storage.DISCARD_TIME] > 0);
-    setSyncNoteVisibility(!optionsObj[storage.SYNC_OPTIONS]);
+    setAutoDiscardOptionsVisibility(currentOptions[storage.DISCARD_TIME] > 0);
+    setSyncNoteVisibility(!currentOptions[storage.SYNC_OPTIONS]);
   }
 
   /**
@@ -162,10 +156,9 @@
   }
 
 
-  chrome.runtime.sendMessage({ action: 'getStorageObject' }, (storObj) => {
-    chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, (optionsObj) => {
-      initialize(optionsObj, storObj);
-    });
+  chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, (optionsObj) => {
+    currentOptions  = optionsObj;
+    initialize();
   });
 
 }());

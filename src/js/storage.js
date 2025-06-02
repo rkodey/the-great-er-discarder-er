@@ -22,6 +22,7 @@ export const storage = (function () {
     SUSPEND_MODE            : 'suspendMode',
     SUSPEND_RESTORE_CLICK   : 'suspendRestoreClickAnywhere',
     SUSPEND_RESTORE_RELOAD  : 'suspendRestoreReload',
+    SUSPEND_FAVICON         : 'suspendFavicon',
 
     getOption               : getOption,
     getOptions              : getOptions,
@@ -46,6 +47,7 @@ export const storage = (function () {
     defaults[self.SUSPEND_MODE]           = false;
     defaults[self.SUSPEND_RESTORE_CLICK]  = true;
     defaults[self.SUSPEND_RESTORE_RELOAD] = false;
+    defaults[self.SUSPEND_FAVICON]        = '';
     return defaults;
   }
 
@@ -76,7 +78,7 @@ export const storage = (function () {
   }
 
   function getOptions(callback) {
-    log('getOptions');
+    // log('getOptions');
     chrome.storage.local.get(null, (localOptions) => {
       // log('getOptions local', ...logOpt(localOptions));
 
@@ -110,7 +112,7 @@ export const storage = (function () {
   }
 
   function setOptions(newOptions, callback) {
-    warn('setOptions', newOptions);
+    // warn('setOptions', newOptions);
 
     chrome.storage.local.get(null, function (localOptions) {
     // getOptions((mergedOptions) => {

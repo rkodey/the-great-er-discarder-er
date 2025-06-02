@@ -6,7 +6,7 @@
   <link rel='icon' href='/img/icon19b.png' id="suspended_favicon" />
   <link rel="stylesheet" href="/css/font-awesome.min.css" />
   <link type="text/css" href="/css/style.css" rel="stylesheet" />
-  <script type="text/javascript" src="/js/suspended.js"></script>
+  <script type="module" src="/js/suspended.js"></script>
 </head>
 
 <body id="body">
@@ -21,14 +21,13 @@
       <h2 id="suspended_title"></h2>
       <div id="suspended_uri"></div>
 
-      <div class="formRow small">Click the link above restore this tab.</div>
+      <div id="no-watermark" class="formRow small">Click the link above restore this tab.</div>
 
       <br><br>
       <div></div>
       <div class="formRow">
-        <label id="customTitleLbl" for="customTitle" class="bold">Customize Page Title</label>
-        <br />
-        <select id="customTitle" class="option" style="margin-top: 8px">
+        <label id="customTitleLbl" for="customTitle" class="selectLabel">Customize Page Title</label>
+        <select id="customTitle" class="option">
           <option value=""></option>
           <option value="">(default)</option>
           <option value="x1F4A4"> &#x1F4A4; ...</option>
@@ -56,6 +55,7 @@
 
     </div>
   </div>
+  <div id="watermark">Click anywhere to restore this tab</div>
 </body>
 
 </html>
