@@ -4,105 +4,32 @@
 
   'use strict';
 
-  let elementPrefMap;
   let currentOptions;
   let storage;
 
-  chrome.runtime.sendMessage({ action: 'getStorageObject' }, (storObj) => {
-    // globalThis.storage = storObj;
-    storage = storObj;
-    // console.log('options getStorageObject', storObj);
-    chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, initialize);
-  });
-
 
   /**
-   * @param {object} options
+   * @param {object} optionsObj
+   * @param {object} storageObj
    */
-  function initialize(options) {
-
+  function initialize(optionsObj, storageObj) {
     // console.log('options initialize', storage, options);
-    currentOptions = options;
 
-    elementPrefMap = {
-      'onlineCheck'       : storage.ONLINE_CHECK,
-      'batteryCheck'      : storage.BATTERY_CHECK,
-      'dontDiscardPinned' : storage.IGNORE_PINNED,
-      'dontDiscardAudio'  : storage.IGNORE_AUDIO,
-      'timeToDiscard'     : storage.DISCARD_TIME,
-      'whitelist'         : storage.WHITELIST,
-      'addContextMenu'    : storage.ADD_CONTEXT,
-      'syncOptions'       : storage.SYNC_OPTIONS,
-      'discardAtStartup'  : storage.DISCARD_STARTUP,
-      'suspendMode'       : storage.SUSPEND_MODE,
-      'addDiscardsMenu'   : storage.ADD_DISCARDS
-    };
-    // const elementIdMap = invert(elementPrefMap);
+    currentOptions        = optionsObj;
+    storage               = storageObj
 
-    const optionEls = document.getElementsByClassName('option');
-    const saveEl    = document.getElementById('saveBtn');
-    const cancelEl  = document.getElementById('cancelBtn');
-    var pref;
-    var element;
-    var i;
-
-    if (!optionEls || !saveEl || !cancelEl) return;
-
-    setModeLabels();
-
-    saveEl.onclick = () => {
-      saveChanges(optionEls)
-        .then(() => {
-          closeSettings();
-        })
-        .catch((e) => {
-          // closeSettings();
-        });
-      return false;
-    };
-
-    cancelEl.onclick = () => {
-      closeSettings();
-      return false;
-    };
-
-    for (i = 0; i < optionEls.length; i++) {
-      element = optionEls[i];
+    for (const element of document.getElementsByClassName('option')) {
       // console.log('initialize', element);
       if (element instanceof HTMLElement) {
         //add change listeners for all 'option' elements
         element.onchange = handleChange(element);
-
-        pref = elementPrefMap[element.id];
-        populateOption(element, options[pref]);
+        populateOption(element, optionsObj[element.id]);
       }
     }
 
-    setAutoDiscardOptionsVisibility(options[storage.DISCARD_TIME] > 0);
-    setSyncNoteVisibility(!options[storage.SYNC_OPTIONS]);
+    setAutoDiscardOptionsVisibility(optionsObj[storage.DISCARD_TIME] > 0);
+    setSyncNoteVisibility(!optionsObj[storage.SYNC_OPTIONS]);
   }
-
-  // function invert(obj) {
-  //   var new_obj = {},
-  //     prop;
-  //   for (prop in obj) {
-  //     if (obj.hasOwnProperty(prop)) {
-  //       new_obj[obj[prop]] = prop;
-  //     }
-  //   }
-  //   return new_obj;
-  // }
-
-  // function selectComboBox(element, key) {
-  //   var i, child;
-  //   for (i = 0; i < element.children.length; i += 1) {
-  //     child = element.children[i];
-  //     if (child.value === key) {
-  //       child.selected = 'true';
-  //       break;
-  //     }
-  //   }
-  // }
 
   /**
    * @param {boolean} [value]
@@ -117,16 +44,16 @@
 
   /**
    * @param {Element} element
+   * @param {any}         value
    */
   function populateOption(element, value) {
+    // console.log('populateOption', element, value);
 
     if (element instanceof HTMLInputElement) {
       element.checked = value;
-
     }
     else if (element instanceof HTMLSelectElement) {
       element.value = value;
-
     }
     else if (element instanceof HTMLTextAreaElement) {
       element.value = value;
@@ -137,7 +64,8 @@
    * @param {Element} element
    */
   function getOptionValue(element) {
-    // TODO switch statement?
+    // console.log('getOptionValue', element);
+
     if (element instanceof HTMLInputElement) {
       return element.checked;
     }
@@ -168,23 +96,25 @@
     }
   }
 
+  /**
+   * @param {Element} element
+   */
   function handleChange(element) {
     return () => {
-      var pref = elementPrefMap[element.id],
-        interval;
 
-      //add specific screen element listeners
-      if (pref === storage.DISCARD_TIME) {
-        interval = element.value; // element is a select
-        setAutoDiscardOptionsVisibility(interval > 0);
+      const value = getOptionValue(element);
+      if (element.id === storage.DISCARD_TIME) {
+        setAutoDiscardOptionsVisibility(Boolean(value));
+      }
+      else if (element.id === storage.SYNC_OPTIONS) {
+        setSyncNoteVisibility(!value);
+      }
+      else if (element.id === storage.SUSPEND_MODE) {
+        setModeLabels(Boolean(value));
+      }
 
-      }
-      else if (pref === storage.SYNC_OPTIONS) {
-        setSyncNoteVisibility(!getOptionValue(element));
-      }
-      else if (pref === storage.SUSPEND_MODE) {
-        setModeLabels(element.checked);
-      }
+      saveChanges(document.getElementsByClassName('option'));
+
     };
   }
 
@@ -194,26 +124,23 @@
   async function saveChanges(elements) {
     // console.log(['saveChanges',elements]);
     var options = {};
-    for (var i = 0; i < elements.length; i++) {
+    for (const element of elements) {
 
-      var element = elements[i];
-
-      var pref = elementPrefMap[element.id],
-        oldValue = currentOptions[pref],
-        newValue = getOptionValue(element);
+      const oldValue = currentOptions[element.id];
+      let   newValue = getOptionValue(element);
       // console.log('saveChanges', element.id, pref, newValue);
 
       //clean up whitelist before saving
-      if (pref === storage.WHITELIST) {
+      if (element.id === storage.WHITELIST) {
         newValue = (await chrome.runtime.sendMessage({ action: 'cleanWhitelist', value: newValue })).value;
       }
 
       //if interval has changed then reset the tab timers
-      if (pref === storage.DISCARD_TIME && oldValue !== newValue) {
+      if (element.id === storage.DISCARD_TIME && oldValue !== newValue) {
         chrome.runtime.sendMessage({ action: 'resetTabTimers' });
       }
 
-      options[pref] = newValue;
+      options[element.id] = newValue;
     }
 
     // Update the context menu
@@ -233,5 +160,12 @@
       history.back();
     }
   }
+
+
+  chrome.runtime.sendMessage({ action: 'getStorageObject' }, (storObj) => {
+    chrome.runtime.sendMessage({ action: 'requestCurrentOptions' }, (optionsObj) => {
+      initialize(optionsObj, storObj);
+    });
+  });
 
 }());

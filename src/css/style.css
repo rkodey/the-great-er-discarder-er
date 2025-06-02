@@ -93,8 +93,17 @@ hr {
 .center {
   text-align:center;
 }
+.left {
+  text-align:left;
+}
+.right {
+  text-align:right;
+}
 .small {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+}
+.dim {
+  opacity: 0.5;
 }
 .fl {
   float: left;
@@ -249,7 +258,6 @@ a.btn {
   height: 32px;
 }
 .content {
-  border-left: 1px solid #e7e7e7;
   width: 660px;
   min-height: 250px;
 }
@@ -453,9 +461,9 @@ table.tabs {
 }
 
 /* toggle slider */
+
 div#modeToggle.toggle {
-  margin: 0 0 0 .5em;
-  /* top: 1px; */
+  margin: 0 .5em 0 0;
 }
 
 div.toggle {

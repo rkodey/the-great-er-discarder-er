@@ -7,81 +7,85 @@ export const storage = (function () {
   'use strict';
 
   const self = {
-    ONLINE_CHECK        : 'onlineCheck',
-    BATTERY_CHECK       : 'batteryCheck',
-    DISCARD_TIME        : 'timeToDiscard',
-    IGNORE_PINNED       : 'dontDiscardPinned',
-    IGNORE_FORMS        : 'dontDiscardForms',
-    IGNORE_AUDIO        : 'dontDiscardAudio',
-    IGNORE_CACHE        : 'ignoreCache',
-    ADD_CONTEXT         : 'addContextMenu',
-    WHITELIST           : 'whitelist',
-    SYNC_OPTIONS        : 'syncOptions',
-    DISCARD_STARTUP     : 'discardAtStartup',
-    SUSPEND_MODE        : 'suspendMode',
-    ADD_DISCARDS        : 'addDiscardsMenu',
+    ONLINE_CHECK            : 'onlineCheck',
+    BATTERY_CHECK           : 'batteryCheck',
+    DISCARD_TIME            : 'timeToDiscard',
+    IGNORE_PINNED           : 'dontDiscardPinned',
+    IGNORE_FORMS            : 'dontDiscardForms',
+    IGNORE_AUDIO            : 'dontDiscardAudio',
+    IGNORE_CACHE            : 'ignoreCache',
+    ADD_CONTEXT             : 'addContextMenu',
+    ADD_DISCARDS            : 'addDiscardsMenu',
+    WHITELIST               : 'whitelist',
+    SYNC_OPTIONS            : 'syncOptions',
+    DISCARD_STARTUP         : 'discardAtStartup',
+    SUSPEND_MODE            : 'suspendMode',
+    SUSPEND_RESTORE_CLICK   : 'suspendRestoreClickAnywhere',
+    SUSPEND_RESTORE_RELOAD  : 'suspendRestoreReload',
 
-    getOption           : getOption,
-    getOptions          : getOptions,
-    setOption           : setOption,
-    setOptions          : setOptions,
-    // addToWhitelist      : addToWhitelist,
-    // removeFromWhitelist : removeFromWhitelist,
-    // cleanWhitelist      : cleanWhitelist,
-    // checkWhiteList      : checkWhiteList
+    getOption               : getOption,
+    getOptions              : getOptions,
+    setOption               : setOption,
+    setOptions              : setOptions,
   };
-  // window.storage = self;
 
   function getSettingsDefaults() {
     var defaults = {};
-    defaults[self.ONLINE_CHECK]     = false;
-    defaults[self.BATTERY_CHECK]    = false;
-    defaults[self.IGNORE_PINNED]    = true;
-    defaults[self.IGNORE_FORMS]     = true;
-    defaults[self.IGNORE_AUDIO]     = true;
-    defaults[self.IGNORE_CACHE]     = false;
-    defaults[self.ADD_CONTEXT]      = true;
-    defaults[self.DISCARD_TIME]     = '60';
-    defaults[self.WHITELIST]        = '';
-    defaults[self.SYNC_OPTIONS]     = true;
-    defaults[self.DISCARD_STARTUP]  = false;
-    defaults[self.SUSPEND_MODE]     = false;
-    defaults[self.ADD_DISCARDS]     = false;
+    defaults[self.ONLINE_CHECK]           = false;
+    defaults[self.BATTERY_CHECK]          = false;
+    defaults[self.IGNORE_PINNED]          = true;
+    defaults[self.IGNORE_FORMS]           = true;
+    defaults[self.IGNORE_AUDIO]           = true;
+    defaults[self.IGNORE_CACHE]           = false;
+    defaults[self.ADD_CONTEXT]            = true;
+    defaults[self.ADD_DISCARDS]           = false;
+    defaults[self.DISCARD_TIME]           = '60';
+    defaults[self.WHITELIST]              = '';
+    defaults[self.SYNC_OPTIONS]           = true;
+    defaults[self.DISCARD_STARTUP]        = false;
+    defaults[self.SUSPEND_MODE]           = false;
+    defaults[self.SUSPEND_RESTORE_CLICK]  = true;
+    defaults[self.SUSPEND_RESTORE_RELOAD] = false;
     return defaults;
   }
 
 
-  const noop    = function() {};
+  const noop    = () => {};
 
-  const logOpt  = function(options) {
+  const logOpt  = (options) => {
     return [ self.WHITELIST, options[self.WHITELIST], JSON.parse(JSON.stringify(options)) ];
   }
 
 
+  function getMergedOptions(localOptions) {
+    const mergedOptions = getSettingsDefaults();
+    // log('getMergedOptions defaults', ...logOpt(mergedOptions));
+    for (var prop in mergedOptions) {
+      if (typeof localOptions[prop] !== 'undefined' && localOptions[prop] !== null) {
+        mergedOptions[prop] = localOptions[prop];
+      }
+    }
+    return mergedOptions;
+  }
+
   function getOption(prop, callback) {
     // log('getOption', prop);
-    getOptions(function (options) {
+    getOptions((options) => {
       callback(options[prop]);
     });
   }
 
   function getOptions(callback) {
-    // log('getOptions');
-    chrome.storage.local.get(null, function (localOptions) {
+    log('getOptions');
+    chrome.storage.local.get(null, (localOptions) => {
       // log('getOptions local', ...logOpt(localOptions));
 
-      var mergedOptions = getSettingsDefaults();
-      // log('getOptions defaults', ...logOpt(mergedOptions));
-      for (var prop in mergedOptions) {
-        if (typeof localOptions[prop] !== 'undefined' && localOptions[prop] !== null) {
-          mergedOptions[prop] = localOptions[prop];
-        }
-      }
+      const mergedOptions = getMergedOptions(localOptions);
       // log('getOptions merged', ...logOpt(mergedOptions));
 
       // Overlay sync updates in the local data store.  Like sync itself, we just guarantee eventual consistency.
       if (mergedOptions[self.SYNC_OPTIONS]) {
-        chrome.storage.sync.get(null, function(syncedOptions) {
+        chrome.storage.sync.get(null, (syncedOptions) => {
           // log('getOptions syncedOptions', ...logOpt(syncedOptions));
           for (var prop in mergedOptions) {
             if (typeof syncedOptions[prop] !== 'undefined' && syncedOptions[prop] !== mergedOptions[prop]) {
@@ -106,11 +110,13 @@ export const storage = (function () {
   }
 
   function setOptions(newOptions, callback) {
-    // var log = warn;
-    log('setOptions', newOptions);
+    warn('setOptions', newOptions);
 
-    chrome.storage.local.get(null, function (mergedOptions) {
+    chrome.storage.local.get(null, function (localOptions) {
+    // getOptions((mergedOptions) => {
       // log('setOptions curOptions', ...logOpt(mergedOptions));
+
+      const mergedOptions = getMergedOptions(localOptions);
 
       for (var prop in newOptions) {
         if (newOptions.hasOwnProperty(prop)) {
