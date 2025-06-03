@@ -6,6 +6,12 @@
 
   "permissions": [ "tabs", "storage", "contextMenus", "alarms", "favicon" ],
   "optional_permissions": ["tabGroups"],
+  "web_accessible_resources": [
+    {
+      "resources": ["html/suspended.html", "img/*", "_favicon/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "background": {
     "service_worker": "js/eventPage.js",
     "type": "module"
