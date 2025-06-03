@@ -1,3 +1,6 @@
+// @ts-check
+
+import  { log, warn } from  './log.js';
 
 (function () {
 
@@ -7,7 +10,13 @@
   let windows     = {};
 
 
+  /**
+   * @param {HTMLTableSectionElement} table
+   * @param {object}  info
+   * @param {boolean} first
+   */
   function generateTabInfo(table, info, first) {
+    // log('generateTabInfo');
 
     const
       windowId    = info?.windowId      ?? '?',
@@ -18,9 +27,15 @@
       pinned      = info?.pinned        ? '<i class="fa fa-thumb-tack"></i>' : '',
       tabTitle    = info?.tab.title     ?? 'unknown',
       tabStatus   = info?.status        ?? 'unknown',
+      tabURL      = info?.tabUrl        ?? '?',
       tabTimer    = info?.timerUp       ?? '';
+    const displayMap  = {
+      'audible'   : '<span> <i class="fa fa-volume-up"></i> audible </span>',
+      'discarded' : '<span class="dim"> <i class="fa fa-recycle"></i> discarded </span>',
+      'suspended' : '<span class="dim"> &#x1F4A4; suspended </span>',
+    }
 
-    // console.log('5 tab info', groupId, groupName, groupColor);
+    // log('5 tab info', groupId, groupName, groupColor);
 
     const row = table.insertRow();
     if (first) {
@@ -52,21 +67,28 @@
 
     const title       = row.insertCell();
     title.className   = 'title';
+    title.setAttribute('title', tabURL);
     title.innerText   = tabTitle;
 
     const timer       = row.insertCell();
     timer.className   = 'center';
     timer.innerText   = tabTimer;
 
-    row.insertCell().innerText = tabStatus;
+    row.insertCell().innerHTML = displayMap[tabStatus] || tabStatus;
     row.insertCell().innerHTML = pinned;
   }
 
-  function generateRows(groupMap) {
+  /**
+   * @param {object|null} groupMap
+   */
+  function generateRows(groupMap = null) {
+    // log('generateRows');
     document.documentElement.style.cursor = 'progress';
-    // console.log('4 main loop', groupMap);
+
+    // log('4 main loop', groupMap);
 
     const tableEl = document.getElementById('profileTabTableBody');
+    if (!(tableEl instanceof HTMLTableSectionElement)) return;
     tableEl.innerHTML = '';
 
     // Wait 100ms to allow the table to visually clear and the cursor to update
@@ -105,13 +127,15 @@
 
     windows = {};
 
-    // console.log('1 perms');
+    // log('1 perms');
     chrome.permissions.contains({ permissions: ['tabGroups'] }, async (fShowGroups) => {
 
       if (fShowGroups) {
 
-        document.getElementById('enableTabGroups').style.display = 'none';
-        // console.log('2 tabGroups', chrome.tabGroups);
+        const groupsEl = document.getElementById('enableTabGroups');
+        if (groupsEl) groupsEl.style.display = 'none';
+
+        // log('2 tabGroups', chrome.tabGroups);
         const groupMap = {};
         chrome.tabGroups?.query({}, function(groups) {
           groups.forEach((group) => {
@@ -119,7 +143,7 @@
           });
           generateRows(groupMap);
         });
-        // console.log('3 tabGroups', chrome.tabGroups);
+        // log('3 tabGroups', chrome.tabGroups);
 
       }
       else {
@@ -132,19 +156,31 @@
 
   window.onload = function () {
 
-    document.getElementById('refreshProfiler').onclick = function (e) {
-      generateTable();
-      return false;
-    };
-
-    document.getElementById('enableTabGroups').onclick = function (e) {
-      chrome.permissions.request({ permissions: ['tabGroups'] }, (fAccepted) => {
+    const refreshEl = document.getElementById('refreshProfiler');
+    if (refreshEl) {
+      refreshEl.onclick = function (e) {
         generateTable();
-      });
-      return false;
-    };
+        return false;
+      };
+    }
 
-    generateTable();
+    const groupsEl = document.getElementById('enableTabGroups');
+    if (groupsEl) {
+      groupsEl.onclick = function (e) {
+        chrome.permissions.request({ permissions: ['tabGroups'] }, (fAccepted) => {
+          generateTable();
+        });
+        return false;
+      };
+    }
+
+    window.onfocus = () => {
+      generateTable();
+    }
+
+    window.setTimeout(() => {
+      generateTable();
+    }, 100);
 
     /*
     chrome.processes.onUpdatedWithMemory.addListener(function (processes) {
