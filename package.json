@@ -1,7 +1,7 @@
 {
-  "name": "the-great-er-discarder-er",
+  "name": "the-great-er-tab-discarder",
   "description": "Compatible with latest Chrome! Helps your browser load and run faster by freeing up memory and resources used by old inactive tabs.",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "keywords": [ "chrome", "extension", "addon", "memory", "tab", "discard", "suspend" ],
   "author": "rkodey (https://github.com/rkodey)",
   "contributors": [ "deanoemcke" ],
@@ -17,15 +17,12 @@
   "scripts": {
     "build": "grunt",
     "build-watch": "grunt build-watch",
-    "generate-key": "openssl genrsa -out key.pem",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generate-key": "openssl genrsa -out key.pem"
   },
   "main": "",
   "devDependencies": {
     "@types/chrome": "~0.0.315",
     "grunt": "~1.6.1",
-    "grunt-contrib-concat": "~2.1.0",
-    "grunt-contrib-watch": "~1.1.0",
     "grunt-crx": "~2.0.0"
   }
 }

@@ -6,6 +6,31 @@
 
 # Change Log
 
+## 1.4.0 - Jun 2025
+- New: *options* for **Suspended Tabs**
+  - favicon dimming 🎉
+  (  [#5](https://github.com/rkodey/the-great-er-discarder-er/issues/5),
+    [#41](https://github.com/rkodey/the-great-er-discarder-er/issues/41),
+    [#45](https://github.com/rkodey/the-great-er-discarder-er/issues/45) )
+  - restore a suspended tab by clicking anywhere on the page
+  ( [#41](https://github.com/rkodey/the-great-er-discarder-er/issues/41),
+    [#57](https://github.com/rkodey/the-great-er-discarder-er/issues/57) )
+  - restore a suspended tab by Reload
+- Fix: Suspended tabs from being blocked by Chrome when directly opened
+  ( [#58](https://github.com/rkodey/the-great-er-discarder-er/issues/58) )
+  - For example by a session restore tool
+- Fix: Suspended tab favicons not loading on initial browser launch
+  (  [#5](https://github.com/rkodey/the-great-er-discarder-er/issues/5),
+    [#58](https://github.com/rkodey/the-great-er-discarder-er/issues/58),
+    [#60](https://github.com/rkodey/the-great-er-discarder-er/issues/60) )
+  - NOTE: favicons must be in the browser's cache to load correctly, until I finish adding a local cache
+- New: details on the main extension popup
+  - Show Discarded and Suspended tab counts
+  ( [#11](https://github.com/rkodey/the-great-er-discarder-er/issues/11) )
+  - Show assigned keyboard shortcuts
+- New: automatic options saving, and removed the Save and Cancel buttons
+- Update: background code uses modules for easier integration
+
 ## 1.3.0 - Apr 2025
 - New: **Suspending Tabs** has been added
   ( [Closes #42](https://github.com/rkodey/the-great-er-discarder-er/issues/42) )

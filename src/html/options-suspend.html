@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>The Great-er Tab Discarder | Suspended Page Settings</title>
+  <link rel='icon' href='/img/icon19.png' id="suspended_icon" />
+  <link rel="stylesheet" href="/css/font-awesome.min.css" />
+  <link type="text/css" href="/css/style.css" rel="stylesheet" />
+  <script type="module" src="/js/options.js"></script>
+</head>
+
+<body id="body">
+  <div class="mainContent">
+    <h1 class="pageHeader"><img src="/img/icon64_hidden.png" class="headerIcon" />The Great-<span class="italic">er</span> Tab Discarder</h1>
+
+    <div class="contentNav">
+      <ul>
+        <li><a href="options.html">General Settings</a></li>
+        <li><a href="options-suspend.html" class="active">Suspend Settings</a></li>
+        <li><a href="shortcuts.html">Keyboard Shortcuts</a></li>
+        <li><a href="migrate.html">Migrate Tabs</a></li>
+        <li><a href="about.html">About / Support</a></li>
+      </ul>
+    </div>
+
+    <div class="content">
+      <h2>Suspended Page Settings</h2>
+      <hr />
+
+
+      <div class="formRow">
+        <input type="checkbox" id="suspendRestoreClickAnywhere" class="option" />
+        <label for="suspendRestoreClickAnywhere" class="cbLabel"><span class="overlay"></span>Click anywhere on the Suspended page to restore it</label>
+      </div>
+      <div class="formRow">
+        <input type="checkbox" id="suspendRestoreReload" class="option" />
+        <label for="suspendRestoreReload" class="cbLabel"><span class="overlay"></span>Reload the Suspended page to restore it</label>
+      </div>
+      <div class="formRow"><br></div>
+      <div class="formRow">
+        <label for="suspendFavicon" class="selectLabel">Modify the favicon:</label>
+        <select id="suspendFavicon" class="option">
+          <option value="">None</option>
+          <option value="dim">Dim</option>
+        </select>
+      </div>
+      <div class="formRow"><br></div>
+
+      <div class="formRow">
+        More coming soon!
+      </div>
+      <div class="formRow"><br></div>
+
+      <hr />
+      <div class="small right">Settings are automatically saved.</div>
+
+    </div>
+  </div>
+</body>
+
+</html>

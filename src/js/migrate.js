@@ -54,6 +54,9 @@
     const selectedMap = new Map();
     let   nRows       = 0;
 
+    const windows     = {};
+    let   nWind       = 1;
+
     if (!(tabTable instanceof HTMLTableElement)) return;
 
     tabTable.innerHTML= '';
@@ -73,12 +76,20 @@
      * @param {URL}             url
      */
     function generateTabInfo(tab, url) {
-      const
-        tabId         = tab.id        ?? '?',
-        pinned        = tab.pinned    ? '<i class="fa fa-thumb-tack"></i>' : '',
-        tabTitle      = tab.title     ?? 'unknown';
+      console.log('generateTabInfo', tab);
 
       if (!(tabTable instanceof HTMLTableElement) || !migrateBtn || !discardBtn) return;
+
+      const
+        tabId         = tab.id        ?? '?',
+        tabPin        = tab.pinned    ? '<i class="fa fa-thumb-tack"></i>' : '',
+        tabTitle      = tab.title     ?? 'unknown',
+        tabURL        = tab.url       ?? '?';
+
+      if (!windows[tab.windowId]) {
+        windows[tab.windowId] = nWind++;
+      }
+      const tabWindow = windows[tab.windowId];
 
       if (nRows == 0) {
         // console.log('updatePage resetting tabTable');
@@ -88,7 +99,8 @@
                   <a href="#" id="checkAll"><i class="fa fa-check-square-o"></i></a>
                   <span style="padding-left:10px;">Title</span>
                 </th>
-                <th>Pinned</th>
+                <th>Pin</th>
+                <th>Win</th>
               </tr>
         `;
       }
@@ -115,10 +127,15 @@
       checkCell.appendChild(check);
       const label     = document.createElement('label');
       label.setAttribute('for', check.id);
+      label.setAttribute('title', tabURL);
       label.innerHTML = `<span class="overlay"></span>${tabTitle}`;
       checkCell.appendChild(label);
-      const pin       = row.insertCell();
-      pin.innerHTML   = pinned
+
+      const pinElem     = row.insertCell();
+      pinElem.innerHTML = tabPin;
+      const winElem     = row.insertCell();
+      winElem.innerHTML = tabWindow;
+
       nRows += 1;
     }
 
@@ -127,6 +144,7 @@
 
       for (let i  = 0; i < tabs.length; ++i) {
         const tab = tabs[i];
+        // console.log('tabs query', tab.url);
         const url = new URL(tab.url || '');
         if (url.protocol.match(/extension:$/i)
           && url.pathname.match(/\/(suspend(ed)?|park).html$/i)

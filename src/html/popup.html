@@ -3,6 +3,7 @@
 
 <head>
   <title>The Great-er Tab Discarder | Popup</title>
+  <link rel='icon' href='/img/icon19.png' id="suspended_icon" />
   <link rel="stylesheet" href="/css/font-awesome.min.css">
   <link type="text/css" href="/css/popup.css" rel="stylesheet">
   <script type="text/javascript" src="/js/popup.js"></script>
@@ -17,9 +18,11 @@
     </div>
     <div class="menuOption" id="discardOne">
       <i class="fa fa-square"></i> <span class="optionText">Discard this tab</span>
+      <div id="discardShortcut" class="subtext" style="float:right; margin: 1em 0 0 0;"></div>
     </div>
     <div class="menuOption" id="suspendOne">
       <i class="fa fa-square-o"></i> <span class="optionText">Suspend this tab</span>
+      <div id="suspendShortcut" class="subtext" style="float:right; margin: 1em 0 0 0;"></div>
     </div>
     <div class="menuOption hidden" id="tempWhitelist">
       <i class="fa fa-pause-circle"></i> <span class="optionText">Pause <span class="modeLabel">Discard</span>ing this tab</span>
@@ -42,7 +45,7 @@
   </div>
 
   <div class="group optsAll">
-    <div class="header">In this window</div>
+    <div class="header">This window <span id="discardStats"></span></div>
     <div class="menuOption" id="discardAllEligible">
       <i class="fa fa-check-square"></i> <span class="optionText">Discard all eligible tabs</span>
       <div id="eligibleText" class="subtext"></div>

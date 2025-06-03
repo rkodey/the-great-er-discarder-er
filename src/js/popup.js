@@ -40,7 +40,7 @@
       message = 'undoTempWhitelist';
 
     } else if (status === 'never') {
-      statusDetail = `Automatic tab ${modeLabel}ing disabled.`;
+      statusDetail = `Automatic ${modeLabel}ing is disabled.`;
       statusIconClass = 'fa fa-ban';
 
     } else if (status === 'noConnectivity') {
@@ -73,6 +73,16 @@
     }
   }
 
+  /**
+   * @param {string} id
+   * @param {string} str
+   */
+  function setInnerHTML(id, str) {
+    const elem = document.getElementById(id);
+    if (elem) {
+      elem.innerHTML = str;
+    }
+  }
   /**
    * @param {string} id
    * @param {boolean} visible
@@ -171,6 +181,31 @@
         setVisibility('tempWhitelist', pauseVisible);
         setVisibility('debugReload', !(chrome.runtime.getManifest().update_url));
         setStatus(status, options.suspendMode ? 'Suspend' : 'Discard');
+
+        chrome.commands.getAll(function (commands) {
+          console.log('commands', commands);
+          for (const command of commands) {
+            if (command.shortcut && command.name === '1-discard-tab') {
+              setInnerHTML('discardShortcut', command.shortcut);
+            }
+            if (command.shortcut && command.name === '2-suspend-tab') {
+              setInnerHTML('suspendShortcut', command.shortcut);
+            }
+          }
+        });
+
+        setTimeout(() => {
+          chrome.runtime.sendMessage({ action: 'requestDiscardStats' }, function (stats) {
+            // console.log('requestDiscardStats', stats);
+            const out = [];
+            if (stats.discarded) out.push(`${stats.discarded} discarded`);
+            if (stats.suspended) out.push(`${stats.suspended} suspended`);
+            if (out.length) {
+              setInnerHTML('discardStats', ` &nbsp; ( ${out.join(', ')} )`);
+            }
+          });
+        }, 200);
+
       });
 
     });

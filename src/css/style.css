@@ -93,8 +93,17 @@ hr {
 .center {
   text-align:center;
 }
+.left {
+  text-align:left;
+}
+.right {
+  text-align:right;
+}
 .small {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+}
+.dim {
+  opacity: 0.5;
 }
 .fl {
   float: left;
@@ -249,7 +258,6 @@ a.btn {
   height: 32px;
 }
 .content {
-  border-left: 1px solid #e7e7e7;
   width: 660px;
   min-height: 250px;
 }
@@ -274,6 +282,12 @@ a.btn {
   font-size: 17px;
   text-shadow: 0 1px 0 white;
   margin: 0 0 8px;
+}
+#watermark {
+  position: absolute;
+  right: 32px;
+  bottom: 32px;
+  display: none;
 }
 .note {
   font-style: italic;
@@ -334,6 +348,10 @@ table, tr, td {
   padding-left: 10px;
   vertical-align: top;
 }
+.selectLabel {
+  display: block;
+  padding-bottom: 8px;
+}
 
 
 input[type="checkbox"] {
@@ -390,12 +408,21 @@ textarea {
 }
 
 
+.profiler table.tabs {
+  min-width: 836px;
+}
+
 table.tabs {
 
   table-layout: fixed;
   border-collapse: collapse;
   padding: 0;
   margin-top: 1em;
+  min-width: 300px;
+
+  tr:hover {
+    background-color: #7F7F7F33;
+  }
 
   th {
     padding-left: 8px;
@@ -453,9 +480,9 @@ table.tabs {
 }
 
 /* toggle slider */
+
 div#modeToggle.toggle {
-  margin: 0 0 0 .5em;
-  /* top: 1px; */
+  margin: 0 .5em 0 0;
 }
 
 div.toggle {
@@ -609,9 +636,6 @@ hr {
 .mainContent {
   color:#ccc;
   background: #222;
-}
-.content {
-  border-left: 1px solid #666;
 }
 a, a:visited {
   color:#8bf;

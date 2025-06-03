@@ -1,84 +1,93 @@
+// @ts-check
 
-(function (window) {
+import  { log, warn } from './log.js';
+
+export const storage = (function () {
 
   'use strict';
 
-  var self = {
-    ONLINE_CHECK        : 'onlineCheck',
-    BATTERY_CHECK       : 'batteryCheck',
-    DISCARD_TIME        : 'timeToDiscard',
-    IGNORE_PINNED       : 'dontDiscardPinned',
-    IGNORE_FORMS        : 'dontDiscardForms',
-    IGNORE_AUDIO        : 'dontDiscardAudio',
-    IGNORE_CACHE        : 'ignoreCache',
-    ADD_CONTEXT         : 'addContextMenu',
-    WHITELIST           : 'whitelist',
-    SYNC_OPTIONS        : 'syncOptions',
-    DISCARD_STARTUP     : 'discardAtStartup',
-    SUSPEND_MODE        : 'suspendMode',
-    ADD_DISCARDS        : 'addDiscardsMenu',
+  const self = {
+    ONLINE_CHECK            : 'onlineCheck',
+    BATTERY_CHECK           : 'batteryCheck',
+    DISCARD_TIME            : 'timeToDiscard',
+    IGNORE_PINNED           : 'dontDiscardPinned',
+    IGNORE_FORMS            : 'dontDiscardForms',
+    IGNORE_AUDIO            : 'dontDiscardAudio',
+    IGNORE_CACHE            : 'ignoreCache',
+    ADD_CONTEXT             : 'addContextMenu',
+    ADD_DISCARDS            : 'addDiscardsMenu',
+    WHITELIST               : 'whitelist',
+    SYNC_OPTIONS            : 'syncOptions',
+    DISCARD_STARTUP         : 'discardAtStartup',
+    SUSPEND_MODE            : 'suspendMode',
+    SUSPEND_RESTORE_CLICK   : 'suspendRestoreClickAnywhere',
+    SUSPEND_RESTORE_RELOAD  : 'suspendRestoreReload',
+    SUSPEND_FAVICON         : 'suspendFavicon',
 
-    getOption           : getOption,
-    getOptions          : getOptions,
-    setOption           : setOption,
-    setOptions          : setOptions,
-    // sync_Options         : sync_Options,
-    addToWhitelist      : addToWhitelist,
-    removeFromWhitelist : removeFromWhitelist,
-    cleanWhitelist      : cleanWhitelist
+    getOption               : getOption,
+    getOptions              : getOptions,
+    setOption               : setOption,
+    setOptions              : setOptions,
   };
-  window.storage = self;
 
   function getSettingsDefaults() {
     var defaults = {};
-    defaults[self.ONLINE_CHECK]     = false;
-    defaults[self.BATTERY_CHECK]    = false;
-    defaults[self.IGNORE_PINNED]    = true;
-    defaults[self.IGNORE_FORMS]     = true;
-    defaults[self.IGNORE_AUDIO]     = true;
-    defaults[self.IGNORE_CACHE]     = false;
-    defaults[self.ADD_CONTEXT]      = true;
-    defaults[self.DISCARD_TIME]     = '60';
-    defaults[self.WHITELIST]        = '';
-    defaults[self.SYNC_OPTIONS]     = true;
-    defaults[self.DISCARD_STARTUP]  = false;
-    defaults[self.SUSPEND_MODE]     = false;
-    defaults[self.ADD_DISCARDS]     = false;
+    defaults[self.ONLINE_CHECK]           = false;
+    defaults[self.BATTERY_CHECK]          = false;
+    defaults[self.IGNORE_PINNED]          = true;
+    defaults[self.IGNORE_FORMS]           = true;
+    defaults[self.IGNORE_AUDIO]           = true;
+    defaults[self.IGNORE_CACHE]           = false;
+    defaults[self.ADD_CONTEXT]            = true;
+    defaults[self.ADD_DISCARDS]           = false;
+    defaults[self.DISCARD_TIME]           = '60';
+    defaults[self.WHITELIST]              = '';
+    defaults[self.SYNC_OPTIONS]           = true;
+    defaults[self.DISCARD_STARTUP]        = false;
+    defaults[self.SUSPEND_MODE]           = false;
+    defaults[self.SUSPEND_RESTORE_CLICK]  = true;
+    defaults[self.SUSPEND_RESTORE_RELOAD] = false;
+    defaults[self.SUSPEND_FAVICON]        = 'dim';
     return defaults;
   }
 
 
-  const noop    = function() {};
+  const noop    = () => {};
 
-  const logOpt  = function(options) {
+  const logOpt  = (options) => {
     return [ self.WHITELIST, options[self.WHITELIST], JSON.parse(JSON.stringify(options)) ];
   }
 
 
+  function getMergedOptions(localOptions) {
+    const mergedOptions = getSettingsDefaults();
+    // log('getMergedOptions defaults', ...logOpt(mergedOptions));
+    for (var prop in mergedOptions) {
+      if (typeof localOptions[prop] !== 'undefined' && localOptions[prop] !== null) {
+        mergedOptions[prop] = localOptions[prop];
+      }
+    }
+    return mergedOptions;
+  }
+
   function getOption(prop, callback) {
     // log('getOption', prop);
-    getOptions(function (options) {
+    getOptions((options) => {
       callback(options[prop]);
     });
   }
 
   function getOptions(callback) {
-    log('getOptions');
-    chrome.storage.local.get(null, function (localOptions) {
+    // log('getOptions');
+    chrome.storage.local.get(null, (localOptions) => {
       // log('getOptions local', ...logOpt(localOptions));
 
-      var mergedOptions = getSettingsDefaults();
-      // log('getOptions defaults', ...logOpt(mergedOptions));
-      for (var prop in mergedOptions) {
-        if (typeof localOptions[prop] !== 'undefined' && localOptions[prop] !== null) {
-          mergedOptions[prop] = localOptions[prop];
-        }
-      }
+      const mergedOptions = getMergedOptions(localOptions);
       // log('getOptions merged', ...logOpt(mergedOptions));
 
       // Overlay sync updates in the local data store.  Like sync itself, we just guarantee eventual consistency.
       if (mergedOptions[self.SYNC_OPTIONS]) {
-        chrome.storage.sync.get(null, function(syncedOptions) {
+        chrome.storage.sync.get(null, (syncedOptions) => {
           // log('getOptions syncedOptions', ...logOpt(syncedOptions));
           for (var prop in mergedOptions) {
             if (typeof syncedOptions[prop] !== 'undefined' && syncedOptions[prop] !== mergedOptions[prop]) {
@@ -103,11 +112,13 @@
   }
 
   function setOptions(newOptions, callback) {
-    // var log = warn;
-    log('setOptions', newOptions);
+    // warn('setOptions', newOptions);
 
-    chrome.storage.local.get(null, function (mergedOptions) {
+    chrome.storage.local.get(null, function (localOptions) {
+    // getOptions((mergedOptions) => {
       // log('setOptions curOptions', ...logOpt(mergedOptions));
+
+      const mergedOptions = getMergedOptions(localOptions);
 
       for (var prop in newOptions) {
         if (newOptions.hasOwnProperty(prop)) {
@@ -128,57 +139,6 @@
     });
   }
 
+  return self;
 
-  // WHITELIST HELPERS
-
-  function addToWhitelist (entry, callback) {
-    log('addToWhitelist', entry);
-    self.getOption(self.WHITELIST, function (whitelist) {
-      whitelist = whitelist ? whitelist + '\n' + entry : entry;
-      whitelist = cleanWhitelist(whitelist);
-      self.setOption(self.WHITELIST, whitelist, callback || noop);
-    });
-  }
-
-  function removeFromWhitelist (entry, callback) {
-    log('removeFromWhitelist', entry);
-    self.getOption(self.WHITELIST, function (whitelist) {
-
-      var whitelistItems = whitelist ? whitelist.split(/[\s\n]+/).sort() : '';
-      for (var i = whitelistItems.length - 1; i >= 0; i--) {
-        if (testForMatch(whitelistItems[i], entry)) {
-          whitelistItems.splice(i, 1);
-        }
-      }
-      self.setOption(self.WHITELIST, whitelistItems.join('\n'), callback || noop);
-
-    });
-  }
-
-  function cleanWhitelist (whitelist) {
-    // var log = warn;
-    // log('cleanWhitelist', whitelist);
-
-    // We can skip the array sort that was here
-    const whitelistItems = String(whitelist).toLowerCase().split(/[\s\n]+/);
-    // log('cleanWhitelist before', whitelistItems);
-
-    // Yikes...  looks like this original code is simply deduping.  Let's try something modern...
-    // for (var i = whitelistItems.length - 1; i >= 0; i--) {
-    //   var j = whitelistItems.lastIndexOf(whitelistItems[i]);
-    //   log('cleanWhitelist loop', i, j, whitelistItems[i], whitelistItems[j]);
-    //   if (j !== i) {
-    //     whitelistItems.splice(i + 1, j - i);
-    //   }
-    // }
-
-    const unique = new Set(whitelistItems);
-    unique.delete('');
-    const newList = [...unique];
-
-    log('cleanWhitelist after', newList);
-
-    return newList.join('\n');
-  }
-
-}(globalThis));
+}());

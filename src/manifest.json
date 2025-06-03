@@ -2,13 +2,19 @@
   "manifest_version": 3,
   "name": "The Great-er Tab Discarder",
   "description": "Compatible with latest Chrome! Helps your browser load and run faster by freeing up memory and resources used by old inactive tabs.",
-  "version": "1.3.0",
+  "version": "1.4.0",
 
   "permissions": [ "tabs", "storage", "contextMenus", "alarms", "favicon" ],
   "optional_permissions": ["tabGroups"],
+  "web_accessible_resources": [
+    {
+      "resources": ["html/suspended.html", "img/*", "_favicon/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "background": {
-    "service_worker": "js/background.js",
-      "type": "module"
+    "service_worker": "js/eventPage.js",
+    "type": "module"
   },
   "action": {
     "default_title": "The Great-er Tab Discarder",
