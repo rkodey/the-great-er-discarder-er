@@ -55,32 +55,36 @@
 
       <h2>What's New</h2>
       <p>
-        <div>v1.3.0 - Apr 2025</div>
+        <div class="bold">v1.4.0 - Jun 2025</div>
+        <ul class="unorderedList">
+          <li>New: options for Suspended Tabs</li>
+          <ul class="unorderedList">
+          <li>favicon dimming</li>
+          <li>restore a suspended tab by clicking anywhere on the page</li>
+          <li>restore a suspended tab by Reload</li>
+          </ul>
+          <li>Fix: Suspended tabs from being blocked by Chrome when directly opened</li>
+          <li>Fix: Suspended tab favicons not loading on initial browser launch</li>
+          <ul class="unorderedList">
+          <li>NOTE: favicons must be in the browser's cache to load correctly, until I finish adding a local cache</li>
+          </ul>
+          <li>New: details on the main extension popup</li>
+          <ul class="unorderedList">
+          <li>Show Discarded and Suspended tab counts</li>
+          <li>Show assigned keyboard shortcuts</li>
+          </ul>
+          <li>New: automatic options saving, and removed the Save and Cancel buttons</li>
+          <li>Update: background code uses modules for easier integration</li>
+        </ul>
+
+        <br>
+        <div class="bold">v1.3.0 - Apr 2025</div>
         <ul class="unorderedList">
           <li>New: Suspending Tabs has been added</li>
           <li>New: Suspended Tabs can have their tab titles customized with a prefix</li>
           <li>Update: Migrating tabs lets you view and select which tabs to Migrate or Convert</li>
           <li>New: <span class="bold">Tiny Suspender</span> suspend.html tabs can be migrated</li>
           <li>Fix: Tab migration to handle the different formats better, which should prevent looping</li>
-        </ul>
-
-        <div>v1.2.2 - Mar 2025</div>
-        <ul class="unorderedList">
-          <li>Fix: "Discard at startup" (again) to prevent discarding tabs when the browser restarts idle workers</li>
-        </ul>
-
-        <div>v1.2.1 - Mar 2025</div>
-        <ul class="unorderedList">
-          <li>Fix: "Discard at startup" would occasionally get skipped during browser startup</li>
-          <li>Rearrange the tab migration page to simplify it a bit</li>
-        </ul>
-
-        <div>v1.2.0 - Mar 2025</div>
-        <ul class="unorderedList">
-          <li>New: <span class="bold">Tab Suspender</span> park.html tabs can be migrated</li>
-          <li>Fix: "Don't discard this tab for now" and rename it to "Pause discarding this tab"</li>
-          <li>Fix: Several other issues related to popup and context menu actions</li>
-          <li>New: Tab Groups are now ( optionally ) displayed on the Profiler page</li>
         </ul>
 
       </p>
