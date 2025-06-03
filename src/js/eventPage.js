@@ -37,7 +37,7 @@ if (typeof self != 'undefined' && self instanceof ServiceWorkerGlobalScope) {
 }
 
 chrome.runtime.onInstalled.addListener(function() {
-  log('2 chrome onInstalled');
+  log('2 runtime.onInstalled');
   // Fired when the extension is first installed, when the extension is updated to a new version, and when Chrome is updated to a new version.
   // Fired when an unpacked extension is reloaded
 
@@ -69,7 +69,7 @@ if (typeof self != 'undefined' && self instanceof ServiceWorkerGlobalScope) {
 }
 
 chrome.runtime.onStartup.addListener(function () {
-  log('4 chrome onStartup');
+  log('4 runtime.onStartup');
   // Fired when a profile that has this extension installed first starts up.
   // This event is not fired when an incognito profile is started, even if this extension is operating in 'split' incognito mode.
 
@@ -120,7 +120,7 @@ if (getBattery) {
 }
 
 //listen for changes to tab states
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   // warn('tabs.onUpdated', tabId, tab.id, JSON.stringify(changeInfo));
 
   if (changeInfo.status === 'loading') {
@@ -133,7 +133,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   // log(`onUpdated: ${tab.index}, ${tab.id}, Tab Status ${tab.status}`);
 
   // tabStates.getTabState(tabId, function (previousTabState) {
-    chrome.alarms.get(String(tab.id), function (alarm) {
+    chrome.alarms.get(String(tab.id), (alarm) => {
 
       // log('previousTabState', previousTabState);
 
@@ -162,12 +162,12 @@ chrome.contextMenus.onClicked.addListener(contextMenuListener);
 
 
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
-  log('onActivated', activeInfo);
+  // log('tabs.onActivated', activeInfo);
 
   var tabId = activeInfo.tabId;
   var lastTabId = await asyncSessionGet(CURRENT_TAB_ID);
 
-  log('tab changed: ' + tabId);
+  // log('tabs.onActivated tab changed: ' + tabId);
 
   // clear timer on current tab
   clearTabTimer(tabId);
@@ -211,12 +211,12 @@ function startupDiscard() {
 
 async function asyncSessionGet(name) {
   const ret = ( await chrome.storage.session.get([ name ]) ) [ name ];
-  log('asyncSessionGet', name, ret);
+  // log('asyncSessionGet', name, ret);
   return ret;
 }
 
 async function asyncSessionSet(obj) {
-  log('asyncSessionSet', obj);
+  // log('asyncSessionSet', obj);
   chrome.storage.session.set(obj);
 }
 
@@ -256,7 +256,7 @@ const openTabManager = {
  */
 function createTab(name) {
   chrome.tabs.create( { url:openTabManager[name].url }, function(tab) {
-    log(['createTab', openTabManager[name].tabId, tab.id]);
+    // log('createTab', openTabManager[name].tabId, tab.id);
     openTabManager[name].tabId = tab.id ?? 0;
   } );
 }
@@ -266,7 +266,7 @@ function createTab(name) {
  */
 function openTab(name) {
   if(openTabManager[name].tabId) {
-    log(['openTab', openTabManager[name].tabId]);
+    // log('openTab', openTabManager[name].tabId);
     chrome.tabs.update(openTabManager[name].tabId, {active:true}, function(tab) {
       if (chrome.runtime.lastError || !tab) {
         createTab(name);
@@ -467,7 +467,7 @@ function resetTabTimer(tab) {
       chrome.alarms.create(String(tab.id), {when: whenToDiscard});
     }
     else {
-      log("Skipping tab timer reset: ",tab);
+      // log("Skipping tab timer reset: ",tab);
     }
   });
 }
@@ -627,7 +627,7 @@ async function discardAllTabs(whichTabs) {
  * @param {chrome.tabs.Tab[]} queue
  */
 function reloadQueue(queue) {
-  warn("reloadQueue", queue.length);
+  // log("reloadQueue", queue.length);
   const tab = queue.shift();
   if (tab) reloadTab(tab);
   if (queue.length) {
@@ -638,7 +638,7 @@ function reloadQueue(queue) {
 }
 
 async function scanAllTabsAtStartup() {
-  warn("scanAllTabsAtStartup");
+  // warn("scanAllTabsAtStartup");
   // Retrieve the tempWhitelist and options once before looping, to avoid each loop doing so
   const tempWhitelist = await getTemporaryWhitelist();
   storage.getOptions((options) => {
@@ -648,7 +648,7 @@ async function scanAllTabsAtStartup() {
         // log("scanAllTabsAtStartup favicon", tab.favIconUrl);
         if (!tab.active) {
           if (isSuspended(tab)) {
-            log("scanAllTabsAtStartup queue to reload", tab.favIconUrl, tab.url);
+            // log("scanAllTabsAtStartup queue to reload", tab.favIconUrl, tab.url);
             queue.push(tab);
           }
           else if (options[storage.DISCARD_STARTUP]) {
@@ -764,6 +764,7 @@ function reloadTab(tab) {
  * @param {chrome.tabs.Tab}     tab
  */
 function requestTabInfo(tab, callback) {
+    // log('requestTabInfo');
 
   var info = {
       windowId  : 0,
@@ -893,7 +894,7 @@ function messageRequestListener(request, sender, sendResponse) {
 
   case 'requestCurrentOptions':
     storage.getOptions(function (options) {
-      log('requestCurrentOptions', options);
+      // log('requestCurrentOptions', options);
       sendResponse(options);
     });
     break;

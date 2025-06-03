@@ -47,7 +47,7 @@ export const storage = (function () {
     defaults[self.SUSPEND_MODE]           = false;
     defaults[self.SUSPEND_RESTORE_CLICK]  = true;
     defaults[self.SUSPEND_RESTORE_RELOAD] = false;
-    defaults[self.SUSPEND_FAVICON]        = '';
+    defaults[self.SUSPEND_FAVICON]        = 'dim';
     return defaults;
   }
 
