@@ -487,9 +487,51 @@ function isSuspended(tab) {
 
 /**
  * @param {chrome.tabs.Tab}     tab
+ */
+async function convertTabUrl(tab)
+{
+  if (tab.url.startsWith('https://www.youtube.com/watch'))
+  {
+    const seconds = await getYoutubeTime(tab);
+    if (seconds !== null)
+    {
+      const url = new URL(tab.url);
+      url.searchParams.set('t', seconds + 's');
+      return url.href;
+    }
+  }
+
+  return tab.url;
+}
+
+async function getYoutubeTime(tab)
+{
+  const results = await chrome.scripting.executeScript({
+    target: {
+      tabId: tab.id,
+    },
+    injectImmediately: true,
+    func: () => {
+      const video = document.querySelector('video.video-stream.html5-main-video');
+      return video ? Math.floor(video.currentTime) : null;
+    },
+  });
+  for (const result of results)
+  {
+    if (result.result !== null)
+    {
+      return result.result;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * @param {chrome.tabs.Tab}     tab
  * @param {'suspend'|null}      fSuspend
  */
-function discardOrSuspendTab(tab, fSuspend = null) {
+async function discardOrSuspendTab(tab, fSuspend = null) {
   // log('discardOrSuspendTab', fSuspend);
 
   if (!tab.id) return;
@@ -497,7 +539,8 @@ function discardOrSuspendTab(tab, fSuspend = null) {
   if (fSuspend) {
     // make sure tab is not special
     if (isSpecialTab(tab)) { return; }
-    chrome.tabs.update(tab.id, { url: `${getSuspendURL()}#ttl=${tab.title}&uri=${tab.url}` });
+    const url = await convertTabUrl(tab);
+    chrome.tabs.update(tab.id, { url: `${getSuspendURL()}#ttl=${tab.title}&uri=${url}` });
   }
   else {
     // make sure tab already discarded
