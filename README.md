@@ -129,10 +129,6 @@ If you have suggestions or problems using the extension, please
 - [LordXerus](https://github.com/LordXerus)
   <br><br>see [DEVNOTES.md](./DEVNOTES.md) for additional Developer Notes
 
-## Shout-outs
-- deanoemcke for original extension (before selling it) [thegreatdiscarder](https://github.com/deanoemcke/).
-- This package uses the indexedDb wrapper [db.js](https://github.com/aaronpowell/db.js) written by Aaron Powell.
-
 ## Logo Attribution
 
 <img src="./src/img/chrome.svg" height="20" valign="text-bottom" />&nbsp;
